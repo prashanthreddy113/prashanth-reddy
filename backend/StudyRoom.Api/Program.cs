@@ -48,7 +48,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Study Room Admin API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BrightLoop Reading Room API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -86,7 +86,7 @@ await DbInitializer.InitializeAsync(app.Services, app.Configuration, app.Logger)
 
 app.UseStatusCodePages();
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Study Room Admin API v1"));
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BrightLoop Reading Room API v1"));
 
 app.UseCors();
 app.UseAuthentication();

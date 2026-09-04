@@ -35,7 +35,7 @@ export default function Login() {
       <form className="login-card" onSubmit={submit}>
         <div className="logo">📖</div>
         <div>
-          <h1>Study Room Admin</h1>
+          <h1>BrightLoop Reading Room</h1>
           <p className="muted">Sign in to manage students, seats and dues.</p>
         </div>
         <div className="field">

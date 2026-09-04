@@ -29,7 +29,7 @@ public static class DbInitializer
         {
             db.Settings.Add(new RoomSettings
             {
-                RoomName = config["Room:Name"] ?? "Reading Room",
+                RoomName = config["Room:Name"] ?? "BrightLoop Reading Room",
                 DueSoonDays = int.TryParse(config["Room:DueSoonDays"], out var d) ? d : 5,
                 TimeZoneId = config["Room:TimeZone"] ?? "Asia/Kolkata",
                 Currency = config["Room:Currency"] ?? "INR",

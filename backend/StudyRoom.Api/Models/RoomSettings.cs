@@ -4,7 +4,7 @@ namespace StudyRoom.Api.Models;
 public class RoomSettings
 {
     public int Id { get; set; }
-    public string RoomName { get; set; } = "Reading Room";
+    public string RoomName { get; set; } = "BrightLoop Reading Room";
     /// <summary>Students whose due date falls within this many days are highlighted as "due soon".</summary>
     public int DueSoonDays { get; set; } = 5;
     /// <summary>IANA time zone used to decide "today" for due-date calculations.</summary>

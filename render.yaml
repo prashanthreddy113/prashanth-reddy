@@ -2,7 +2,7 @@
 # Render → New → Blueprint → point at this repository. Then set VITE_API_URL on Netlify to the API URL Render gives you.
 services:
   - type: web
-    name: studyroom-api
+    name: brightloop-api
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
@@ -11,7 +11,7 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: studyroom-db
+          name: brightloop-db
           property: connectionString
       - key: Jwt__Key
         generateValue: true
@@ -22,8 +22,8 @@ services:
       - key: Cors__AllowedOrigins
         sync: false   # e.g. https://your-site.netlify.app
       - key: Room__Name
-        value: Reading Room
+        value: BrightLoop Reading Room
 
 databases:
-  - name: studyroom-db
+  - name: brightloop-db
     plan: free

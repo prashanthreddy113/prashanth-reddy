@@ -28,7 +28,7 @@ services:
       Jwt__Key: "change-this-to-a-long-random-secret-at-least-32-chars"
       Admin__Username: "admin"
       Admin__Password: "admin123"
-      Room__Name: "Reading Room"
+      Room__Name: "BrightLoop Reading Room"
       Room__DefaultSeats: "0"
       Cors__AllowedOrigins: ""   # empty = allow any origin; set to https://your-site.netlify.app in production
     ports:

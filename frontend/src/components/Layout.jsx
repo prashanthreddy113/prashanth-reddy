@@ -22,7 +22,7 @@ const TITLES = {
 export default function Layout() {
   const { user, logout } = useAuth()
   const [open, setOpen] = useState(false)
-  const [roomName, setRoomName] = useState('Study Room')
+  const [roomName, setRoomName] = useState('BrightLoop Reading Room')
   const location = useLocation()
 
   useEffect(() => { setOpen(false) }, [location.pathname])
@@ -32,7 +32,7 @@ export default function Layout() {
   }, [])
 
   const key = location.pathname.startsWith('/students/') ? '/students' : location.pathname
-  const [title, subtitle] = TITLES[key] || ['Study Room', '']
+  const [title, subtitle] = TITLES[key] || ['BrightLoop Reading Room', '']
 
   return (
     <div className="app">

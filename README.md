@@ -1,6 +1,6 @@
-# Study Room Admin
+# BrightLoop Reading Room – Admin
 
-A complete admin console for a study / reading room. Admins register students, assign seat numbers, track fees, and see at a glance whose subscription is due.
+A complete admin console for the BrightLoop reading room. Admins register students, assign seat numbers, track fees, and see at a glance whose subscription is due.
 
 | Layer | Tech |
 | --- | --- |
@@ -69,24 +69,26 @@ Netlify serves static sites and JavaScript functions only, so the React frontend
 | `DATABASE_URL` **or** `ConnectionStrings__Default` | `postgres://user:pass@host:5432/db` (Render/Neon/Supabase style) or an Npgsql connection string |
 | `Jwt__Key` | Random secret, 32+ characters |
 | `Admin__Username`, `Admin__Password` | First admin account (seeded only when no admin exists) |
-| `Cors__AllowedOrigins` | Your Netlify site URL, e.g. `https://my-room.netlify.app` (empty = allow all) |
-| `Room__Name`, `Room__DueSoonDays`, `Room__TimeZone`, `Room__DefaultSeats` | Optional initial settings |
+| `Cors__AllowedOrigins` | Your Netlify site URL, e.g. `https://brightloop-reading-room.netlify.app` (empty = allow all) |
+| `Room__Name` (default *BrightLoop Reading Room*), `Room__DueSoonDays`, `Room__TimeZone`, `Room__DefaultSeats` | Optional initial settings |
 | `PORT` | Injected by most hosts; the app binds to it automatically |
 
 Migrations run automatically on startup. Verify with `https://<api-host>/api/health`.
 
 ### 2. Deploy the frontend to Netlify
 
-1. Netlify → **Add new site → Import an existing project** → choose this repository.
+The Netlify site **brightloop-reading-room** (https://brightloop-reading-room.netlify.app) already exists.
+
+1. Netlify → project **brightloop-reading-room** → **Site configuration → Build & deploy → Link repository** → choose this repository and branch.
 2. Build settings are read from `netlify.toml` (base `frontend`, publish `dist`).
-3. Add the environment variable **`VITE_API_URL`** = your API URL (no trailing slash), e.g. `https://studyroom-api.onrender.com`.
+3. Add the environment variable **`VITE_API_URL`** = your API URL (no trailing slash), e.g. `https://brightloop-api.onrender.com`.
 4. Deploy. Add the resulting Netlify URL to the API's `Cors__AllowedOrigins`.
 
 CLI alternative:
 
 ```bash
 cd frontend
-VITE_API_URL=https://studyroom-api.onrender.com npm run build
+VITE_API_URL=https://brightloop-api.onrender.com npm run build
 npx netlify-cli deploy --prod --dir=dist
 ```
 
