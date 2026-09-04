@@ -1,0 +1,52 @@
+# Builds the React frontend on every push and deploys it to the Netlify site
+# "brightloop-reading-room" when the NETLIFY_AUTH_TOKEN repository secret is set.
+#
+# Setup (once): Netlify → User settings → Applications → Personal access tokens → New token,
+# then GitHub → repo Settings → Secrets and variables → Actions → New secret NETLIFY_AUTH_TOKEN.
+# Optional: repository variable VITE_API_URL = public URL of the deployed .NET API.
+
+name: Deploy frontend to Netlify
+
+on:
+  push:
+    branches: [main, master, claude/study-room-admin-dashboard-mygaop]
+    paths: [frontend/**, netlify.toml, .github/workflows/deploy-frontend.yml]
+  workflow_dispatch:
+
+env:
+  NETLIFY_SITE_ID: 7c377871-769e-460e-a1f8-d21d3372f8c3
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+
+      - name: Deploy to Netlify
+        if: ${{ env.NETLIFY_AUTH_TOKEN != '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: npx --yes netlify-cli@latest deploy --prod --dir=dist --site "$NETLIFY_SITE_ID" --message "GitHub Actions ${{ github.sha }}"
+
+      - name: Skipped deploy
+        if: ${{ env.NETLIFY_AUTH_TOKEN == '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: echo "NETLIFY_AUTH_TOKEN secret not set - build succeeded but deploy skipped."
