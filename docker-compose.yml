@@ -1,0 +1,38 @@
+# Local development / self-hosting: PostgreSQL + the .NET API.
+# Run:  docker compose up --build
+# API:  http://localhost:8080  (Swagger at /swagger)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: studyroom
+      POSTGRES_USER: studyroom
+      POSTGRES_PASSWORD: studyroom
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studyroom -d studyroom"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=studyroom;Username=studyroom;Password=studyroom"
+      Jwt__Key: "change-this-to-a-long-random-secret-at-least-32-chars"
+      Admin__Username: "admin"
+      Admin__Password: "admin123"
+      Room__Name: "Reading Room"
+      Room__DefaultSeats: "0"
+      Cors__AllowedOrigins: ""   # empty = allow any origin; set to https://your-site.netlify.app in production
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

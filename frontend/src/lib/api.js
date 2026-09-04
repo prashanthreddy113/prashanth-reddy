@@ -1,0 +1,102 @@
+const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+const TOKEN_KEY = 'studyroom.token'
+const USER_KEY = 'studyroom.user'
+
+export const auth = {
+  getToken: () => localStorage.getItem(TOKEN_KEY),
+  getUser: () => {
+    try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null') } catch { return null }
+  },
+  save: (token, user) => {
+    localStorage.setItem(TOKEN_KEY, token)
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+  },
+  clear: () => {
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
+  },
+}
+
+export class ApiError extends Error {
+  constructor(message, status, details) {
+    super(message)
+    this.status = status
+    this.details = details
+  }
+}
+
+let onUnauthorized = () => {}
+export function setUnauthorizedHandler(fn) { onUnauthorized = fn }
+
+async function request(method, path, body, { query } = {}) {
+  const url = new URL(BASE + path, window.location.origin)
+  if (query) Object.entries(query).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v)
+  })
+
+  const headers = { Accept: 'application/json' }
+  const token = auth.getToken()
+  if (token) headers.Authorization = `Bearer ${token}`
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
+
+  let res
+  try {
+    res = await fetch(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) })
+  } catch {
+    throw new ApiError('Cannot reach the server. Check your connection or the API URL.', 0)
+  }
+
+  if (res.status === 401 && !path.startsWith('/api/auth/login')) {
+    auth.clear()
+    onUnauthorized()
+    throw new ApiError('Session expired. Please sign in again.', 401)
+  }
+
+  if (res.status === 204) return null
+
+  const text = await res.text()
+  let data = null
+  try { data = text ? JSON.parse(text) : null } catch { data = text }
+
+  if (!res.ok) {
+    let message = data?.message || data?.title || `Request failed (${res.status})`
+    if (data?.errors) {
+      const first = Object.values(data.errors).flat()[0]
+      if (first) message = first
+    }
+    throw new ApiError(message, res.status, data)
+  }
+  return data
+}
+
+export const api = {
+  get: (path, query) => request('GET', path, undefined, { query }),
+  post: (path, body) => request('POST', path, body ?? {}),
+  put: (path, body) => request('PUT', path, body),
+  delete: (path) => request('DELETE', path),
+
+  login: (username, password) => request('POST', '/api/auth/login', { username, password }),
+  changePassword: (currentPassword, newPassword) => request('POST', '/api/auth/change-password', { currentPassword, newPassword }),
+
+  dashboard: () => request('GET', '/api/dashboard'),
+
+  students: (query) => request('GET', '/api/students', undefined, { query }),
+  student: (id) => request('GET', `/api/students/${id}`),
+  createStudent: (data) => request('POST', '/api/students', data),
+  updateStudent: (id, data) => request('PUT', `/api/students/${id}`, data),
+  deleteStudent: (id) => request('DELETE', `/api/students/${id}`),
+  deactivateStudent: (id) => request('POST', `/api/students/${id}/deactivate`, {}),
+  activateStudent: (id, seatNumber) => request('POST', `/api/students/${id}/activate`, {}, { query: { seatNumber } }),
+  addPayment: (id, data) => request('POST', `/api/students/${id}/payments`, data),
+  deletePayment: (id, paymentId) => request('DELETE', `/api/students/${id}/payments/${paymentId}`),
+  renewStudent: (id, data) => request('POST', `/api/students/${id}/renew`, data),
+
+  seats: () => request('GET', '/api/seats'),
+  seatSummary: () => request('GET', '/api/seats/summary'),
+  setSeatCapacity: (totalSeats) => request('PUT', '/api/seats/capacity', { totalSeats }),
+  updateSeat: (id, data) => request('PUT', `/api/seats/${id}`, data),
+  deleteSeat: (id) => request('DELETE', `/api/seats/${id}`),
+
+  settings: () => request('GET', '/api/settings'),
+  updateSettings: (data) => request('PUT', '/api/settings', data),
+}

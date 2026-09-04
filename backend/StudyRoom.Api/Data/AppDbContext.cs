@@ -1,0 +1,71 @@
+using Microsoft.EntityFrameworkCore;
+using StudyRoom.Api.Models;
+
+namespace StudyRoom.Api.Data;
+
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Admin> Admins => Set<Admin>();
+    public DbSet<Seat> Seats => Set<Seat>();
+    public DbSet<Student> Students => Set<Student>();
+    public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<RoomSettings> Settings => Set<RoomSettings>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Admin>(e =>
+        {
+            e.HasIndex(a => a.Username).IsUnique();
+            e.Property(a => a.Username).HasMaxLength(64).IsRequired();
+            e.Property(a => a.DisplayName).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<Seat>(e =>
+        {
+            e.HasIndex(s => s.Number).IsUnique();
+            e.Property(s => s.Label).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Student>(e =>
+        {
+            e.Property(s => s.Name).HasMaxLength(120).IsRequired();
+            e.Property(s => s.Mobile).HasMaxLength(20).IsRequired();
+            e.Property(s => s.Address).HasMaxLength(500);
+            e.Property(s => s.Aadhaar).HasMaxLength(12);
+            e.Property(s => s.Study).HasMaxLength(200);
+            e.Property(s => s.Notes).HasMaxLength(1000);
+            e.Property(s => s.AmountPerMonth).HasPrecision(12, 2);
+            e.Property(s => s.TotalPaid).HasPrecision(12, 2);
+            e.HasIndex(s => s.Mobile);
+            e.HasIndex(s => s.SeatId).IsUnique().HasFilter("\"SeatId\" IS NOT NULL");
+
+            e.HasOne(s => s.Seat)
+             .WithOne(seat => seat.Student)
+             .HasForeignKey<Student>(s => s.SeatId)
+             .OnDelete(DeleteBehavior.SetNull);
+
+            e.Ignore(s => s.DueDate);
+            e.Ignore(s => s.TotalFee);
+            e.Ignore(s => s.Balance);
+        });
+
+        modelBuilder.Entity<Payment>(e =>
+        {
+            e.Property(p => p.Amount).HasPrecision(12, 2);
+            e.Property(p => p.Note).HasMaxLength(300);
+            e.HasOne(p => p.Student)
+             .WithMany(s => s.Payments)
+             .HasForeignKey(p => p.StudentId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<RoomSettings>(e =>
+        {
+            e.Property(s => s.RoomName).HasMaxLength(120);
+            e.Property(s => s.TimeZoneId).HasMaxLength(64);
+            e.Property(s => s.Currency).HasMaxLength(8);
+        });
+    }
+}
