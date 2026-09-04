@@ -23,6 +23,14 @@ services:
         sync: false   # e.g. https://your-site.netlify.app
       - key: Room__Name
         value: BrightLoop Reading Room
+      - key: WhatsApp__PhoneNumberId
+        sync: false   # from Meta WhatsApp Business platform
+      - key: WhatsApp__AccessToken
+        sync: false   # permanent system-user token
+      - key: WhatsApp__DefaultCountryCode
+        value: "91"
+      - key: Reminders__TriggerKey
+        generateValue: true
 
 databases:
   - name: brightloop-db

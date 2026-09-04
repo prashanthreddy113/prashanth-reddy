@@ -24,7 +24,13 @@ public class SettingsController : ControllerBase
     public async Task<ActionResult<SettingsDto>> Get()
     {
         var s = await _settings.GetAsync();
-        return new SettingsDto { RoomName = s.RoomName, DueSoonDays = s.DueSoonDays, TimeZoneId = s.TimeZoneId, Currency = s.Currency };
+        return new SettingsDto
+        {
+            RoomName = s.RoomName, DueSoonDays = s.DueSoonDays, TimeZoneId = s.TimeZoneId, Currency = s.Currency,
+            RemindersEnabled = s.RemindersEnabled, ReminderDaysBefore = s.ReminderDaysBefore, RemindOnDueDay = s.RemindOnDueDay,
+            OverdueRepeatEveryDays = s.OverdueRepeatEveryDays, OverdueStopAfterDays = s.OverdueStopAfterDays, ReminderHour = s.ReminderHour,
+            WhatsAppTemplateName = s.WhatsAppTemplateName, WhatsAppLanguageCode = s.WhatsAppLanguageCode,
+        };
     }
 
     [HttpPut]
@@ -38,6 +44,14 @@ public class SettingsController : ControllerBase
         s.DueSoonDays = request.DueSoonDays;
         s.TimeZoneId = request.TimeZoneId.Trim();
         s.Currency = request.Currency.Trim().ToUpperInvariant();
+        s.RemindersEnabled = request.RemindersEnabled;
+        s.ReminderDaysBefore = string.Join(",", ReminderService.ParseDays(request.ReminderDaysBefore));
+        s.RemindOnDueDay = request.RemindOnDueDay;
+        s.OverdueRepeatEveryDays = request.OverdueRepeatEveryDays;
+        s.OverdueStopAfterDays = request.OverdueStopAfterDays;
+        s.ReminderHour = request.ReminderHour;
+        s.WhatsAppTemplateName = request.WhatsAppTemplateName.Trim();
+        s.WhatsAppLanguageCode = request.WhatsAppLanguageCode.Trim();
         await _db.SaveChangesAsync();
         return await Get();
     }

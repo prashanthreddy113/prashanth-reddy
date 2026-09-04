@@ -8,6 +8,7 @@ import Students from './pages/Students'
 import StudentDetail from './pages/StudentDetail'
 import Seats from './pages/Seats'
 import Settings from './pages/Settings'
+import Reminders from './pages/Reminders'
 
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuth()
@@ -28,6 +29,7 @@ export default function App() {
               <Route path="students" element={<Students />} />
               <Route path="students/:id" element={<StudentDetail />} />
               <Route path="seats" element={<Seats />} />
+              <Route path="reminders" element={<Reminders />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

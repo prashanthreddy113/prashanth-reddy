@@ -3,12 +3,13 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { api } from '../lib/api'
 import { setCurrency } from '../lib/format'
-import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu } from './Icons'
+import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu, IconWhatsapp } from './Icons'
 
 const NAV = [
   { to: '/', label: 'Dashboard', icon: IconDashboard, end: true },
   { to: '/students', label: 'Students', icon: IconUsers },
   { to: '/seats', label: 'Seats', icon: IconSeat },
+  { to: '/reminders', label: 'Reminders', icon: IconWhatsapp },
   { to: '/settings', label: 'Settings', icon: IconSettings },
 ]
 
@@ -16,6 +17,7 @@ const TITLES = {
   '/': ['Dashboard', 'Overview of students, dues and seats'],
   '/students': ['Students', 'Register, edit and manage members'],
   '/seats': ['Seats', 'Configure capacity and see who sits where'],
+  '/reminders': ['WhatsApp reminders', 'Automatic due-date messages and history'],
   '/settings': ['Settings', 'Room preferences and your account'],
 }
 

@@ -18,7 +18,7 @@ export default function Settings() {
     e.preventDefault()
     setBusy(true)
     try {
-      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays) })
+      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays), reminderHour: Number(form.reminderHour), overdueRepeatEveryDays: Number(form.overdueRepeatEveryDays), overdueStopAfterDays: Number(form.overdueStopAfterDays) })
       setForm(s); setRoomName(s.roomName); setCurrency(s.currency)
       toast.success('Settings saved')
     } catch (err) { toast.error(err.message) }
@@ -40,8 +40,60 @@ export default function Settings() {
 
   if (!form) return <div className="loading"><div className="spinner" />Loading…</div>
 
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+
   return (
     <div className="grid-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+      <form className="card" onSubmit={save} style={{ gridColumn: '1 / -1' }}>
+        <div className="card-head">
+          <div>
+            <h3>WhatsApp due-date reminders</h3>
+            <span className="muted">Automatic messages through the WhatsApp Business API. Credentials are set on the server; see the Reminders page for status.</span>
+          </div>
+          <label className="row" style={{ gap: 8, fontWeight: 700 }}>
+            <input type="checkbox" checked={!!form.remindersEnabled} onChange={set('remindersEnabled')} /> Enabled
+          </label>
+        </div>
+        <div className="card-body">
+          <div className="form-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+            <div className="field">
+              <label>Remind this many days before due</label>
+              <input value={form.reminderDaysBefore} onChange={set('reminderDaysBefore')} placeholder="5,1" />
+              <span className="help">Comma-separated, e.g. 5,1 sends 5 days and 1 day before.</span>
+            </div>
+            <div className="field">
+              <label>Send time (hour, 0–23)</label>
+              <input type="number" min="0" max="23" value={form.reminderHour} onChange={set('reminderHour')} />
+              <span className="help">In the room's time zone ({form.timeZoneId}).</span>
+            </div>
+            <div className="field">
+              <label>After due date, repeat every (days)</label>
+              <input type="number" min="0" max="60" value={form.overdueRepeatEveryDays} onChange={set('overdueRepeatEveryDays')} />
+              <span className="help">0 = remind once, the day after the due date.</span>
+            </div>
+            <div className="field">
+              <label>Stop overdue reminders after (days)</label>
+              <input type="number" min="0" max="365" value={form.overdueStopAfterDays} onChange={set('overdueStopAfterDays')} />
+            </div>
+            <div className="field">
+              <label>Template name</label>
+              <input value={form.whatsAppTemplateName} onChange={set('whatsAppTemplateName')} />
+              <span className="help">The approved template in WhatsApp Manager. Body variables: name, seat, due date, balance.</span>
+            </div>
+            <div className="field">
+              <label>Template language code</label>
+              <input value={form.whatsAppLanguageCode} onChange={set('whatsAppLanguageCode')} placeholder="en" />
+            </div>
+            <div className="field">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24 }}>
+                <input type="checkbox" checked={!!form.remindOnDueDay} onChange={set('remindOnDueDay')} /> Also remind on the due date itself
+              </label>
+            </div>
+          </div>
+          <div className="form-actions" style={{ marginTop: 16 }}><button className="btn primary" disabled={busy}>{busy ? 'Saving…' : 'Save reminder settings'}</button></div>
+        </div>
+      </form>
+
       <form className="card" onSubmit={save}>
         <div className="card-head"><h3>Reading room</h3></div>
         <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

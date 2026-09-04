@@ -17,6 +17,16 @@ export default function StudentDetail() {
   const [student, setStudent] = useState(null)
   const [error, setError] = useState('')
   const [modal, setModal] = useState(null)
+  const [sending, setSending] = useState(false)
+
+  const sendReminder = async () => {
+    setSending(true)
+    try {
+      const log = await api.reminderSend(id)
+      toast.success(`WhatsApp reminder sent to ${log.mobile}`)
+    } catch (e) { toast.error(e.message) }
+    finally { setSending(false) }
+  }
 
   const load = useCallback(async () => {
     try { setStudent(await api.student(id)); setError('') }
@@ -49,7 +59,8 @@ export default function StudentDetail() {
           </div>
         </div>
         <div className="row">
-          <a className="btn" href={waLink} target="_blank" rel="noreferrer" title="Send WhatsApp reminder"><IconWhatsapp width={16} height={16} /> Remind</a>
+          <a className="btn" href={waLink} target="_blank" rel="noreferrer" title="Open WhatsApp with a pre-filled message"><IconWhatsapp width={16} height={16} /> Open WhatsApp</a>
+          <button className="btn" disabled={sending} title="Send an automatic WhatsApp reminder now" onClick={sendReminder}><IconWhatsapp width={16} height={16} /> {sending ? 'Sending…' : 'Send reminder'}</button>
           <button className="btn" onClick={() => setModal('pay')}><IconMoney /> Record payment</button>
           <button className="btn" onClick={() => setModal('renew')}><IconRefresh /> Renew</button>
           <button className="btn primary" onClick={() => setModal('edit')}><IconEdit /> Edit</button>

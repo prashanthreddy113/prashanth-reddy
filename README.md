@@ -18,7 +18,8 @@ A complete admin console for the BrightLoop reading room. Admins register studen
   - 🟡 **Due soon** – due within the next *N* days (default 5, configurable)
   - 🔴 **Due today / Overdue** – due date has arrived or passed
   - ⚪ **Left** – deactivated (seat released, history kept)
-- **Payments & renewals** – record payments (with history), extend the subscription by months, WhatsApp reminder link, print list.
+- **Payments & renewals** – record payments (with history), extend the subscription by months, print list.
+- **WhatsApp reminders** – automatic due-date messages through the WhatsApp Business API (N days before, on the day, and while overdue), a Reminders page with today's list and history, one-click manual sends, and a one-tap "Open WhatsApp" fallback.
 - Stats: active students, overdue, due soon, seat occupancy, collected this month, outstanding balance.
 
 ## Project layout
@@ -71,6 +72,9 @@ Netlify serves static sites and JavaScript functions only, so the React frontend
 | `Admin__Username`, `Admin__Password` | First admin account (seeded only when no admin exists) |
 | `Cors__AllowedOrigins` | Your Netlify site URL, e.g. `https://brightloop-reading-room.netlify.app` (empty = allow all) |
 | `Room__Name` (default *BrightLoop Reading Room*), `Room__DueSoonDays`, `Room__TimeZone`, `Room__DefaultSeats` | Optional initial settings |
+| `WhatsApp__PhoneNumberId`, `WhatsApp__AccessToken` | WhatsApp Business (Cloud) API credentials for automatic reminders (see below) |
+| `WhatsApp__DefaultCountryCode` | Prefix for 10-digit mobiles (default `91`) |
+| `Reminders__TriggerKey` | Secret for the external daily trigger `POST /api/reminders/run-external` |
 | `PORT` | Injected by most hosts; the app binds to it automatically |
 
 Migrations run automatically on startup. Verify with `https://<api-host>/api/health`.
@@ -97,6 +101,33 @@ VITE_API_URL=https://brightloop-api.onrender.com npm run build
 npx netlify-cli deploy --prod --dir=dist
 ```
 
+## WhatsApp due-date reminders
+
+Reminders are sent through Meta's official **WhatsApp Business (Cloud) API** using an approved message template. Setup:
+
+1. In [Meta for Developers](https://developers.facebook.com/) create an app with the WhatsApp product, add a phone number that is not already registered on regular WhatsApp, and create a **System User** token with `whatsapp_business_messaging` permission (a permanent token, not the 24-hour test token).
+2. In WhatsApp Manager create a **Utility** template named `due_reminder` (language `en`) with this body and four variables:
+
+   ```
+   Hi {{1}}, your BrightLoop Reading Room subscription for seat {{2}} is due on {{3}}. Pending balance: {{4}}. Please renew to keep your seat. Reply here or call us.
+   ```
+
+   Variables are filled in this order: student name, seat number, due date, pending balance. Change the template name/language in Settings if you use different ones.
+3. Set `WhatsApp__PhoneNumberId` and `WhatsApp__AccessToken` on the API host and restart it. The Reminders page shows "Connected" once they are picked up.
+4. In **Settings → WhatsApp due-date reminders** switch reminders on and choose the rules: days before due (default `5,1`), remind on the due day, repeat every N days while overdue (default 3, stop after 30), and the send hour (default 09:00 in the room's time zone).
+
+Every day at the send hour the API sends one reminder per matching student and records it in the history (a student is never messaged twice on the same day by the automatic job). Use **Send all now** on the Reminders page or **Send reminder** on a student's page for manual sends.
+
+**If your API host sleeps when idle** (free tiers), the scheduled hour can be missed. Set `Reminders__TriggerKey` and have any external scheduler call the API once a day:
+
+```bash
+curl -X POST https://<api-host>/api/reminders/run-external -H "X-Reminder-Key: <Reminders__TriggerKey>"
+```
+
+The workflow `.github/workflows/daily-reminders.yml` does exactly this from GitHub Actions at 09:00 IST when the repository secrets `API_URL` and `REMINDER_TRIGGER_KEY` are set.
+
+Costs: WhatsApp utility conversations in India cost a fraction of a rupee each, and the first 1,000 service conversations per month are free. Students must have opted in to receive business messages (ask at registration).
+
 ## API overview
 
 All endpoints except login and health require `Authorization: Bearer <token>`. Full interactive docs at `/swagger`.
@@ -114,6 +145,9 @@ All endpoints except login and health require `Authorization: Bearer <token>`. F
 | GET | `/api/seats` | Seat map with occupants |
 | PUT | `/api/seats/capacity` | Set total number of seats |
 | PUT / DELETE | `/api/seats/{id}` | Label / enable / disable / remove |
-| GET / PUT | `/api/settings` | Room name, due-soon days, time zone, currency |
+| GET / PUT | `/api/settings` | Room name, due-soon days, time zone, currency, reminder rules |
+| GET | `/api/reminders/status` · `/preview` · `/logs` | Reminder configuration, today's candidates, history |
+| POST | `/api/reminders/run` · `/send/{studentId}` | Send today's reminders / one manual reminder |
+| POST | `/api/reminders/run-external` | Same as run, for external cron (header `X-Reminder-Key`) |
 
 Due date = joining date + subscribed months. Status uses "today" in the configured time zone (default `Asia/Kolkata`).

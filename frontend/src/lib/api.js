@@ -115,6 +115,12 @@ export const api = {
   updateSeat: (id, data) => request('PUT', `/api/seats/${id}`, data),
   deleteSeat: (id) => request('DELETE', `/api/seats/${id}`),
 
+  reminderStatus: () => request('GET', '/api/reminders/status'),
+  reminderPreview: () => request('GET', '/api/reminders/preview'),
+  reminderRun: () => request('POST', '/api/reminders/run', {}),
+  reminderSend: (studentId) => request('POST', `/api/reminders/send/${studentId}`, {}),
+  reminderLogs: (query) => request('GET', '/api/reminders/logs', undefined, { query }),
+
   settings: () => request('GET', '/api/settings'),
   updateSettings: (data) => request('PUT', '/api/settings', data),
 }

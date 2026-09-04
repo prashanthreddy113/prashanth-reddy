@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Student> Students => Set<Student>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<RoomSettings> Settings => Set<RoomSettings>();
+    public DbSet<ReminderLog> ReminderLogs => Set<ReminderLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +67,23 @@ public class AppDbContext : DbContext
             e.Property(s => s.RoomName).HasMaxLength(120);
             e.Property(s => s.TimeZoneId).HasMaxLength(64);
             e.Property(s => s.Currency).HasMaxLength(8);
+            e.Property(s => s.ReminderDaysBefore).HasMaxLength(64);
+            e.Property(s => s.WhatsAppTemplateName).HasMaxLength(120);
+            e.Property(s => s.WhatsAppLanguageCode).HasMaxLength(16);
+        });
+
+        modelBuilder.Entity<ReminderLog>(e =>
+        {
+            e.Property(r => r.Mobile).HasMaxLength(20);
+            e.Property(r => r.Message).HasMaxLength(1000);
+            e.Property(r => r.ProviderMessageId).HasMaxLength(200);
+            e.Property(r => r.Error).HasMaxLength(1000);
+            e.HasIndex(r => new { r.StudentId, r.SentOn, r.Kind });
+            e.HasIndex(r => r.CreatedAt);
+            e.HasOne(r => r.Student)
+             .WithMany()
+             .HasForeignKey(r => r.StudentId)
+             .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -31,6 +31,11 @@ services:
       Room__Name: "BrightLoop Reading Room"
       Room__DefaultSeats: "0"
       Cors__AllowedOrigins: ""   # empty = allow any origin; set to https://your-site.netlify.app in production
+      # WhatsApp Business (Cloud) API for automatic due-date reminders - leave empty to disable sending
+      WhatsApp__PhoneNumberId: ""
+      WhatsApp__AccessToken: ""
+      WhatsApp__DefaultCountryCode: "91"
+      Reminders__TriggerKey: ""  # secret for POST /api/reminders/run-external (external daily cron)
     ports:
       - "8080:8080"
 

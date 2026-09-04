@@ -1,0 +1,22 @@
+# Calls the API's external reminder trigger once a day so reminders go out even if the API host sleeps.
+# Requires repository secrets: API_URL (e.g. https://brightloop-api.onrender.com) and REMINDER_TRIGGER_KEY (= Reminders__TriggerKey on the API).
+name: Daily WhatsApp reminders
+
+on:
+  schedule:
+    - cron: "30 3 * * *"   # 09:00 IST
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger reminder run
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          KEY: ${{ secrets.REMINDER_TRIGGER_KEY }}
+        run: |
+          if [ -z "$API_URL" ] || [ -z "$KEY" ]; then echo "API_URL / REMINDER_TRIGGER_KEY secrets not set - skipping"; exit 0; fi
+          # Wake a sleeping host first, then trigger.
+          curl -sS --retry 3 --retry-delay 10 -o /dev/null "$API_URL/api/health" || true
+          curl -sS --fail --retry 3 --retry-delay 10 -X POST "$API_URL/api/reminders/run-external" -H "X-Reminder-Key: $KEY"

@@ -23,16 +23,18 @@ public class SettingsService
         return settings;
     }
 
-    public static DateOnly Today(RoomSettings settings)
+    public static DateOnly Today(RoomSettings settings) => DateOnly.FromDateTime(LocalNow(settings));
+
+    public static DateTime LocalNow(RoomSettings settings)
     {
         try
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById(settings.TimeZoneId);
-            return DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz));
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
         }
         catch (Exception)
         {
-            return DateOnly.FromDateTime(DateTime.UtcNow);
+            return DateTime.UtcNow;
         }
     }
 }
