@@ -1,6 +1,17 @@
-const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 const TOKEN_KEY = 'studyroom.token'
 const USER_KEY = 'studyroom.user'
+const API_URL_KEY = 'studyroom.apiUrl'
+
+/** Build-time API URL (Netlify env var VITE_API_URL). Empty in local dev (Vite proxy handles /api). */
+export const BUILD_API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+
+/** Runtime override: lets an admin point a deployed frontend at their API without rebuilding. */
+export const apiUrl = {
+  get: () => { try { return (localStorage.getItem(API_URL_KEY) || '').replace(/\/+$/, '') } catch { return '' } },
+  set: (url) => { try { url ? localStorage.setItem(API_URL_KEY, url.trim().replace(/\/+$/, '')) : localStorage.removeItem(API_URL_KEY) } catch { /* ignore */ } },
+  effective: () => apiUrl.get() || BUILD_API_URL,
+  isConfigured: () => !!(apiUrl.get() || BUILD_API_URL) || import.meta.env.DEV,
+}
 
 export const auth = {
   getToken: () => localStorage.getItem(TOKEN_KEY),
@@ -29,7 +40,7 @@ let onUnauthorized = () => {}
 export function setUnauthorizedHandler(fn) { onUnauthorized = fn }
 
 async function request(method, path, body, { query } = {}) {
-  const url = new URL(BASE + path, window.location.origin)
+  const url = new URL(apiUrl.effective() + path, window.location.origin)
   if (query) Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v)
   })
@@ -55,8 +66,14 @@ async function request(method, path, body, { query } = {}) {
   if (res.status === 204) return null
 
   const text = await res.text()
+  const contentType = res.headers.get('content-type') || ''
   let data = null
-  try { data = text ? JSON.parse(text) : null } catch { data = text }
+  if (!contentType.includes('json')) {
+    // The API always answers with JSON; anything else means we hit a wrong host (e.g. the SPA's own index.html).
+    const where = apiUrl.effective() || window.location.origin
+    throw new ApiError(`No API found at ${where}. Check the API server URL (set VITE_API_URL, or use "Change API server" on the login page).`, res.status)
+  }
+  try { data = text ? JSON.parse(text) : null } catch { data = null }
 
   if (!res.ok) {
     let message = data?.message || data?.title || `Request failed (${res.status})`
@@ -70,6 +87,7 @@ async function request(method, path, body, { query } = {}) {
 }
 
 export const api = {
+  health: () => request('GET', '/api/health'),
   get: (path, query) => request('GET', path, undefined, { query }),
   post: (path, body) => request('POST', path, body ?? {}),
   put: (path, body) => request('PUT', path, body),

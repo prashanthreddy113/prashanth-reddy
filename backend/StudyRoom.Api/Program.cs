@@ -44,6 +44,7 @@ builder.Services.AddControllers().AddJsonOptions(o =>
     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
+builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -83,6 +84,7 @@ if (Environment.GetEnvironmentVariable("PORT") is { Length: > 0 } port && string
 
 await DbInitializer.InitializeAsync(app.Services, app.Configuration, app.Logger);
 
+app.UseStatusCodePages();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Study Room Admin API v1"));
 

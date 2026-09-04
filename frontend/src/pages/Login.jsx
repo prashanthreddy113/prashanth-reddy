@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { apiUrl, BUILD_API_URL } from '../lib/api'
 
 export default function Login() {
   const { login, isAuthenticated } = useAuth()
@@ -10,6 +11,8 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [server, setServer] = useState(apiUrl.get())
+  const [showServer, setShowServer] = useState(!apiUrl.isConfigured())
 
   if (isAuthenticated) return <Navigate to={location.state?.from || '/'} replace />
 
@@ -17,6 +20,7 @@ export default function Login() {
     e.preventDefault()
     setBusy(true); setError('')
     try {
+      if (showServer) apiUrl.set(server)
       await login(username.trim(), password)
       navigate(location.state?.from || '/', { replace: true })
     } catch (err) {
@@ -42,9 +46,19 @@ export default function Login() {
           <label>Password</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
         </div>
+        {showServer ? (
+          <div className="field">
+            <label>API server URL</label>
+            <input value={server} onChange={(e) => setServer(e.target.value)} placeholder={BUILD_API_URL || 'https://your-api.onrender.com'} inputMode="url" />
+            <span className="help">Where the .NET API is hosted. Saved in this browser{BUILD_API_URL ? `; leave blank to use ${BUILD_API_URL}` : ''}.</span>
+          </div>
+        ) : null}
         {error && <div className="alert error">{error}</div>}
         <button className="btn primary" type="submit" disabled={busy} style={{ padding: 11 }}>{busy ? 'Signing in…' : 'Sign in'}</button>
-        <p className="hint">Admin access only. Contact the owner if you need an account.</p>
+        <p className="hint">
+          Admin access only.{' '}
+          <a href="#server" onClick={(e) => { e.preventDefault(); setShowServer((v) => !v) }}>{showServer ? 'Hide server settings' : 'Change API server'}</a>
+        </p>
       </form>
     </div>
   )
