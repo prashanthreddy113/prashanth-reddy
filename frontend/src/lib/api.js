@@ -129,6 +129,7 @@ export const api = {
   updateSeat: (id, data) => request('PUT', `/api/seats/${id}`, data),
   deleteSeat: (id) => request('DELETE', `/api/seats/${id}`),
 
+  whatsappTest: () => request('GET', '/api/reminders/whatsapp-test'),
   reminderStatus: () => request('GET', '/api/reminders/status'),
   reminderPreview: () => request('GET', '/api/reminders/preview'),
   reminderRun: () => request('POST', '/api/reminders/run', {}),

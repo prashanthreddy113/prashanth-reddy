@@ -19,7 +19,15 @@ export default function Reminders() {
   const [error, setError] = useState('')
   const [running, setRunning] = useState(false)
   const [sendingId, setSendingId] = useState(null)
+  const [test, setTest] = useState(null)
+  const [testing, setTesting] = useState(false)
   const toast = useToast()
+
+  const testConnection = async () => {
+    setTesting(true); setTest(null)
+    try { setTest(await api.whatsappTest()) } catch (e) { setTest({ ok: false, error: e.message }) }
+    finally { setTesting(false) }
+  }
 
   const load = useCallback(async () => {
     try {
@@ -64,10 +72,28 @@ export default function Reminders() {
         <div className="alert info">WhatsApp is connected but automatic reminders are switched off. Turn them on in <Link to="/settings"><strong>Settings</strong></Link>. You can still send manually below.</div>
       )}
 
+      <div className="card">
+        <div className="card-head">
+          <div><h3>WhatsApp connection</h3><span className="muted">Checks the access token and phone number id against Meta without sending a message.</span></div>
+          <button className="btn" onClick={testConnection} disabled={testing || !status.whatsAppConfigured}>{testing ? 'Testing…' : 'Test WhatsApp connection'}</button>
+        </div>
+        {test && (
+          <div className="card-body" style={{ paddingTop: 12, paddingBottom: 12 }}>
+            {test.ok ? <div className="alert info"><strong>Working.</strong> {test.detail}</div> : (
+              <div className="alert error">
+                <strong>Meta rejected the credentials:</strong> {test.error}
+                {test.hints && <div style={{ marginTop: 6 }}>Likely cause: {test.hints}</div>}
+                <div style={{ marginTop: 6 }}>Fix: in Meta for Developers open your app → WhatsApp → API Setup, generate a <strong>permanent System User token</strong> (Business settings → System users → Generate token, with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>), paste it into <code>WhatsApp__AccessToken</code> on the API host without quotes or "Bearer ", copy the numeric <strong>Phone number ID</strong> into <code>WhatsApp__PhoneNumberId</code>, then redeploy and test again.</div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       <div className="stats">
         <div className={`card stat ${status.whatsAppConfigured ? 'green' : 'red'}`}>
           <span className="label">WhatsApp API</span>
-          <span className="value" style={{ fontSize: 20 }}>{status.whatsAppConfigured ? 'Connected' : 'Not configured'}</span>
+          <span className="value" style={{ fontSize: 20 }}>{status.whatsAppConfigured ? 'Configured' : 'Not configured'}</span>
           <span className="sub">{status.phoneNumberId ? `Phone number id ${status.phoneNumberId}` : 'Set server environment variables'}</span>
         </div>
         <div className={`card stat ${status.enabled ? 'green' : 'grey'}`}>

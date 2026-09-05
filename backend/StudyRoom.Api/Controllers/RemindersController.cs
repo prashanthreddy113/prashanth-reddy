@@ -48,6 +48,14 @@ public class RemindersController : ControllerBase
             s.LastReminderRunDate, next, candidates.Count(c => !c.AlreadySentToday), !string.IsNullOrWhiteSpace(_config["Reminders:TriggerKey"]));
     }
 
+    /// <summary>Checks the WhatsApp token and phone number id against Meta without sending anything.</summary>
+    [HttpGet("whatsapp-test")]
+    public async Task<ActionResult> TestWhatsApp()
+    {
+        var (ok, detail, error) = await _whatsApp.TestConnectionAsync();
+        return Ok(new { ok, detail, error, hints = ok ? null : _whatsApp.TokenDiagnostics() });
+    }
+
     /// <summary>Who would be reminded today (nothing is sent).</summary>
     [HttpGet("preview")]
     public async Task<ActionResult<List<ReminderCandidateDto>>> Preview() => await _reminders.PreviewAsync();
