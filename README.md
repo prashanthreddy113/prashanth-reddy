@@ -111,7 +111,7 @@ npx netlify-cli deploy --prod --dir=dist
 
 Reminders are sent through Meta's official **WhatsApp Business (Cloud) API** using an approved message template. Setup:
 
-1. In [Meta for Developers](https://developers.facebook.com/) create an app with the WhatsApp product, add a phone number that is not already registered on regular WhatsApp, and create a **System User** token with `whatsapp_business_messaging` permission (a permanent token, not the 24-hour test token).
+1. Register with Meta and get the two credentials (about 20 minutes, see **Registering with Meta** below): the numeric **Phone number ID** and a **permanent System User access token**.
 2. In WhatsApp Manager create two **Utility** templates (language `en`):
 
    `due_reminder` – four variables: student name, seat number, due date, pending balance.
@@ -139,6 +139,38 @@ curl -X POST https://<api-host>/api/reminders/run-external -H "X-Reminder-Key: <
 The workflow `.github/workflows/daily-reminders.yml` does exactly this from GitHub Actions at 09:00 IST when the repository secrets `API_URL` and `REMINDER_TRIGGER_KEY` are set.
 
 Costs: WhatsApp utility conversations in India cost a fraction of a rupee each, and the first 1,000 service conversations per month are free. Students must have opted in to receive business messages (ask at registration).
+
+### Registering with Meta (WhatsApp Business Cloud API)
+
+You need: a Facebook account, a **mobile number for the reading room that is not currently registered on WhatsApp or WhatsApp Business app** (a new SIM is easiest; an existing number must first be deleted from the app under Settings → Account → Delete account), and a debit/credit card for billing later (free while you only use the test number).
+
+1. **Business portfolio** – open [business.facebook.com](https://business.facebook.com/), sign in with Facebook, and create a business portfolio with the reading room's name, your name and email. Meta may ask to verify the email.
+2. **Developer account and app** – open [developers.facebook.com](https://developers.facebook.com/) → **Get started** (accept the terms, verify your mobile). Then **My Apps → Create App**:
+   - Use case: **Other** → Next; app type: **Business** → Next.
+   - App name (e.g. *BrightLoop Reminders*), contact email, and pick the business portfolio from step 1 → **Create app**.
+3. **Add WhatsApp** – on the app dashboard find the **WhatsApp** product card → **Set up**. Choose the same business portfolio. This opens **WhatsApp → API Setup**.
+4. **Try it with the test number (optional but recommended)** – API Setup gives you a free Meta test number, a 24-hour temporary token and a box to add up to 5 recipient numbers. Add your own mobile there and press **Send message**; if it arrives, your account works. Do not put the temporary token in production, it expires daily.
+5. **Add the real number** – in API Setup, under *From*, choose **Add phone number**: business display name (the name students will see), category, description, website; then the phone number and verification by SMS or voice call. The number is now attached to your WhatsApp Business Account (WABA) and cannot be used in the normal WhatsApp app any more.
+6. **Copy the Phone number ID** – in API Setup, with the real number selected under *From*, copy **Phone number ID** (a 15–16 digit number, **not** the phone number itself). This is `WhatsApp__PhoneNumberId`.
+7. **Create a permanent token** – back in [business.facebook.com](https://business.facebook.com/) → **Settings (gear) → Users → System users → Add**: name e.g. *brightloop-api*, role **Admin** → **Create system user**. Then:
+   - **Add assets** → **Apps** → tick your app → enable **Manage app** (full control) → Save.
+   - **Add assets** → **WhatsApp accounts** → tick your WABA → enable **Manage WhatsApp business account** → Save. (If the WhatsApp accounts asset is not listed, open Business settings → **Accounts → WhatsApp accounts** → your WABA → **People → Add people**, pick the system user and give full control.)
+   - **Generate new token** → choose your app → token expiration **Never** → tick `whatsapp_business_messaging` and `whatsapp_business_management` → **Generate token**. Copy it immediately; Meta shows it only once. It is 150–250 characters and starts with `EAA`. This is `WhatsApp__AccessToken`.
+8. **Payment method** – WhatsApp Manager → **Settings → Payment methods** (or Business settings → Billing → Payment method) → add a card and pick India as the country. Without it, the real number can only message the 5 test recipients.
+9. **Templates** – WhatsApp Manager → **Message templates → Create template**, category **Utility**, language **English**, name `due_reminder` (body from step 2 above; add sample values when asked), submit; repeat for `payment_receipt`. Approval usually takes minutes to an hour, occasionally a day. Templates must be **Approved** before the API will send them.
+10. **Put the credentials on the API host** – on Render: service **brightloop-api → Environment** → add `WhatsApp__PhoneNumberId` and `WhatsApp__AccessToken` (paste the raw values, no quotes, no `Bearer`) → **Save changes**; Render restarts the service. Then open the admin site → **Reminders → Test WhatsApp connection**. A green "Working" line with your display name and phone number means everything is in place; a red line shows Meta's error and the most likely cause.
+
+Common problems:
+
+| Message from Meta | Cause / fix |
+| --- | --- |
+| `Invalid OAuth access token - Cannot parse access token (190)` | The value is not a token: truncated when copying, has a line break in the middle, or the App Secret / Phone number ID was pasted instead. Generate a new system-user token and paste it in one piece. |
+| `Error validating access token: Session has expired (190)` | You used the 24-hour temporary token from API Setup. Create the permanent system-user token (step 7). |
+| `(#10) Application does not have permission for this action` / `(#200)` | The system user is not assigned to the WABA, or the token lacks `whatsapp_business_messaging`. Redo step 7 and generate a new token. |
+| `Unsupported get request. Object with ID ... does not exist (100)` | Wrong `WhatsApp__PhoneNumberId` (a phone number or the WABA ID was used). Copy **Phone number ID** from API Setup. |
+| `(#131030) Recipient phone number not in allowed list` | The real number is not fully set up or has no payment method; only the 5 test recipients can be messaged. Finish steps 5 and 8. |
+| `(#132001) Template name does not exist in the translation` | The template is not approved yet, has a different name, or a different language than set in Settings. |
+| `(#131047) Re-engagement message` | Free-form messages are only allowed within 24 h of the student writing to you; the app only sends templates, so this indicates a template that lost its approval. |
 
 ## API overview
 
