@@ -18,7 +18,7 @@ export default function Settings() {
     e.preventDefault()
     setBusy(true)
     try {
-      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays), reminderHour: Number(form.reminderHour), overdueRepeatEveryDays: Number(form.overdueRepeatEveryDays), overdueStopAfterDays: Number(form.overdueStopAfterDays) })
+      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays), femaleReservationPercent: Number(form.femaleReservationPercent), reminderHour: Number(form.reminderHour), overdueRepeatEveryDays: Number(form.overdueRepeatEveryDays), overdueStopAfterDays: Number(form.overdueStopAfterDays) })
       setForm(s); setRoomName(s.roomName); setCurrency(s.currency)
       toast.success('Settings saved')
     } catch (err) { toast.error(err.message) }
@@ -105,6 +105,11 @@ export default function Settings() {
             <label>Highlight students due within (days)</label>
             <input type="number" min="0" max="60" value={form.dueSoonDays} onChange={(e) => setForm({ ...form, dueSoonDays: e.target.value })} />
             <span className="help">Students whose due date falls within this many days are shown in amber on the dashboard.</span>
+          </div>
+          <div className="field">
+            <label>Seats reserved for women (%)</label>
+            <input type="number" min="0" max="100" value={form.femaleReservationPercent} onChange={(e) => setForm({ ...form, femaleReservationPercent: e.target.value })} />
+            <span className="help">This share of active seats is held for women. Men and others can only be given the remaining seats. 0 switches the reservation off.</span>
           </div>
           <div className="field">
             <label>Time zone</label>

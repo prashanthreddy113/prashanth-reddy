@@ -15,11 +15,13 @@ public class StudentsController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
+    private readonly SeatAllocationService _allocation;
 
-    public StudentsController(AppDbContext db, SettingsService settings)
+    public StudentsController(AppDbContext db, SettingsService settings, SeatAllocationService allocation)
     {
         _db = db;
         _settings = settings;
+        _allocation = allocation;
     }
 
     /// <summary>List students with computed due status. Filter by status, search by name/mobile/seat.</summary>
@@ -149,7 +151,7 @@ public class StudentsController : ControllerBase
 
         if (seatNumber.HasValue)
         {
-            var (seat, err) = await ResolveSeatAsync(seatNumber.Value, student.Id);
+            var (seat, err) = await ResolveSeatAsync(seatNumber.Value, student.Id, student.Gender);
             if (err is not null) return BadRequest(new { message = err });
             student.Seat = seat;
             student.SeatId = seat!.Id;
@@ -241,6 +243,7 @@ public class StudentsController : ControllerBase
     {
         student.Name = request.Name.Trim();
         student.Mobile = request.Mobile.Trim();
+        student.Gender = request.Gender;
         student.Address = Clean(request.Address);
         student.Aadhaar = Clean(request.Aadhaar);
         student.Study = Clean(request.Study);
@@ -253,7 +256,7 @@ public class StudentsController : ControllerBase
 
         if (request.SeatNumber.HasValue && request.IsActive)
         {
-            var (seat, err) = await ResolveSeatAsync(request.SeatNumber.Value, student.Id);
+            var (seat, err) = await ResolveSeatAsync(request.SeatNumber.Value, student.Id, request.Gender);
             if (err is not null) return err;
             student.Seat = seat;
             student.SeatId = seat!.Id;
@@ -267,13 +270,16 @@ public class StudentsController : ControllerBase
         return null;
     }
 
-    private async Task<(Seat? seat, string? error)> ResolveSeatAsync(int seatNumber, int currentStudentId)
+    private async Task<(Seat? seat, string? error)> ResolveSeatAsync(int seatNumber, int currentStudentId, Gender? gender)
     {
         var seat = await _db.Seats.Include(s => s.Student).FirstOrDefaultAsync(s => s.Number == seatNumber);
         if (seat is null) return (null, $"Seat {seatNumber} does not exist. Create seats from the Seats page first.");
         if (!seat.IsActive) return (null, $"Seat {seatNumber} is marked unavailable.");
         if (seat.Student is not null && seat.Student.Id != currentStudentId)
             return (null, $"Seat {seatNumber} is already occupied by {seat.Student.Name}.");
+
+        var quotaError = await _allocation.CheckAsync(gender, currentStudentId);
+        if (quotaError is not null) return (null, quotaError);
         return (seat, null);
     }
 

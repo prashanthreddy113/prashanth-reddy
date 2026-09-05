@@ -8,6 +8,7 @@ public class SettingsDto
     [Range(0, 60)] public int DueSoonDays { get; set; } = 5;
     [Required, StringLength(64)] public string TimeZoneId { get; set; } = "Asia/Kolkata";
     [Required, StringLength(8)] public string Currency { get; set; } = "INR";
+    [Range(0, 100)] public int FemaleReservationPercent { get; set; } = 20;
 
     public bool RemindersEnabled { get; set; }
     [StringLength(64), RegularExpression(@"^\s*(\d{1,3}\s*(,\s*\d{1,3}\s*)*)?$", ErrorMessage = "Days before must be numbers separated by commas, e.g. 5,1")]

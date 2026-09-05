@@ -23,6 +23,7 @@ public static class StudentMapper
             Id = s.Id,
             Name = s.Name,
             Mobile = s.Mobile,
+            Gender = s.Gender,
             Address = s.Address,
             Aadhaar = s.Aadhaar,
             Study = s.Study,

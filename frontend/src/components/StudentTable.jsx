@@ -37,6 +37,7 @@ export default function StudentTable({ students, onEdit, onPay, onRenew, compact
               <td>{s.seatNumber ? <span className="seat-chip" title={s.seatLabel || ''}>{s.seatNumber}</span> : <span className="seat-chip none">—</span>}</td>
               <td>
                 <Link to={`/students/${s.id}`} className="primary">{s.name}</Link>
+                {s.gender && <span className={`gender-tag ${s.gender}`} title={s.gender}>{s.gender[0]}</span>}
                 {s.address && <div className="secondary" style={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.address}</div>}
               </td>
               <td><a href={`tel:${s.mobile}`}>{s.mobile}</a></td>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using StudyRoom.Api.Models;
 
 namespace StudyRoom.Api.Dtos;
 
@@ -11,6 +12,7 @@ public class SeatDto
     public bool IsOccupied => StudentId.HasValue;
     public int? StudentId { get; set; }
     public string? StudentName { get; set; }
+    public Gender? StudentGender { get; set; }
     public DueStatus? StudentStatus { get; set; }
     public DateOnly? StudentDueDate { get; set; }
 }
@@ -23,4 +25,11 @@ public class SeatUpdateRequest
     public bool IsActive { get; set; } = true;
 }
 
-public record SeatSummaryDto(int Total, int Active, int Occupied, int Free);
+/// <summary>
+/// Seat counts including the women's reservation quota.
+/// ReservedForWomen = ceil(Active × percent). GeneralCapacity = Active − ReservedForWomen is the most seats men/others may occupy.
+/// </summary>
+public record SeatSummaryDto(
+    int Total, int Active, int Occupied, int Free,
+    int FemaleReservationPercent, int ReservedForWomen, int WomenSeated,
+    int GeneralCapacity, int GeneralOccupied, int GeneralFree, bool QuotaExceeded);

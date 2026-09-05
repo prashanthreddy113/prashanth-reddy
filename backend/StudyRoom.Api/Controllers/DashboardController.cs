@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudyRoom.Api.Data;
 using StudyRoom.Api.Dtos;
+using StudyRoom.Api.Models;
 using StudyRoom.Api.Services;
 
 namespace StudyRoom.Api.Controllers;
@@ -14,11 +15,13 @@ public class DashboardController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
+    private readonly SeatAllocationService _allocation;
 
-    public DashboardController(AppDbContext db, SettingsService settings)
+    public DashboardController(AppDbContext db, SettingsService settings, SeatAllocationService allocation)
     {
         _db = db;
         _settings = settings;
+        _allocation = allocation;
     }
 
     [HttpGet]
@@ -38,9 +41,7 @@ public class DashboardController : ControllerBase
         var active = dtos.Where(d => d.IsActive).ToList();
         var monthStart = new DateOnly(today.Year, today.Month, 1);
 
-        var seatsTotal = await _db.Seats.CountAsync();
-        var seatsActive = await _db.Seats.CountAsync(s => s.IsActive);
-        var seatsOccupied = await _db.Seats.CountAsync(s => s.Student != null);
+        var seatSummary = await _allocation.SummaryAsync();
 
         var recent = await _db.Payments.Include(p => p.Student).AsNoTracking()
             .OrderByDescending(p => p.PaidOn).ThenByDescending(p => p.Id)
@@ -66,7 +67,8 @@ public class DashboardController : ControllerBase
             TotalOutstanding = active.Sum(d => Math.Max(0, d.Balance)),
             CollectedThisMonth = collectedThisMonth,
             ExpectedMonthlyRevenue = active.Sum(d => d.AmountPerMonth),
-            Seats = new SeatSummaryDto(seatsTotal, seatsActive, seatsOccupied, Math.Max(0, seatsActive - seatsOccupied)),
+            Seats = seatSummary,
+            FemaleStudents = active.Count(d => d.Gender == Gender.Female),
             Students = dtos,
             RecentPayments = recent,
         };

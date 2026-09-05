@@ -13,13 +13,14 @@ public class DashboardDto
     public int DueTodayCount { get; set; }
     public int OverdueCount { get; set; }
     public int InactiveStudents { get; set; }
+    public int FemaleStudents { get; set; }
 
     public decimal TotalCollected { get; set; }
     public decimal TotalOutstanding { get; set; }
     public decimal CollectedThisMonth { get; set; }
     public decimal ExpectedMonthlyRevenue { get; set; }
 
-    public SeatSummaryDto Seats { get; set; } = new(0, 0, 0, 0);
+    public SeatSummaryDto Seats { get; set; } = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
     public List<StudentDto> Students { get; set; } = new();
     public List<PaymentActivityDto> RecentPayments { get; set; } = new();
 }

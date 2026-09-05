@@ -15,11 +15,13 @@ public class SeatsController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
+    private readonly SeatAllocationService _allocation;
 
-    public SeatsController(AppDbContext db, SettingsService settings)
+    public SeatsController(AppDbContext db, SettingsService settings, SeatAllocationService allocation)
     {
         _db = db;
         _settings = settings;
+        _allocation = allocation;
     }
 
     [HttpGet]
@@ -37,19 +39,14 @@ public class SeatsController : ControllerBase
             IsActive = s.IsActive,
             StudentId = s.Student?.Id,
             StudentName = s.Student?.Name,
+            StudentGender = s.Student?.Gender,
             StudentStatus = s.Student is null ? null : StudentMapper.ComputeStatus(s.Student, today, settings.DueSoonDays),
             StudentDueDate = s.Student?.DueDate,
         }).ToList();
     }
 
     [HttpGet("summary")]
-    public async Task<ActionResult<SeatSummaryDto>> Summary()
-    {
-        var total = await _db.Seats.CountAsync();
-        var active = await _db.Seats.CountAsync(s => s.IsActive);
-        var occupied = await _db.Seats.CountAsync(s => s.Student != null);
-        return new SeatSummaryDto(total, active, occupied, Math.Max(0, active - occupied));
-    }
+    public async Task<ActionResult<SeatSummaryDto>> Summary() => await _allocation.SummaryAsync();
 
     /// <summary>Set the total number of seats. Adds seats to reach the target, or removes the highest-numbered free seats.</summary>
     [HttpPut("capacity")]
@@ -93,7 +90,7 @@ public class SeatsController : ControllerBase
         seat.IsActive = request.IsActive;
         await _db.SaveChangesAsync();
 
-        return new SeatDto { Id = seat.Id, Number = seat.Number, Label = seat.Label, IsActive = seat.IsActive, StudentId = seat.Student?.Id, StudentName = seat.Student?.Name };
+        return new SeatDto { Id = seat.Id, Number = seat.Number, Label = seat.Label, IsActive = seat.IsActive, StudentId = seat.Student?.Id, StudentName = seat.Student?.Name, StudentGender = seat.Student?.Gender };
     }
 
     [HttpDelete("{id:int}")]

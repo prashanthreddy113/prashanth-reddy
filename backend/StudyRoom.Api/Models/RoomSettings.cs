@@ -11,6 +11,9 @@ public class RoomSettings
     public string TimeZoneId { get; set; } = "Asia/Kolkata";
     public string Currency { get; set; } = "INR";
 
+    /// <summary>Share of active seats reserved for women (0-100). Men/others can only occupy the remaining seats.</summary>
+    public int FemaleReservationPercent { get; set; } = 20;
+
     // ---- WhatsApp due-date reminders ----
     public bool RemindersEnabled { get; set; } = false;
     /// <summary>Comma-separated days before the due date to remind, e.g. "5,1".</summary>

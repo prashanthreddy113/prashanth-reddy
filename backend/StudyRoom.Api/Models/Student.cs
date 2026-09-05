@@ -1,5 +1,12 @@
 namespace StudyRoom.Api.Models;
 
+public enum Gender
+{
+    Male,
+    Female,
+    Other
+}
+
 public class Student
 {
     public int Id { get; set; }
@@ -7,6 +14,9 @@ public class Student
     // Mandatory
     public string Name { get; set; } = string.Empty;
     public string Mobile { get; set; } = string.Empty;
+
+    /// <summary>Required for new registrations; null only for records created before the field existed.</summary>
+    public Gender? Gender { get; set; }
 
     // Optional
     public string? Address { get; set; }

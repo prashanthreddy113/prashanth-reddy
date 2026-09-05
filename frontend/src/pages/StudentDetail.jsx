@@ -74,6 +74,7 @@ export default function StudentDetail() {
             <div className="card-body">
               <div className="kv">
                 <span className="k">Mobile</span><span className="v"><a href={`tel:${s.mobile}`}>{s.mobile}</a></span>
+                <span className="k">Gender</span><span className="v">{s.gender || '—'}</span>
                 <span className="k">Address</span><span className="v">{s.address || '—'}</span>
                 <span className="k">Aadhaar</span><span className="v">{s.aadhaar ? s.aadhaar.replace(/(\d{4})(?=\d)/g, '$1 ') : '—'}</span>
                 <span className="k">Studying for</span><span className="v">{s.study || '—'}</span>

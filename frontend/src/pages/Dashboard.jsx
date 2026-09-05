@@ -89,7 +89,7 @@ export default function Dashboard() {
         <div className="card stat clickable" onClick={() => setFilter('all')}>
           <span className="label">Active students</span>
           <span className="value">{data.activeStudents}</span>
-          <span className="sub">{data.inactiveStudents} left · {data.totalStudents} total</span>
+          <span className="sub">{data.femaleStudents} women · {data.inactiveStudents} left · {data.totalStudents} total</span>
         </div>
         <div className="card stat red clickable" onClick={() => setFilter('Overdue')}>
           <span className="label">Overdue</span>
@@ -104,7 +104,7 @@ export default function Dashboard() {
         <div className="card stat gold clickable" onClick={() => navigate('/seats')}>
           <span className="label">Seats</span>
           <span className="value">{data.seats.occupied}<span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 600 }}> / {data.seats.active}</span></span>
-          <span className="sub">{data.seats.free} free · {occupancy}% occupied</span>
+          <span className="sub">{data.seats.free} free · {data.seats.reservedForWomen > 0 ? `${data.seats.reservedForWomen} reserved for women` : `${occupancy}% occupied`}</span>
         </div>
         <div className="card stat green">
           <span className="label">Collected this month</span>

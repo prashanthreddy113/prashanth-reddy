@@ -27,6 +27,7 @@ public class SettingsController : ControllerBase
         return new SettingsDto
         {
             RoomName = s.RoomName, DueSoonDays = s.DueSoonDays, TimeZoneId = s.TimeZoneId, Currency = s.Currency,
+            FemaleReservationPercent = s.FemaleReservationPercent,
             RemindersEnabled = s.RemindersEnabled, ReminderDaysBefore = s.ReminderDaysBefore, RemindOnDueDay = s.RemindOnDueDay,
             OverdueRepeatEveryDays = s.OverdueRepeatEveryDays, OverdueStopAfterDays = s.OverdueStopAfterDays, ReminderHour = s.ReminderHour,
             WhatsAppTemplateName = s.WhatsAppTemplateName, WhatsAppLanguageCode = s.WhatsAppLanguageCode,
@@ -44,6 +45,7 @@ public class SettingsController : ControllerBase
         s.DueSoonDays = request.DueSoonDays;
         s.TimeZoneId = request.TimeZoneId.Trim();
         s.Currency = request.Currency.Trim().ToUpperInvariant();
+        s.FemaleReservationPercent = request.FemaleReservationPercent;
         s.RemindersEnabled = request.RemindersEnabled;
         s.ReminderDaysBefore = string.Join(",", ReminderService.ParseDays(request.ReminderDaysBefore));
         s.RemindOnDueDay = request.RemindOnDueDay;

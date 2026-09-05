@@ -40,6 +40,7 @@ public class AppDbContext : DbContext
             e.Property(s => s.AmountPerMonth).HasPrecision(12, 2);
             e.Property(s => s.TotalPaid).HasPrecision(12, 2);
             e.HasIndex(s => s.Mobile);
+            e.Property(s => s.Gender).HasConversion<string>().HasMaxLength(10);
             e.HasIndex(s => s.SeatId).IsUnique().HasFilter("\"SeatId\" IS NOT NULL");
 
             e.HasOne(s => s.Seat)

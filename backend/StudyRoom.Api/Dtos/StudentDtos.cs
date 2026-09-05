@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using StudyRoom.Api.Models;
 
 namespace StudyRoom.Api.Dtos;
 
@@ -18,6 +19,9 @@ public class StudentUpsertRequest
 
     [Required, RegularExpression(@"^\+?[0-9]{10,15}$", ErrorMessage = "Mobile must be 10-15 digits.")]
     public string Mobile { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Gender is required.")]
+    public Gender? Gender { get; set; }
 
     [StringLength(500)] public string? Address { get; set; }
 
@@ -70,6 +74,7 @@ public class StudentDto
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Mobile { get; set; } = string.Empty;
+    public Gender? Gender { get; set; }
     public string? Address { get; set; }
     public string? Aadhaar { get; set; }
     public string? Study { get; set; }

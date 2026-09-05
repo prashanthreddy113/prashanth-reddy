@@ -8,6 +8,7 @@ import StudentFormModal from '../components/StudentFormModal'
 
 export default function Seats() {
   const [seats, setSeats] = useState(null)
+  const [quota, setQuota] = useState(null)
   const [error, setError] = useState('')
   const [capacity, setCapacity] = useState('')
   const [busy, setBusy] = useState(false)
@@ -18,8 +19,9 @@ export default function Seats() {
 
   const load = useCallback(async () => {
     try {
-      const list = await api.seats()
+      const [list, q] = await Promise.all([api.seats(), api.seatSummary().catch(() => null)])
       setSeats(list)
+      setQuota(q)
       setCapacity(String(list.length))
       setError('')
     } catch (e) { setError(e.message) }
@@ -92,7 +94,7 @@ export default function Seats() {
                     className={`seat ${s.isOccupied ? `occupied ${s.studentStatus || ''}` : ''} ${!s.isActive ? 'inactive' : ''}`}
                     onClick={() => openSeat(s)} title={s.isOccupied ? `${s.studentName} · due ${fmtDate(s.studentDueDate)}` : s.isActive ? 'Free seat' : 'Disabled'}>
                     <div className="no">{s.number}</div>
-                    {s.isOccupied ? <div className="who">{s.studentName}</div> : <div className="tag">{s.isActive ? 'Free' : 'Disabled'}</div>}
+                    {s.isOccupied ? <div className="who">{s.studentGender === 'Female' ? <span className="gender-tag Female" style={{ marginRight: 4 }}>F</span> : null}{s.studentName}</div> : <div className="tag">{s.isActive ? 'Free' : 'Disabled'}</div>}
                     {s.label && <div className="tag">{s.label}</div>}
                   </div>
                 ))}
@@ -126,6 +128,23 @@ export default function Seats() {
                   <span className="k">Due soon</span><span className="v" style={{ color: 'var(--amber)' }}>{summary.dueSoon}</span>
                   <span className="k">Overdue</span><span className="v" style={{ color: 'var(--red)' }}>{summary.overdue}</span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {quota && (
+            <div className="card">
+              <div className="card-head"><h3>Women's reservation</h3><Link to="/settings" className="btn sm">Change</Link></div>
+              <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div className="kv">
+                  <span className="k">Reserved share</span><span className="v">{quota.femaleReservationPercent}% · {quota.reservedForWomen} of {quota.active} seats</span>
+                  <span className="k">Women seated</span><span className="v">{quota.womenSeated}</span>
+                  <span className="k">Open to men/others</span><span className="v">{quota.generalCapacity} seats · {quota.generalOccupied} taken</span>
+                  <span className="k">Still open to men</span><span className="v" style={{ color: quota.generalFree > 0 ? 'var(--green)' : 'var(--red)' }}>{quota.generalFree}</span>
+                </div>
+                <div className="progress" title="Men/others seated vs seats open to them"><span style={{ width: `${quota.generalCapacity ? Math.min(100, Math.round((quota.generalOccupied / quota.generalCapacity) * 100)) : 0}%`, background: quota.quotaExceeded ? 'var(--red)' : 'var(--navy)' }} /></div>
+                <p className="muted" style={{ fontSize: 12 }}>Women can take any free seat. Men and others can only take seats outside the reserved share.</p>
+                {quota.quotaExceeded && <div className="alert warn">More men/others are seated than the current reservation allows. Existing seats are kept, but no new seats will be given to men until the count drops.</div>}
               </div>
             </div>
           )}

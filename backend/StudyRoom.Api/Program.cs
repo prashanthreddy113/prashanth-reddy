@@ -37,6 +37,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IPasswordHasher<Admin>, PasswordHasher<Admin>>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<SettingsService>();
+builder.Services.AddScoped<SeatAllocationService>();
 builder.Services.AddHttpClient<WhatsAppService>(c => c.Timeout = TimeSpan.FromSeconds(20));
 builder.Services.AddScoped<ReminderService>();
 builder.Services.AddHostedService<ReminderScheduler>();

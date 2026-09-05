@@ -4,14 +4,14 @@ import { api } from '../lib/api'
 import { money, todayIso, addMonths, fmtDate } from '../lib/format'
 
 const empty = {
-  name: '', mobile: '', address: '', aadhaar: '', study: '', notes: '',
+  name: '', mobile: '', gender: '', address: '', aadhaar: '', study: '', notes: '',
   months: 1, amountPerMonth: '', totalPaid: '', joiningDate: todayIso(), seatNumber: '', isActive: true,
 }
 
 function toForm(s) {
   if (!s) return { ...empty }
   return {
-    name: s.name || '', mobile: s.mobile || '', address: s.address || '', aadhaar: s.aadhaar || '',
+    name: s.name || '', mobile: s.mobile || '', gender: s.gender || '', address: s.address || '', aadhaar: s.aadhaar || '',
     study: s.study || '', notes: s.notes || '', months: s.months || 1,
     amountPerMonth: s.amountPerMonth ?? '', totalPaid: s.totalPaid ?? '',
     joiningDate: s.joiningDate || todayIso(), seatNumber: s.seatNumber ?? '', isActive: s.isActive ?? true,
@@ -22,6 +22,7 @@ function validate(f) {
   const e = {}
   if (!f.name.trim() || f.name.trim().length < 2) e.name = 'Name is required (min 2 characters).'
   if (!/^\+?[0-9]{10,15}$/.test(f.mobile.trim())) e.mobile = 'Enter a valid mobile number (10–15 digits).'
+  if (!f.gender) e.gender = 'Select the gender.'
   if (f.aadhaar && !/^[0-9]{12}$/.test(f.aadhaar.trim())) e.aadhaar = 'Aadhaar must be exactly 12 digits.'
   if (!f.months || Number(f.months) < 1) e.months = 'At least 1 month.'
   if (f.amountPerMonth === '' || Number(f.amountPerMonth) < 0) e.amountPerMonth = 'Enter the monthly amount.'
@@ -45,10 +46,14 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
   const [form, setForm] = useState(() => ({ ...toForm(student), ...(presetSeat ? { seatNumber: presetSeat } : {}) }))
   const [errors, setErrors] = useState({})
   const [seats, setSeats] = useState([])
+  const [summary, setSummary] = useState(null)
   const [busy, setBusy] = useState(false)
   const [serverError, setServerError] = useState('')
 
-  useEffect(() => { api.seats().then(setSeats).catch(() => setSeats([])) }, [])
+  useEffect(() => {
+    api.seats().then(setSeats).catch(() => setSeats([]))
+    api.seatSummary().then(setSummary).catch(() => setSummary(null))
+  }, [])
 
   const set = (k) => (e) => {
     const v = e?.target?.type === 'checkbox' ? e.target.checked : e?.target ? e.target.value : e
@@ -56,6 +61,16 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
   }
 
   const availableSeats = useMemo(() => seats.filter((s) => s.isActive && (!s.isOccupied || s.studentId === student?.id)), [seats, student])
+
+  // Women may take any free seat; men/others only the seats outside the reserved share.
+  const holdsSeatAlready = !!student?.seatNumber && student?.gender !== 'Female'
+  const generalFree = summary ? summary.generalFree + (holdsSeatAlready ? 1 : 0) : null
+  const quotaBlocked = !!summary && summary.reservedForWomen > 0 && form.gender && form.gender !== 'Female' && generalFree <= 0
+  const seatHelp = !seats.length
+    ? 'No seats yet — create seats from the Seats page'
+    : summary && summary.reservedForWomen > 0
+      ? `${availableSeats.length} free · ${summary.reservedForWomen} of ${summary.active} seats reserved for women (${summary.femaleReservationPercent}%) · ${Math.max(0, generalFree)} open to men/others`
+      : `${availableSeats.length} seat(s) available`
 
   const totalFee = Number(form.months || 0) * Number(form.amountPerMonth || 0)
   const balance = totalFee - Number(form.totalPaid || 0)
@@ -70,6 +85,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
     const payload = {
       name: form.name.trim(),
       mobile: form.mobile.trim(),
+      gender: form.gender,
       address: form.address.trim() || null,
       aadhaar: form.aadhaar.trim() || null,
       study: form.study.trim() || null,
@@ -104,7 +120,16 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             <input id="f-mobile" value={form.mobile} onChange={set('mobile')} placeholder="10-digit mobile" inputMode="tel" />
           </Field>
 
-          <Field k="seatNumber" error={errors.seatNumber} label="Seat number" help={seats.length ? `${availableSeats.length} seat(s) available` : 'No seats yet — create seats from the Seats page'}>
+          <Field k="gender" error={errors.gender} label="Gender" required>
+            <select id="f-gender" value={form.gender} onChange={set('gender')}>
+              <option value="">Select…</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </Field>
+          <Field k="seatNumber" error={errors.seatNumber} label="Seat number" help={quotaBlocked ? undefined : seatHelp}>
+            {quotaBlocked && <span className="err">All seats open to men/others are taken; the remaining free seats are reserved for women. Free a seat or change the reservation in Settings.</span>}
             <select id="f-seatNumber" value={form.seatNumber} onChange={set('seatNumber')} disabled={!form.isActive}>
               <option value="">No seat assigned</option>
               {availableSeats.map((s) => (
