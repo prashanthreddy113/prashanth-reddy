@@ -9,6 +9,8 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Public URL of the .NET API. A VITE_API_URL set in the Netlify dashboard overrides this.
+  VITE_API_URL = "https://brightloop-api.onrender.com"
 
 # Single-page app: every route is served by index.html (React Router handles it).
 [[redirects]]

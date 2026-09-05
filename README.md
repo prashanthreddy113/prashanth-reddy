@@ -90,7 +90,7 @@ Pick either option:
 **B. GitHub Actions:** create a Netlify personal access token (User settings → Applications) and add it as the repository secret `NETLIFY_AUTH_TOKEN`. The workflow `.github/workflows/deploy-frontend.yml` builds and publishes the frontend on every push (set the repository variable `VITE_API_URL` to your API URL).
 
 Then:
-3. Add the environment variable **`VITE_API_URL`** = your API URL (no trailing slash), e.g. `https://brightloop-api.onrender.com`.
+3. The API URL is set in `netlify.toml` (`VITE_API_URL = https://brightloop-api.onrender.com`). Override it with a `VITE_API_URL` environment variable in the Netlify dashboard if the API moves.
 4. Deploy. Add the resulting Netlify URL to the API's `Cors__AllowedOrigins`.
 
 CLI alternative:
