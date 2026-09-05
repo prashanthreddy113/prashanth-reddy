@@ -2,24 +2,27 @@ import { useEffect, useMemo, useState } from 'react'
 import Modal from './Modal'
 import { api } from '../lib/api'
 import { money, todayIso, addMonths, fmtDate } from '../lib/format'
+import { useBranch } from '../lib/branch'
 
 const empty = {
-  name: '', mobile: '', gender: '', address: '', aadhaar: '', study: '', notes: '',
+  branchId: '', name: '', mobile: '', gender: '', address: '', aadhaar: '', study: '', notes: '',
   months: 1, amountPerMonth: '', totalPaid: '', joiningDate: todayIso(), seatNumber: '', isActive: true,
 }
 
 function toForm(s) {
   if (!s) return { ...empty }
   return {
-    name: s.name || '', mobile: s.mobile || '', gender: s.gender || '', address: s.address || '', aadhaar: s.aadhaar || '',
+    branchId: s.branchId || '', name: s.name || '', mobile: s.mobile || '', gender: s.gender || '', address: s.address || '', aadhaar: s.aadhaar || '',
     study: s.study || '', notes: s.notes || '', months: s.months || 1,
     amountPerMonth: s.amountPerMonth ?? '', totalPaid: s.totalPaid ?? '',
     joiningDate: s.joiningDate || todayIso(), seatNumber: s.seatNumber ?? '', isActive: s.isActive ?? true,
   }
 }
 
-function validate(f) {
+function validate(f, minFee) {
   const e = {}
+  if (!f.branchId) e.branchId = 'Select the branch.'
+  if (minFee > 0 && Number(f.amountPerMonth || 0) < minFee) e.amountPerMonth = `Minimum fee is ${money(minFee)} per month (change it in Settings).`
   if (!f.name.trim() || f.name.trim().length < 2) e.name = 'Name is required (min 2 characters).'
   if (!/^\+?[0-9]{10,15}$/.test(f.mobile.trim())) e.mobile = 'Enter a valid mobile number (10–15 digits).'
   if (!f.gender) e.gender = 'Select the gender.'
@@ -41,19 +44,38 @@ function Field({ k, label, required, children, help, className, error }) {
   )
 }
 
-export default function StudentFormModal({ student, onClose, onSaved, presetSeat }) {
+export default function StudentFormModal({ student, onClose, onSaved, presetSeat, presetBranchId }) {
   const editing = !!student
-  const [form, setForm] = useState(() => ({ ...toForm(student), ...(presetSeat ? { seatNumber: presetSeat } : {}) }))
+  const { activeBranches, branches, branchId: selectedBranchId } = useBranch()
+  const [form, setForm] = useState(() => ({
+    ...toForm(student),
+    ...(presetSeat ? { seatNumber: presetSeat } : {}),
+    branchId: student?.branchId || presetBranchId || selectedBranchId || activeBranches[0]?.id || '',
+  }))
   const [errors, setErrors] = useState({})
   const [seats, setSeats] = useState([])
   const [summary, setSummary] = useState(null)
+  const [minFee, setMinFee] = useState(0)
   const [busy, setBusy] = useState(false)
   const [serverError, setServerError] = useState('')
 
   useEffect(() => {
-    api.seats().then(setSeats).catch(() => setSeats([]))
-    api.seatSummary().then(setSummary).catch(() => setSummary(null))
-  }, [])
+    api.settings().then((s) => {
+      setMinFee(Number(s.minimumMonthlyFee || 0))
+      if (!editing) setForm((f) => (f.amountPerMonth === '' && Number(s.minimumMonthlyFee) > 0 ? { ...f, amountPerMonth: String(s.minimumMonthlyFee) } : f))
+    }).catch(() => {})
+  }, [editing])
+
+  useEffect(() => {
+    if (!form.branchId) { setSeats([]); setSummary(null); return }
+    api.seats(form.branchId).then(setSeats).catch(() => setSeats([]))
+    api.seatSummary(form.branchId).then(setSummary).catch(() => setSummary(null))
+  }, [form.branchId])
+
+  const changeBranch = (e) => {
+    const v = e.target.value
+    setForm((f) => ({ ...f, branchId: v, seatNumber: student && String(student.branchId) === v ? (student.seatNumber ?? '') : '' }))
+  }
 
   const set = (k) => (e) => {
     const v = e?.target?.type === 'checkbox' ? e.target.checked : e?.target ? e.target.value : e
@@ -63,7 +85,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
   const availableSeats = useMemo(() => seats.filter((s) => s.isActive && (!s.isOccupied || s.studentId === student?.id)), [seats, student])
 
   // Women may take any free seat; men/others only the seats outside the reserved share.
-  const holdsSeatAlready = !!student?.seatNumber && student?.gender !== 'Female'
+  const holdsSeatAlready = !!student?.seatNumber && student?.gender !== 'Female' && String(student?.branchId) === String(form.branchId)
   const generalFree = summary ? summary.generalFree + (holdsSeatAlready ? 1 : 0) : null
   const quotaBlocked = !!summary && summary.reservedForWomen > 0 && form.gender && form.gender !== 'Female' && generalFree <= 0
   const seatHelp = !seats.length
@@ -78,11 +100,12 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
 
   const submit = async (e) => {
     e.preventDefault()
-    const errs = validate(form)
+    const errs = validate(form, minFee)
     setErrors(errs)
     if (Object.keys(errs).length) return
 
     const payload = {
+      branchId: Number(form.branchId),
       name: form.name.trim(),
       mobile: form.mobile.trim(),
       gender: form.gender,
@@ -113,6 +136,14 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
     <Modal title={editing ? `Edit ${student.name}` : 'Register new student'} onClose={onClose} size="wide">
       <form onSubmit={submit} noValidate>
         <div className="form-grid">
+          {(branches.length > 1 || !form.branchId) && (
+            <Field k="branchId" error={errors.branchId} label="Branch" required className="full">
+              <select id="f-branchId" value={form.branchId} onChange={changeBranch}>
+                <option value="">Select branch…</option>
+                {branches.filter((b) => b.isActive || String(b.id) === String(form.branchId)).map((b) => <option key={b.id} value={b.id}>{b.name}{b.isActive ? '' : ' (inactive)'}</option>)}
+              </select>
+            </Field>
+          )}
           <Field k="name" error={errors.name} label="Full name" required>
             <input id="f-name" value={form.name} onChange={set('name')} placeholder="e.g. Ravi Kumar" autoFocus />
           </Field>
@@ -133,7 +164,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             <select id="f-seatNumber" value={form.seatNumber} onChange={set('seatNumber')} disabled={!form.isActive}>
               <option value="">No seat assigned</option>
               {availableSeats.map((s) => (
-                <option key={s.id} value={s.number}>Seat {s.number}{s.label ? ` · ${s.label}` : ''}</option>
+                <option key={s.id} value={s.number}>Seat {s.number}{s.section ? ` · ${s.section}` : ''}{s.isAc ? ' · AC' : ' · Non-AC'}{s.label ? ` · ${s.label}` : ''}</option>
               ))}
             </select>
           </Field>
@@ -148,7 +179,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             <input id="f-months" type="number" min="1" max="120" value={form.months} onChange={set('months')} />
           </Field>
 
-          <Field k="amountPerMonth" error={errors.amountPerMonth} label="Amount per month" required>
+          <Field k="amountPerMonth" error={errors.amountPerMonth} label="Amount per month" required help={minFee > 0 ? `Minimum ${money(minFee)} per month` : undefined}>
             <input id="f-amountPerMonth" type="number" min="0" step="1" value={form.amountPerMonth} onChange={set('amountPerMonth')} placeholder="e.g. 1500" inputMode="decimal" />
           </Field>
           <Field k="totalPaid" error={errors.totalPaid} label="Total paid amount" help={editing ? 'Adjusts the running total (use “Record payment” for a receipt entry).' : 'Amount collected now. A payment entry is created automatically.'}>

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { useToast } from '../lib/toast'
 import { fmtDate } from '../lib/format'
+import { useBranch } from '../lib/branch'
+import { paymentToast } from './Dashboard'
 import StudentTable from '../components/StudentTable'
 import StudentFormModal from '../components/StudentFormModal'
 import PaymentModal from '../components/PaymentModal'
@@ -20,13 +22,14 @@ export default function Students() {
   const [includeInactive, setIncludeInactive] = useState(true)
   const [modal, setModal] = useState(null)
   const toast = useToast()
+  const { branchId, current, multi } = useBranch()
 
   const load = useCallback(async () => {
     try {
-      setStudents(await api.students({ status: status || undefined, includeInactive }))
+      setStudents(await api.students({ status: status || undefined, includeInactive, branchId }))
       setError('')
     } catch (e) { setError(e.message) }
-  }, [status, includeInactive])
+  }, [status, includeInactive, branchId])
 
   useEffect(() => { load() }, [load])
 
@@ -39,7 +42,7 @@ export default function Students() {
 
   const onSaved = (student, wasEdit) => {
     setModal(null)
-    toast.success(wasEdit ? 'Student updated' : `${student.name} registered`)
+    if (wasEdit) toast.success('Student updated'); else paymentToast(toast, student, `${student.name} registered`)
     load()
   }
 
@@ -67,9 +70,10 @@ export default function Students() {
         {error && <div className="alert error" style={{ margin: 16 }}>{error}</div>}
         {students === null ? <div className="loading"><div className="spinner" />Loading…</div> : (
           <>
-            <div style={{ padding: '8px 20px 0' }} className="muted">{visible.length} student{visible.length === 1 ? '' : 's'}</div>
+            <div style={{ padding: '8px 20px 0' }} className="muted">{visible.length} student{visible.length === 1 ? '' : 's'}{current ? ` in ${current.name}` : multi ? ' across all branches' : ''}</div>
             <StudentTable
               students={visible}
+              showBranch={!current && multi}
               onEdit={(s) => setModal({ type: 'edit', student: s })}
               onPay={(s) => setModal({ type: 'pay', student: s })}
               onRenew={(s) => setModal({ type: 'renew', student: s })}
@@ -80,8 +84,8 @@ export default function Students() {
 
       {modal?.type === 'add' && <StudentFormModal onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'edit' && <StudentFormModal student={modal.student} onClose={() => setModal(null)} onSaved={onSaved} />}
-      {modal?.type === 'pay' && <PaymentModal student={modal.student} onClose={() => setModal(null)} onSaved={() => { setModal(null); toast.success('Payment recorded'); load() }} />}
-      {modal?.type === 'renew' && <RenewModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); toast.success(`Renewed until ${fmtDate(s.dueDate)}`); load() }} />}
+      {modal?.type === 'pay' && <PaymentModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s); load() }} />}
+      {modal?.type === 'renew' && <RenewModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s, `Renewed until ${fmtDate(s.dueDate)}`); load() }} />}
     </>
   )
 }

@@ -14,6 +14,13 @@ public class RoomSettings
     /// <summary>Share of active seats reserved for women (0-100). Men/others can only occupy the remaining seats.</summary>
     public int FemaleReservationPercent { get; set; } = 20;
 
+    /// <summary>Lowest monthly fee an admin may enter for a student (0 = no minimum). Also pre-fills the registration form.</summary>
+    public decimal MinimumMonthlyFee { get; set; }
+
+    /// <summary>Send a WhatsApp receipt automatically after every recorded payment.</summary>
+    public bool SendPaymentReceipts { get; set; } = true;
+    public string WhatsAppReceiptTemplateName { get; set; } = "payment_receipt";
+
     // ---- WhatsApp due-date reminders ----
     public bool RemindersEnabled { get; set; } = false;
     /// <summary>Comma-separated days before the due date to remind, e.g. "5,1".</summary>

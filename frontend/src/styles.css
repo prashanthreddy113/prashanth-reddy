@@ -117,12 +117,12 @@ input, select, textarea { font: inherit; }
 .card { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
 .card-body { padding: 20px; }
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 .stat { padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--navy); cursor: default; }
 .stat.clickable { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .stat.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .stat .label { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-.stat .value { font-size: 26px; font-weight: 800; line-height: 1.1; }
+.stat .value { font-size: 26px; font-weight: 800; line-height: 1.1; white-space: nowrap; }
 .stat .sub { color: var(--muted); font-size: 12px; }
 .stat.green { border-left-color: var(--green); }
 .stat.amber { border-left-color: var(--amber); }
@@ -136,6 +136,56 @@ input, select, textarea { font: inherit; }
 .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
 .grid-2 > * { min-width: 0; }
 @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ---------- Cinematic reading-room scene ---------- */
+.scene { position: relative; overflow: hidden; min-height: 250px; background: #0e0d22; color: #fff; border: none; isolation: isolate; }
+.scene-sky { position: absolute; inset: 0; background: radial-gradient(900px 400px at 75% 120%, #3b2b6d 0%, #1a1738 45%, #0e0d22 75%); }
+.scene-light { position: absolute; inset: -20%; background: conic-gradient(from 200deg at 70% 10%, rgba(255, 200, 120, 0) 0deg, rgba(255, 200, 120, 0.16) 18deg, rgba(255, 200, 120, 0) 40deg); animation: scene-sweep 16s ease-in-out infinite alternate; mix-blend-mode: screen; }
+.scene-window { position: absolute; right: 8%; top: 18px; width: 120px; height: 90px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; background: #2b2848; border-radius: 8px 8px 2px 2px; box-shadow: 0 0 60px rgba(120, 140, 255, 0.25); opacity: 0.9; }
+.scene-window span { background: linear-gradient(180deg, #5b6bd6 0%, #2d3b8f 60%, #1f2a66 100%); border-radius: 2px; position: relative; overflow: hidden; }
+.scene-window span::after { content: ""; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: 0.8; top: 30%; left: 60%; box-shadow: -18px 10px 0 -1px #fff, 12px 22px 0 -2px #fff; animation: scene-twinkle 3.5s ease-in-out infinite; }
+.scene-room { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; animation: scene-drift 22s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+.scene-glow { animation: scene-breathe 4.2s ease-in-out infinite; transform-origin: center; }
+.scene-book { animation: scene-page 6s ease-in-out infinite; transform-origin: 44px 14px; }
+.scene-motes { position: absolute; inset: 0; pointer-events: none; }
+.scene-motes span { position: absolute; border-radius: 50%; background: #ffe6b0; opacity: 0; filter: blur(0.3px); animation-name: scene-mote; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.scene-copy { position: relative; z-index: 2; padding: 26px 30px 24px; max-width: 620px; text-shadow: 0 2px 20px rgba(0,0,0,0.6); }
+.scene-copy::before { content: ""; position: absolute; inset: 0 -80px 0 0; background: linear-gradient(90deg, rgba(14, 13, 34, 0.92) 0%, rgba(14, 13, 34, 0.7) 60%, rgba(14, 13, 34, 0) 100%); z-index: -1; }
+.scene-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; color: #f4c95d; opacity: 0; animation: scene-rise 0.8s ease 0.1s forwards; }
+.scene-title { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-top: 8px; color: #fff; opacity: 0; animation: scene-rise 0.8s ease 0.25s forwards; }
+.scene-sub { margin-top: 8px; color: #cfd2ee; font-size: 14px; opacity: 0; animation: scene-rise 0.8s ease 0.4s forwards; }
+.scene-stats { display: flex; gap: 26px; margin-top: 18px; flex-wrap: wrap; }
+.scene-stat { display: flex; flex-direction: column; opacity: 0; animation: scene-rise 0.8s ease 0.55s forwards; }
+.scene-stat .v { font-size: 26px; font-weight: 800; line-height: 1; color: #fff; }
+.scene-stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #b9b3d1; margin-top: 4px; font-weight: 700; }
+@keyframes scene-sweep { from { transform: rotate(-6deg) translateX(-3%); } to { transform: rotate(6deg) translateX(3%); } }
+@keyframes scene-drift { from { transform: scale(1.02) translateX(-0.6%); } to { transform: scale(1.06) translateX(0.6%); } }
+@keyframes scene-breathe { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes scene-page { 0%, 70%, 100% { transform: scaleX(1); } 80% { transform: scaleX(0.92) translateY(-1px); } 90% { transform: scaleX(1.03); } }
+@keyframes scene-mote { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 0.9; } 85% { opacity: 0.5; } 100% { opacity: 0; transform: translate(24px, -60px); } }
+@keyframes scene-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.95; } }
+@keyframes scene-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { animation: scene-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .scene-light, .scene-room, .scene-glow, .scene-book, .scene-motes span, .scene-window span::after { animation: none !important; } .scene-kicker, .scene-title, .scene-sub, .scene-stat, .reveal { animation: none !important; opacity: 1 !important; } }
+@media (max-width: 700px) { .scene-window { display: none; } .scene-title { font-size: 22px; } }
+
+/* ---------- Branch switcher & chips ---------- */
+.branch-switch { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--navy); font-weight: 600; }
+.branch-switch svg { width: 16px; height: 16px; color: var(--muted); }
+.branch-switch select { border: none; background: transparent; font: inherit; font-weight: 700; color: var(--navy); outline: none; max-width: 220px; }
+.ac-tag { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+.ac-tag.non { background: var(--grey-bg); color: var(--muted); border-color: var(--grey-border); }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0 8px; margin-top: 8px; border-bottom: 1px solid var(--border); }
+.section-head h4 { margin: 0; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.section-head .meta { font-size: 12px; color: var(--muted); }
+.branch-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.branch-card { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.branch-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.branch-card .name { font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+.branch-card .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.branch-card .nums .k { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; }
+.branch-card .nums .v { font-size: 18px; font-weight: 800; }
+.seat .sec { font-size: 9px; color: var(--muted); }
 
 /* ---------- Gender tag ---------- */
 .gender-tag { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 800; margin-left: 6px; vertical-align: 1px; background: var(--grey-bg); color: var(--muted); border: 1px solid var(--grey-border); }

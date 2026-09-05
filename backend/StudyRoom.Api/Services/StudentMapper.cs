@@ -21,6 +21,8 @@ public static class StudentMapper
         var dto = new StudentDto
         {
             Id = s.Id,
+            BranchId = s.BranchId,
+            BranchName = s.Branch?.Name ?? string.Empty,
             Name = s.Name,
             Mobile = s.Mobile,
             Gender = s.Gender,
@@ -40,6 +42,8 @@ public static class StudentMapper
             SeatId = s.SeatId,
             SeatNumber = s.Seat?.Number,
             SeatLabel = s.Seat?.Label,
+            SeatSection = s.Seat?.Section,
+            SeatIsAc = s.Seat?.IsAc,
             IsActive = s.IsActive,
             CreatedAt = s.CreatedAt,
             UpdatedAt = s.UpdatedAt,

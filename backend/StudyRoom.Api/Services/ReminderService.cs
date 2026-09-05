@@ -78,6 +78,41 @@ public class ReminderService
         return symbol + amount.ToString("#,##0", CultureInfo.InvariantCulture);
     }
 
+    /// <summary>
+    /// Sends a WhatsApp payment receipt (template: name, amount, date, receipt no., remaining balance) and logs it.
+    /// Returns (sent, error). Never throws; a failed receipt must not fail the payment.
+    /// </summary>
+    public async Task<(bool sent, string? error)> SendReceiptAsync(Student s, Payment payment, RoomSettings settings, CancellationToken ct = default)
+    {
+        if (!settings.SendPaymentReceipts) return (false, null);
+        if (!_whatsApp.IsConfigured) return (false, "WhatsApp is not configured.");
+
+        var today = SettingsService.Today(settings);
+        var amount = FormatMoney(payment.Amount, settings.Currency);
+        var balance = FormatMoney(Math.Max(0, s.Balance), settings.Currency);
+        var date = payment.PaidOn.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
+        var receiptNo = $"R{payment.Id:D5}";
+        var message = $"Hi {s.Name}, we received {amount} on {date} for your {settings.RoomName} subscription. Receipt no. {receiptNo}. Remaining balance: {balance}. Thank you!";
+
+        try
+        {
+            var result = await _whatsApp.SendTemplateAsync(s.Mobile, settings.WhatsAppReceiptTemplateName, settings.WhatsAppLanguageCode,
+                new[] { s.Name, amount, date, receiptNo, balance }, ct);
+            _db.ReminderLogs.Add(new ReminderLog
+            {
+                StudentId = s.Id, Kind = ReminderKind.Receipt, SentOn = today, Mobile = s.Mobile, Message = message,
+                Status = result.Ok ? ReminderStatus.Sent : ReminderStatus.Failed, ProviderMessageId = result.MessageId, Error = result.Error,
+            });
+            await _db.SaveChangesAsync(ct);
+            return (result.Ok, result.Error);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Receipt send failed for student {Id}", s.Id);
+            return (false, ex.Message);
+        }
+    }
+
     /// <summary>Dry run: everyone who would receive an automatic reminder today.</summary>
     public async Task<List<ReminderCandidateDto>> PreviewAsync(CancellationToken ct = default)
     {
@@ -165,7 +200,7 @@ public class ReminderService
 
     private async Task<HashSet<int>> SentTodayAsync(DateOnly today, CancellationToken ct) =>
         (await _db.ReminderLogs.AsNoTracking()
-            .Where(r => r.SentOn == today && r.Status == ReminderStatus.Sent && r.Kind != ReminderKind.Manual)
+            .Where(r => r.SentOn == today && r.Status == ReminderStatus.Sent && r.Kind != ReminderKind.Manual && r.Kind != ReminderKind.Receipt)
             .Select(r => r.StudentId)
             .ToListAsync(ct)).ToHashSet();
 

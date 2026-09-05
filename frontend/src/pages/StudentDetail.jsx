@@ -8,6 +8,7 @@ import StudentFormModal from '../components/StudentFormModal'
 import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
 import ConfirmDialog from '../components/ConfirmDialog'
+import { paymentToast } from './Dashboard'
 import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp } from '../components/Icons'
 
 export default function StudentDetail() {
@@ -55,7 +56,7 @@ export default function StudentDetail() {
           <button className="btn ghost" onClick={() => navigate(-1)}><IconBack /> Back</button>
           <div>
             <h2 className="row" style={{ gap: 10 }}>{s.name} <StatusBadge status={s.status} /></h2>
-            <p>{s.seatNumber ? `Seat ${s.seatNumber}${s.seatLabel ? ` · ${s.seatLabel}` : ''}` : 'No seat assigned'} · {dueText(s)}</p>
+            <p>{s.branchName ? `${s.branchName} · ` : ''}{s.seatNumber ? `Seat ${s.seatNumber}${s.seatSection ? ` · ${s.seatSection}` : ''}${s.seatIsAc ? ' · AC' : ''}${s.seatLabel ? ` · ${s.seatLabel}` : ''}` : 'No seat assigned'} · {dueText(s)}</p>
           </div>
         </div>
         <div className="row">
@@ -75,6 +76,7 @@ export default function StudentDetail() {
               <div className="kv">
                 <span className="k">Mobile</span><span className="v"><a href={`tel:${s.mobile}`}>{s.mobile}</a></span>
                 <span className="k">Gender</span><span className="v">{s.gender || '—'}</span>
+                <span className="k">Branch</span><span className="v">{s.branchName || '—'}</span>
                 <span className="k">Address</span><span className="v">{s.address || '—'}</span>
                 <span className="k">Aadhaar</span><span className="v">{s.aadhaar ? s.aadhaar.replace(/(\d{4})(?=\d)/g, '$1 ') : '—'}</span>
                 <span className="k">Studying for</span><span className="v">{s.study || '—'}</span>
@@ -147,8 +149,8 @@ export default function StudentDetail() {
       </div>
 
       {modal === 'edit' && <StudentFormModal student={s} onClose={() => setModal(null)} onSaved={() => { setModal(null); toast.success('Student updated'); load() }} />}
-      {modal === 'pay' && <PaymentModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); toast.success('Payment recorded') }} />}
-      {modal === 'renew' && <RenewModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); toast.success(`Renewed until ${fmtDate(u.dueDate)}`) }} />}
+      {modal === 'pay' && <PaymentModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u) }} />}
+      {modal === 'renew' && <RenewModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u, `Renewed until ${fmtDate(u.dueDate)}`) }} />}
       {modal === 'deactivate' && (
         <ConfirmDialog title="Mark as left?" message={`${s.name} will be marked inactive and their seat released.`} confirmLabel="Mark as left" danger
           onClose={() => setModal(null)} onConfirm={async () => { await api.deactivateStudent(s.id); toast.info(`${s.name} marked as left`); load() }} />

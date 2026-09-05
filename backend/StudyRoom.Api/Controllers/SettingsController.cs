@@ -28,6 +28,7 @@ public class SettingsController : ControllerBase
         {
             RoomName = s.RoomName, DueSoonDays = s.DueSoonDays, TimeZoneId = s.TimeZoneId, Currency = s.Currency,
             FemaleReservationPercent = s.FemaleReservationPercent,
+            MinimumMonthlyFee = s.MinimumMonthlyFee, SendPaymentReceipts = s.SendPaymentReceipts, WhatsAppReceiptTemplateName = s.WhatsAppReceiptTemplateName,
             RemindersEnabled = s.RemindersEnabled, ReminderDaysBefore = s.ReminderDaysBefore, RemindOnDueDay = s.RemindOnDueDay,
             OverdueRepeatEveryDays = s.OverdueRepeatEveryDays, OverdueStopAfterDays = s.OverdueStopAfterDays, ReminderHour = s.ReminderHour,
             WhatsAppTemplateName = s.WhatsAppTemplateName, WhatsAppLanguageCode = s.WhatsAppLanguageCode,
@@ -46,6 +47,9 @@ public class SettingsController : ControllerBase
         s.TimeZoneId = request.TimeZoneId.Trim();
         s.Currency = request.Currency.Trim().ToUpperInvariant();
         s.FemaleReservationPercent = request.FemaleReservationPercent;
+        s.MinimumMonthlyFee = request.MinimumMonthlyFee;
+        s.SendPaymentReceipts = request.SendPaymentReceipts;
+        s.WhatsAppReceiptTemplateName = request.WhatsAppReceiptTemplateName.Trim();
         s.RemindersEnabled = request.RemindersEnabled;
         s.ReminderDaysBefore = string.Join(",", ReminderService.ParseDays(request.ReminderDaysBefore));
         s.RemindOnDueDay = request.RemindOnDueDay;

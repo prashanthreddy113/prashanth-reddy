@@ -24,46 +24,48 @@ public class SeatsController : ControllerBase
         _allocation = allocation;
     }
 
+    /// <summary>Seats of one branch (branchId) or of every branch.</summary>
     [HttpGet]
-    public async Task<ActionResult<List<SeatDto>>> List()
+    public async Task<ActionResult<List<SeatDto>>> List([FromQuery] int? branchId)
     {
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var seats = await _db.Seats.Include(s => s.Student).AsNoTracking().OrderBy(s => s.Number).ToListAsync();
-        return seats.Select(s => new SeatDto
-        {
-            Id = s.Id,
-            Number = s.Number,
-            Label = s.Label,
-            IsActive = s.IsActive,
-            StudentId = s.Student?.Id,
-            StudentName = s.Student?.Name,
-            StudentGender = s.Student?.Gender,
-            StudentStatus = s.Student is null ? null : StudentMapper.ComputeStatus(s.Student, today, settings.DueSoonDays),
-            StudentDueDate = s.Student?.DueDate,
-        }).ToList();
+        var q = _db.Seats.Include(s => s.Student).Include(s => s.Branch).AsNoTracking().AsQueryable();
+        if (branchId.HasValue) q = q.Where(s => s.BranchId == branchId.Value);
+        var seats = await q.OrderBy(s => s.Branch!.Name).ThenBy(s => s.Number).ToListAsync();
+
+        return seats.Select(s => ToDto(s, today, settings.DueSoonDays)).ToList();
     }
 
     [HttpGet("summary")]
-    public async Task<ActionResult<SeatSummaryDto>> Summary() => await _allocation.SummaryAsync();
+    public async Task<ActionResult<SeatSummaryDto>> Summary([FromQuery] int? branchId) => await _allocation.SummaryAsync(branchId);
 
-    /// <summary>Set the total number of seats. Adds seats to reach the target, or removes the highest-numbered free seats.</summary>
+    /// <summary>Sections (floor/room/section groups) of a branch with their counts.</summary>
+    [HttpGet("sections")]
+    public async Task<ActionResult<List<SeatSectionDto>>> Sections([FromQuery] int branchId)
+    {
+        var seats = await _db.Seats.AsNoTracking().Where(s => s.BranchId == branchId)
+            .Select(s => new { s.Section, s.IsActive, s.IsAc, Occupied = s.Student != null }).ToListAsync();
+        return seats.GroupBy(s => s.Section)
+            .OrderBy(g => g.Key == null ? 1 : 0).ThenBy(g => g.Key)
+            .Select(g => new SeatSectionDto(g.Key, g.Count(), g.Count(x => x.IsActive), g.Count(x => x.Occupied),
+                g.Count(x => x.IsActive && !x.Occupied), g.Count(x => x.IsAc)))
+            .ToList();
+    }
+
+    /// <summary>Direct setup: set the total number of seats in a branch. Adds seats (numbered after the highest) or removes the highest-numbered free seats.</summary>
     [HttpPut("capacity")]
     public async Task<ActionResult<SeatSummaryDto>> SetCapacity(SeatCapacityRequest request)
     {
-        var seats = await _db.Seats.Include(s => s.Student).OrderBy(s => s.Number).ToListAsync();
+        if (!await _db.Branches.AnyAsync(b => b.Id == request.BranchId)) return BadRequest(new { message = "Branch not found." });
+
+        var seats = await _db.Seats.Include(s => s.Student).Where(s => s.BranchId == request.BranchId).OrderBy(s => s.Number).ToListAsync();
         var current = seats.Count;
 
         if (request.TotalSeats > current)
         {
-            var maxNumber = seats.Count == 0 ? 0 : seats.Max(s => s.Number);
-            for (var n = maxNumber + 1; seats.Count < request.TotalSeats; n++)
-            {
-                var seat = new Seat { Number = n };
-                _db.Seats.Add(seat);
-                seats.Add(seat);
-            }
+            AddSeats(request.BranchId, seats, request.TotalSeats - current, Clean(request.Section), request.IsAc);
         }
         else if (request.TotalSeats < current)
         {
@@ -75,22 +77,71 @@ public class SeatsController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
-        return await Summary();
+        return await _allocation.SummaryAsync(request.BranchId);
+    }
+
+    /// <summary>Structured setup: add N seats under a floor/room/section name (numbers continue from the branch's highest seat).</summary>
+    [HttpPost("sections")]
+    public async Task<ActionResult<List<SeatSectionDto>>> AddSection(SeatSectionRequest request)
+    {
+        if (!await _db.Branches.AnyAsync(b => b.Id == request.BranchId)) return BadRequest(new { message = "Branch not found." });
+        var seats = await _db.Seats.Where(s => s.BranchId == request.BranchId).ToListAsync();
+        AddSeats(request.BranchId, seats, request.Seats, request.Name.Trim(), request.IsAc);
+        await _db.SaveChangesAsync();
+        return await Sections(request.BranchId);
+    }
+
+    /// <summary>Rename a section, switch it between AC / Non-AC, or add more seats to it.</summary>
+    [HttpPut("sections")]
+    public async Task<ActionResult<List<SeatSectionDto>>> UpdateSection(SeatSectionUpdateRequest request)
+    {
+        var all = await _db.Seats.Where(s => s.BranchId == request.BranchId).ToListAsync();
+        var inSection = all.Where(s => s.Section == request.Name.Trim()).ToList();
+        if (inSection.Count == 0) return NotFound(new { message = $"Section '{request.Name}' not found." });
+
+        var newName = string.IsNullOrWhiteSpace(request.NewName) ? request.Name.Trim() : request.NewName.Trim();
+        foreach (var s in inSection)
+        {
+            s.Section = newName;
+            if (request.IsAc.HasValue) s.IsAc = request.IsAc.Value;
+        }
+        if (request.AddSeats > 0)
+            AddSeats(request.BranchId, all, request.AddSeats, newName, request.IsAc ?? inSection.All(s => s.IsAc));
+
+        await _db.SaveChangesAsync();
+        return await Sections(request.BranchId);
+    }
+
+    /// <summary>Remove a section's seats (only if none are occupied).</summary>
+    [HttpDelete("sections")]
+    public async Task<ActionResult<List<SeatSectionDto>>> DeleteSection([FromQuery] int branchId, [FromQuery] string name)
+    {
+        var inSection = await _db.Seats.Include(s => s.Student).Where(s => s.BranchId == branchId && s.Section == name).ToListAsync();
+        if (inSection.Count == 0) return NotFound(new { message = $"Section '{name}' not found." });
+        var occupied = inSection.Where(s => s.Student != null).Select(s => s.Number).OrderBy(n => n).ToList();
+        if (occupied.Count > 0)
+            return BadRequest(new { message = $"Section '{name}' still has occupied seat(s) {string.Join(", ", occupied)}. Move those students first." });
+        _db.Seats.RemoveRange(inSection);
+        await _db.SaveChangesAsync();
+        return await Sections(branchId);
     }
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult<SeatDto>> Update(int id, SeatUpdateRequest request)
     {
-        var seat = await _db.Seats.Include(s => s.Student).FirstOrDefaultAsync(s => s.Id == id);
+        var seat = await _db.Seats.Include(s => s.Student).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
         if (seat is null) return NotFound();
         if (!request.IsActive && seat.Student is not null)
             return BadRequest(new { message = $"Seat {seat.Number} is occupied by {seat.Student.Name}; move them before disabling it." });
 
-        seat.Label = string.IsNullOrWhiteSpace(request.Label) ? null : request.Label.Trim();
+        seat.Label = Clean(request.Label);
+        if (request.Section is not null) seat.Section = Clean(request.Section);
+        if (request.IsAc.HasValue) seat.IsAc = request.IsAc.Value;
         seat.IsActive = request.IsActive;
         await _db.SaveChangesAsync();
 
-        return new SeatDto { Id = seat.Id, Number = seat.Number, Label = seat.Label, IsActive = seat.IsActive, StudentId = seat.Student?.Id, StudentName = seat.Student?.Name, StudentGender = seat.Student?.Gender };
+        var settings = await _settings.GetAsync();
+        return ToDto(seat, SettingsService.Today(settings), settings.DueSoonDays);
     }
 
     [HttpDelete("{id:int}")]
@@ -104,4 +155,36 @@ public class SeatsController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
+    // ----- helpers -----
+
+    private void AddSeats(int branchId, List<Seat> existing, int count, string? section, bool isAc)
+    {
+        var next = existing.Count == 0 ? 1 : existing.Max(s => s.Number) + 1;
+        for (var i = 0; i < count; i++)
+        {
+            var seat = new Seat { BranchId = branchId, Number = next++, Section = section, IsAc = isAc };
+            _db.Seats.Add(seat);
+            existing.Add(seat);
+        }
+    }
+
+    private static string? Clean(string? v) => string.IsNullOrWhiteSpace(v) ? null : v.Trim();
+
+    private static SeatDto ToDto(Seat s, DateOnly today, int dueSoonDays) => new()
+    {
+        Id = s.Id,
+        BranchId = s.BranchId,
+        BranchName = s.Branch?.Name ?? string.Empty,
+        Number = s.Number,
+        Section = s.Section,
+        IsAc = s.IsAc,
+        Label = s.Label,
+        IsActive = s.IsActive,
+        StudentId = s.Student?.Id,
+        StudentName = s.Student?.Name,
+        StudentGender = s.Student?.Gender,
+        StudentStatus = s.Student is null ? null : StudentMapper.ComputeStatus(s.Student, today, dueSoonDays),
+        StudentDueDate = s.Student?.DueDate,
+    };
 }

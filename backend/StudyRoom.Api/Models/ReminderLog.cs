@@ -5,7 +5,8 @@ public enum ReminderKind
     DueSoon,    // N days before the due date
     DueToday,   // on the due date
     Overdue,    // after the due date
-    Manual      // sent by the admin from the UI
+    Manual,     // sent by the admin from the UI
+    Receipt     // payment receipt
 }
 
 public enum ReminderStatus

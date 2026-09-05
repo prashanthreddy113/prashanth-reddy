@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './lib/auth'
 import { ToastProvider } from './lib/toast'
+import { BranchProvider } from './lib/branch'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -9,6 +10,8 @@ import StudentDetail from './pages/StudentDetail'
 import Seats from './pages/Seats'
 import Settings from './pages/Settings'
 import Reminders from './pages/Reminders'
+import Branches from './pages/Branches'
+import Expenses from './pages/Expenses'
 
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuth()
@@ -24,12 +27,14 @@ export default function App() {
         <ToastProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route element={<RequireAuth><Layout /></RequireAuth>}>
+            <Route element={<RequireAuth><BranchProvider><Layout /></BranchProvider></RequireAuth>}>
               <Route index element={<Dashboard />} />
               <Route path="students" element={<Students />} />
               <Route path="students/:id" element={<StudentDetail />} />
               <Route path="seats" element={<Seats />} />
               <Route path="reminders" element={<Reminders />} />
+              <Route path="branches" element={<Branches />} />
+              <Route path="expenses" element={<Expenses />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

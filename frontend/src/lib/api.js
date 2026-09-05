@@ -96,7 +96,13 @@ export const api = {
   login: (username, password) => request('POST', '/api/auth/login', { username, password }),
   changePassword: (currentPassword, newPassword) => request('POST', '/api/auth/change-password', { currentPassword, newPassword }),
 
-  dashboard: () => request('GET', '/api/dashboard'),
+  dashboard: (branchId) => request('GET', '/api/dashboard', undefined, { query: { branchId } }),
+
+  branches: (includeInactive = true) => request('GET', '/api/branches', undefined, { query: { includeInactive } }),
+  branchSummary: () => request('GET', '/api/branches/summary'),
+  createBranch: (data) => request('POST', '/api/branches', data),
+  updateBranch: (id, data) => request('PUT', `/api/branches/${id}`, data),
+  deleteBranch: (id) => request('DELETE', `/api/branches/${id}`),
 
   students: (query) => request('GET', '/api/students', undefined, { query }),
   student: (id) => request('GET', `/api/students/${id}`),
@@ -109,9 +115,13 @@ export const api = {
   deletePayment: (id, paymentId) => request('DELETE', `/api/students/${id}/payments/${paymentId}`),
   renewStudent: (id, data) => request('POST', `/api/students/${id}/renew`, data),
 
-  seats: () => request('GET', '/api/seats'),
-  seatSummary: () => request('GET', '/api/seats/summary'),
-  setSeatCapacity: (totalSeats) => request('PUT', '/api/seats/capacity', { totalSeats }),
+  seats: (branchId) => request('GET', '/api/seats', undefined, { query: { branchId } }),
+  seatSummary: (branchId) => request('GET', '/api/seats/summary', undefined, { query: { branchId } }),
+  seatSections: (branchId) => request('GET', '/api/seats/sections', undefined, { query: { branchId } }),
+  setSeatCapacity: (data) => request('PUT', '/api/seats/capacity', data),
+  addSeatSection: (data) => request('POST', '/api/seats/sections', data),
+  updateSeatSection: (data) => request('PUT', '/api/seats/sections', data),
+  deleteSeatSection: (branchId, name) => request('DELETE', `/api/seats/sections?branchId=${branchId}&name=${encodeURIComponent(name)}`),
   updateSeat: (id, data) => request('PUT', `/api/seats/${id}`, data),
   deleteSeat: (id) => request('DELETE', `/api/seats/${id}`),
 
@@ -120,6 +130,12 @@ export const api = {
   reminderRun: () => request('POST', '/api/reminders/run', {}),
   reminderSend: (studentId) => request('POST', `/api/reminders/send/${studentId}`, {}),
   reminderLogs: (query) => request('GET', '/api/reminders/logs', undefined, { query }),
+
+  expenses: (query) => request('GET', '/api/expenses', undefined, { query }),
+  expenseSummary: (query) => request('GET', '/api/expenses/summary', undefined, { query }),
+  createExpense: (data) => request('POST', '/api/expenses', data),
+  updateExpense: (id, data) => request('PUT', `/api/expenses/${id}`, data),
+  deleteExpense: (id) => request('DELETE', `/api/expenses/${id}`),
 
   settings: () => request('GET', '/api/settings'),
   updateSettings: (data) => request('PUT', '/api/settings', data),

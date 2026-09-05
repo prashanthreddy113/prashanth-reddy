@@ -18,7 +18,7 @@ export default function Settings() {
     e.preventDefault()
     setBusy(true)
     try {
-      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays), femaleReservationPercent: Number(form.femaleReservationPercent), reminderHour: Number(form.reminderHour), overdueRepeatEveryDays: Number(form.overdueRepeatEveryDays), overdueStopAfterDays: Number(form.overdueStopAfterDays) })
+      const s = await api.updateSettings({ ...form, dueSoonDays: Number(form.dueSoonDays), femaleReservationPercent: Number(form.femaleReservationPercent), minimumMonthlyFee: Number(form.minimumMonthlyFee || 0), reminderHour: Number(form.reminderHour), overdueRepeatEveryDays: Number(form.overdueRepeatEveryDays), overdueStopAfterDays: Number(form.overdueStopAfterDays) })
       setForm(s); setRoomName(s.roomName); setCurrency(s.currency)
       toast.success('Settings saved')
     } catch (err) { toast.error(err.message) }
@@ -85,6 +85,16 @@ export default function Settings() {
               <input value={form.whatsAppLanguageCode} onChange={set('whatsAppLanguageCode')} placeholder="en" />
             </div>
             <div className="field">
+              <label>Receipt template name</label>
+              <input value={form.whatsAppReceiptTemplateName} onChange={set('whatsAppReceiptTemplateName')} />
+              <span className="help">Body variables: name, amount, date, receipt no., remaining balance.</span>
+            </div>
+            <div className="field">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24 }}>
+                <input type="checkbox" checked={!!form.sendPaymentReceipts} onChange={set('sendPaymentReceipts')} /> Send a WhatsApp receipt after every payment
+              </label>
+            </div>
+            <div className="field">
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24 }}>
                 <input type="checkbox" checked={!!form.remindOnDueDay} onChange={set('remindOnDueDay')} /> Also remind on the due date itself
               </label>
@@ -105,6 +115,11 @@ export default function Settings() {
             <label>Highlight students due within (days)</label>
             <input type="number" min="0" max="60" value={form.dueSoonDays} onChange={(e) => setForm({ ...form, dueSoonDays: e.target.value })} />
             <span className="help">Students whose due date falls within this many days are shown in amber on the dashboard.</span>
+          </div>
+          <div className="field">
+            <label>Minimum fee per month</label>
+            <input type="number" min="0" step="1" value={form.minimumMonthlyFee} onChange={(e) => setForm({ ...form, minimumMonthlyFee: e.target.value })} />
+            <span className="help">Pre-fills the registration form and blocks a lower monthly amount. Students paying part of it show the rest as balance. 0 = no minimum.</span>
           </div>
           <div className="field">
             <label>Seats reserved for women (%)</label>

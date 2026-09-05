@@ -3,13 +3,16 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { api } from '../lib/api'
 import { setCurrency } from '../lib/format'
-import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu, IconWhatsapp } from './Icons'
+import { useBranch } from '../lib/branch'
+import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu, IconWhatsapp, IconBranch, IconMoney } from './Icons'
 
 const NAV = [
   { to: '/', label: 'Dashboard', icon: IconDashboard, end: true },
   { to: '/students', label: 'Students', icon: IconUsers },
   { to: '/seats', label: 'Seats', icon: IconSeat },
   { to: '/reminders', label: 'Reminders', icon: IconWhatsapp },
+  { to: '/expenses', label: 'Expenses', icon: IconMoney },
+  { to: '/branches', label: 'Branches', icon: IconBranch },
   { to: '/settings', label: 'Settings', icon: IconSettings },
 ]
 
@@ -18,6 +21,8 @@ const TITLES = {
   '/students': ['Students', 'Register, edit and manage members'],
   '/seats': ['Seats', 'Configure capacity and see who sits where'],
   '/reminders': ['WhatsApp reminders', 'Automatic due-date messages and history'],
+  '/branches': ['Branches', 'Your locations and how each one is doing'],
+  '/expenses': ['Expenses & revenue', 'Rent, bills and salaries against collections'],
   '/settings': ['Settings', 'Room preferences and your account'],
 }
 
@@ -26,6 +31,7 @@ export default function Layout() {
   const [open, setOpen] = useState(false)
   const [roomName, setRoomName] = useState('BrightLoop Reading Room')
   const location = useLocation()
+  const { branches, selected, setSelected } = useBranch()
 
   useEffect(() => { setOpen(false) }, [location.pathname])
 
@@ -71,6 +77,13 @@ export default function Layout() {
             <h1>{title}</h1>
             {subtitle && <small>{subtitle}</small>}
           </div>
+          <label className="branch-switch" title="Which branch to show">
+            <IconBranch />
+            <select value={selected} onChange={(e) => setSelected(e.target.value)}>
+              <option value="all">All branches</option>
+              {branches.map((b) => <option key={b.id} value={b.id}>{b.name}{b.isActive ? '' : ' (inactive)'}</option>)}
+            </select>
+          </label>
         </header>
         <main className="content">
           <Outlet context={{ roomName, setRoomName }} />

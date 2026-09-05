@@ -16,12 +16,14 @@ public class StudentsController : ControllerBase
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
     private readonly SeatAllocationService _allocation;
+    private readonly ReminderService _reminders;
 
-    public StudentsController(AppDbContext db, SettingsService settings, SeatAllocationService allocation)
+    public StudentsController(AppDbContext db, SettingsService settings, SeatAllocationService allocation, ReminderService reminders)
     {
         _db = db;
         _settings = settings;
         _allocation = allocation;
+        _reminders = reminders;
     }
 
     /// <summary>List students with computed due status. Filter by status, search by name/mobile/seat.</summary>
@@ -29,12 +31,14 @@ public class StudentsController : ControllerBase
     public async Task<ActionResult<List<StudentDto>>> List(
         [FromQuery] string? search,
         [FromQuery] DueStatus? status,
+        [FromQuery] int? branchId,
         [FromQuery] bool includeInactive = true)
     {
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var query = _db.Students.Include(s => s.Seat).AsNoTracking().AsQueryable();
+        var query = _db.Students.Include(s => s.Seat).Include(s => s.Branch).AsNoTracking().AsQueryable();
+        if (branchId.HasValue) query = query.Where(s => s.BranchId == branchId.Value);
         if (!includeInactive) query = query.Where(s => s.IsActive);
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -65,7 +69,7 @@ public class StudentsController : ControllerBase
     {
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
-        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Payments)
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).Include(s => s.Payments)
             .AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
         return StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
@@ -94,8 +98,11 @@ public class StudentsController : ControllerBase
         _db.Students.Add(student);
         await _db.SaveChangesAsync();
         await _db.Entry(student).Reference(s => s.Seat).LoadAsync();
+        await _db.Entry(student).Reference(s => s.Branch).LoadAsync();
 
         var dto = StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
+        if (student.Payments.Count > 0)
+            (dto.ReceiptSent, dto.ReceiptError) = await _reminders.SendReceiptAsync(student, student.Payments[0], settings);
         return CreatedAtAction(nameof(Get), new { id = student.Id }, dto);
     }
 
@@ -105,7 +112,7 @@ public class StudentsController : ControllerBase
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
 
         var error = await ApplyAsync(student, request);
@@ -114,6 +121,7 @@ public class StudentsController : ControllerBase
         student.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
         await _db.Entry(student).Reference(s => s.Seat).LoadAsync();
+        await _db.Entry(student).Reference(s => s.Branch).LoadAsync();
 
         return StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
     }
@@ -132,7 +140,7 @@ public class StudentsController : ControllerBase
     [HttpPost("{id:int}/deactivate")]
     public async Task<ActionResult<StudentDto>> Deactivate(int id)
     {
-        var student = await _db.Students.Include(s => s.Seat).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
         student.IsActive = false;
         student.SeatId = null;
@@ -146,12 +154,12 @@ public class StudentsController : ControllerBase
     [HttpPost("{id:int}/activate")]
     public async Task<ActionResult<StudentDto>> Activate(int id, [FromQuery] int? seatNumber)
     {
-        var student = await _db.Students.Include(s => s.Seat).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
 
         if (seatNumber.HasValue)
         {
-            var (seat, err) = await ResolveSeatAsync(seatNumber.Value, student.Id, student.Gender);
+            var (seat, err) = await ResolveSeatAsync(student.BranchId, seatNumber.Value, student.Id, student.Gender);
             if (err is not null) return BadRequest(new { message = err });
             student.Seat = seat;
             student.SeatId = seat!.Id;
@@ -171,20 +179,23 @@ public class StudentsController : ControllerBase
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
 
-        student.Payments.Add(new Payment
+        var payment = new Payment
         {
             Amount = request.Amount,
             PaidOn = request.PaidOn ?? today,
             Note = request.Note?.Trim()
-        });
+        };
+        student.Payments.Add(payment);
         student.TotalPaid += request.Amount;
         student.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
 
-        return StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
+        var dto = StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
+        (dto.ReceiptSent, dto.ReceiptError) = await _reminders.SendReceiptAsync(student, payment, settings);
+        return dto;
     }
 
     [HttpDelete("{id:int}/payments/{paymentId:int}")]
@@ -193,7 +204,7 @@ public class StudentsController : ControllerBase
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
         var payment = student.Payments.FirstOrDefault(p => p.Id == paymentId);
         if (payment is null) return NotFound();
@@ -213,34 +224,52 @@ public class StudentsController : ControllerBase
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
-        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).Include(s => s.Payments).FirstOrDefaultAsync(s => s.Id == id);
         if (student is null) return NotFound();
+
+        if (request.AmountPerMonth.HasValue && settings.MinimumMonthlyFee > 0 && request.AmountPerMonth.Value < settings.MinimumMonthlyFee)
+            return BadRequest(new { message = $"Amount per month cannot be below the minimum fee of {ReminderService.FormatMoney(settings.MinimumMonthlyFee, settings.Currency)} set in Settings." });
 
         student.Months += request.Months;
         if (request.AmountPerMonth.HasValue) student.AmountPerMonth = request.AmountPerMonth.Value;
         student.IsActive = true;
 
+        Payment? payment = null;
         if (request.PaidAmount is > 0)
         {
-            student.Payments.Add(new Payment
+            payment = new Payment
             {
                 Amount = request.PaidAmount.Value,
                 PaidOn = request.PaidOn ?? today,
                 Note = request.Note?.Trim() ?? $"Renewal (+{request.Months} month{(request.Months > 1 ? "s" : "")})"
-            });
+            };
+            student.Payments.Add(payment);
             student.TotalPaid += request.PaidAmount.Value;
         }
 
         student.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
 
-        return StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
+        var dto = StudentMapper.ToDto(student, today, settings.DueSoonDays, includePayments: true);
+        if (payment is not null)
+            (dto.ReceiptSent, dto.ReceiptError) = await _reminders.SendReceiptAsync(student, payment, settings);
+        return dto;
     }
 
     // ----- helpers -----
 
     private async Task<string?> ApplyAsync(Student student, StudentUpsertRequest request)
     {
+        var branch = await _db.Branches.FirstOrDefaultAsync(b => b.Id == request.BranchId);
+        if (branch is null) return "Selected branch does not exist.";
+        if (!branch.IsActive && student.BranchId != branch.Id) return $"Branch '{branch.Name}' is inactive.";
+
+        var settings = await _settings.GetAsync();
+        if (settings.MinimumMonthlyFee > 0 && request.AmountPerMonth < settings.MinimumMonthlyFee)
+            return $"Amount per month cannot be below the minimum fee of {ReminderService.FormatMoney(settings.MinimumMonthlyFee, settings.Currency)} set in Settings.";
+
+        student.BranchId = branch.Id;
+        student.Branch = branch;
         student.Name = request.Name.Trim();
         student.Mobile = request.Mobile.Trim();
         student.Gender = request.Gender;
@@ -256,7 +285,7 @@ public class StudentsController : ControllerBase
 
         if (request.SeatNumber.HasValue && request.IsActive)
         {
-            var (seat, err) = await ResolveSeatAsync(request.SeatNumber.Value, student.Id, request.Gender);
+            var (seat, err) = await ResolveSeatAsync(branch.Id, request.SeatNumber.Value, student.Id, request.Gender);
             if (err is not null) return err;
             student.Seat = seat;
             student.SeatId = seat!.Id;
@@ -270,15 +299,15 @@ public class StudentsController : ControllerBase
         return null;
     }
 
-    private async Task<(Seat? seat, string? error)> ResolveSeatAsync(int seatNumber, int currentStudentId, Gender? gender)
+    private async Task<(Seat? seat, string? error)> ResolveSeatAsync(int branchId, int seatNumber, int currentStudentId, Gender? gender)
     {
-        var seat = await _db.Seats.Include(s => s.Student).FirstOrDefaultAsync(s => s.Number == seatNumber);
-        if (seat is null) return (null, $"Seat {seatNumber} does not exist. Create seats from the Seats page first.");
+        var seat = await _db.Seats.Include(s => s.Student).FirstOrDefaultAsync(s => s.BranchId == branchId && s.Number == seatNumber);
+        if (seat is null) return (null, $"Seat {seatNumber} does not exist in this branch. Create seats from the Seats page first.");
         if (!seat.IsActive) return (null, $"Seat {seatNumber} is marked unavailable.");
         if (seat.Student is not null && seat.Student.Id != currentStudentId)
             return (null, $"Seat {seatNumber} is already occupied by {seat.Student.Name}.");
 
-        var quotaError = await _allocation.CheckAsync(gender, currentStudentId);
+        var quotaError = await _allocation.CheckAsync(branchId, gender, currentStudentId);
         if (quotaError is not null) return (null, quotaError);
         return (seat, null);
     }

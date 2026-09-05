@@ -36,9 +36,18 @@ public static class DbInitializer
             });
         }
 
+        var branch = await db.Branches.OrderBy(b => b.Id).FirstOrDefaultAsync();
+        if (branch is null)
+        {
+            branch = new Branch { Name = config["Room:BranchName"] ?? "Main Branch" };
+            db.Branches.Add(branch);
+            await db.SaveChangesAsync();
+            logger.LogInformation("Created default branch '{Name}'.", branch.Name);
+        }
+
         if (!await db.Seats.AnyAsync() && int.TryParse(config["Room:DefaultSeats"], out var seats) && seats > 0)
         {
-            for (var n = 1; n <= seats; n++) db.Seats.Add(new Seat { Number = n });
+            for (var n = 1; n <= seats; n++) db.Seats.Add(new Seat { BranchId = branch.Id, Number = n });
             logger.LogInformation("Seeded {Count} seats.", seats);
         }
 

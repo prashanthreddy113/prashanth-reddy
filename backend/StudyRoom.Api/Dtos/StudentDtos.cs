@@ -14,6 +14,9 @@ public enum DueStatus
 
 public class StudentUpsertRequest
 {
+    [Required, Range(1, int.MaxValue, ErrorMessage = "Branch is required.")]
+    public int BranchId { get; set; }
+
     [Required, StringLength(120, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
 
@@ -72,6 +75,8 @@ public class RenewRequest
 public class StudentDto
 {
     public int Id { get; set; }
+    public int BranchId { get; set; }
+    public string BranchName { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Mobile { get; set; } = string.Empty;
     public Gender? Gender { get; set; }
@@ -91,8 +96,13 @@ public class StudentDto
     public int? SeatId { get; set; }
     public int? SeatNumber { get; set; }
     public string? SeatLabel { get; set; }
+    public string? SeatSection { get; set; }
+    public bool? SeatIsAc { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public List<PaymentDto>? Payments { get; set; }
+    /// <summary>Set on payment/renewal responses: whether a WhatsApp receipt went out.</summary>
+    public bool? ReceiptSent { get; set; }
+    public string? ReceiptError { get; set; }
 }

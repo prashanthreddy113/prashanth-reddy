@@ -9,6 +9,9 @@ public class SettingsDto
     [Required, StringLength(64)] public string TimeZoneId { get; set; } = "Asia/Kolkata";
     [Required, StringLength(8)] public string Currency { get; set; } = "INR";
     [Range(0, 100)] public int FemaleReservationPercent { get; set; } = 20;
+    [Range(0, 10_000_000)] public decimal MinimumMonthlyFee { get; set; }
+    public bool SendPaymentReceipts { get; set; } = true;
+    [Required, StringLength(120)] public string WhatsAppReceiptTemplateName { get; set; } = "payment_receipt";
 
     public bool RemindersEnabled { get; set; }
     [StringLength(64), RegularExpression(@"^\s*(\d{1,3}\s*(,\s*\d{1,3}\s*)*)?$", ErrorMessage = "Days before must be numbers separated by commas, e.g. 5,1")]
