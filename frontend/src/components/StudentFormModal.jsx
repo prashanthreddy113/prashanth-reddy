@@ -83,17 +83,18 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
     setForm((f) => ({ ...f, [k]: v }))
   }
 
-  const availableSeats = useMemo(() => seats.filter((s) => s.isActive && (!s.isOccupied || s.studentId === student?.id)), [seats, student])
-
-  // Women may take any free seat; men/others only the seats outside the reserved share.
-  const holdsSeatAlready = !!student?.seatNumber && student?.gender !== 'Female' && String(student?.branchId) === String(form.branchId)
-  const generalFree = summary ? summary.generalFree + (holdsSeatAlready ? 1 : 0) : null
-  const quotaBlocked = !!summary && summary.reservedForWomen > 0 && form.gender && form.gender !== 'Female' && generalFree <= 0
+  // Reserved-for-women seats are only offered to women; every other free seat is open to anyone.
+  const isWoman = form.gender === 'Female'
+  const availableSeats = useMemo(() => seats.filter((s) => s.isActive && (!s.isOccupied || s.studentId === student?.id) && (isWoman || !s.reservedForWomen || s.studentId === student?.id)), [seats, student, isWoman])
+  const reservedFree = seats.filter((s) => s.isActive && !s.isOccupied && s.reservedForWomen).length
+  const quotaBlocked = !!seats.length && form.gender && !isWoman && availableSeats.length === 0
   const seatHelp = !seats.length
     ? 'No seats yet — create seats from the Seats page'
-    : summary && summary.reservedForWomen > 0
-      ? `${availableSeats.length} free · ${summary.reservedForWomen} of ${summary.active} seats reserved for women (${summary.femaleReservationPercent}%) · ${Math.max(0, generalFree)} open to men/others`
-      : `${availableSeats.length} seat(s) available`
+    : !form.gender
+      ? 'Select the gender first — reserved seats are shown only for women'
+      : isWoman
+        ? `${availableSeats.length} free (${reservedFree} reserved for women, the rest open to anyone)`
+        : `${availableSeats.length} free open to anyone · ${reservedFree} more are reserved for women`
 
   const totalFee = Number(form.months || 0) * Number(form.amountPerMonth || 0)
   const balance = totalFee - Number(form.totalPaid || 0)
@@ -161,11 +162,11 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             </select>
           </Field>
           <Field k="seatNumber" error={errors.seatNumber} label="Seat number" help={quotaBlocked ? undefined : seatHelp}>
-            {quotaBlocked && <span className="err">All seats open to men/others are taken; the remaining free seats are reserved for women. Free a seat or change the reservation in Settings.</span>}
+            {quotaBlocked && <span className="err">Every free seat in this branch is reserved for women. Free a seat or change a seat's reservation on the Seats page.</span>}
             <select id="f-seatNumber" value={form.seatNumber} onChange={set('seatNumber')} disabled={!form.isActive}>
               <option value="">No seat assigned</option>
               {availableSeats.map((s) => (
-                <option key={s.id} value={s.number}>Seat {s.number}{s.section ? ` · ${s.section}` : ''}{s.isAc ? ' · AC' : ' · Non-AC'}{s.label ? ` · ${s.label}` : ''}</option>
+                <option key={s.id} value={s.number}>Seat {s.number}{s.section ? ` · ${s.section}` : ''}{s.isAc ? ' · AC' : ' · Non-AC'}{s.reservedForWomen ? ' · women only' : ''}{s.label ? ` · ${s.label}` : ''}</option>
               ))}
             </select>
           </Field>

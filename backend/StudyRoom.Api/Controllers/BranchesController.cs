@@ -67,8 +67,10 @@ public class BranchesController : ControllerBase
         var name = request.Name.Trim();
         if (await _db.Branches.AnyAsync(x => x.Id != id && x.Name.ToLower() == name.ToLower()))
             return BadRequest(new { message = $"A branch named '{name}' already exists." });
+        var pctChanged = b.FemaleReservationPercent != request.FemaleReservationPercent;
         Apply(b, request);
         await _db.SaveChangesAsync();
+        if (pctChanged) await _allocation.ApplyReservationAsync(b.Id);
         return ToDto(b, await _settings.GetAsync());
     }
 

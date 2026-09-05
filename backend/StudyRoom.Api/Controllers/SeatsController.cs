@@ -46,11 +46,11 @@ public class SeatsController : ControllerBase
     public async Task<ActionResult<List<SeatSectionDto>>> Sections([FromQuery] int branchId)
     {
         var seats = await _db.Seats.AsNoTracking().Where(s => s.BranchId == branchId)
-            .Select(s => new { s.Section, s.IsActive, s.IsAc, Occupied = s.Student != null }).ToListAsync();
+            .Select(s => new { s.Section, s.IsActive, s.IsAc, s.ReservedForWomen, Occupied = s.Student != null }).ToListAsync();
         return seats.GroupBy(s => s.Section)
             .OrderBy(g => g.Key == null ? 1 : 0).ThenBy(g => g.Key)
             .Select(g => new SeatSectionDto(g.Key, g.Count(), g.Count(x => x.IsActive), g.Count(x => x.Occupied),
-                g.Count(x => x.IsActive && !x.Occupied), g.Count(x => x.IsAc)))
+                g.Count(x => x.IsActive && !x.Occupied), g.Count(x => x.IsAc), g.Count(x => x.ReservedForWomen)))
             .ToList();
     }
 
@@ -77,6 +77,7 @@ public class SeatsController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
+        await _allocation.ApplyReservationAsync(request.BranchId);
         return await _allocation.SummaryAsync(request.BranchId);
     }
 
@@ -88,6 +89,7 @@ public class SeatsController : ControllerBase
         var seats = await _db.Seats.Where(s => s.BranchId == request.BranchId).ToListAsync();
         AddSeats(request.BranchId, seats, request.Seats, request.Name.Trim(), request.IsAc);
         await _db.SaveChangesAsync();
+        await _allocation.ApplyReservationAsync(request.BranchId);
         return await Sections(request.BranchId);
     }
 
@@ -109,6 +111,7 @@ public class SeatsController : ControllerBase
             AddSeats(request.BranchId, all, request.AddSeats, newName, request.IsAc ?? inSection.All(s => s.IsAc));
 
         await _db.SaveChangesAsync();
+        await _allocation.ApplyReservationAsync(request.BranchId);
         return await Sections(request.BranchId);
     }
 
@@ -123,6 +126,7 @@ public class SeatsController : ControllerBase
             return BadRequest(new { message = $"Section '{name}' still has occupied seat(s) {string.Join(", ", occupied)}. Move those students first." });
         _db.Seats.RemoveRange(inSection);
         await _db.SaveChangesAsync();
+        await _allocation.ApplyReservationAsync(branchId);
         return await Sections(branchId);
     }
 
@@ -134,11 +138,17 @@ public class SeatsController : ControllerBase
         if (!request.IsActive && seat.Student is not null)
             return BadRequest(new { message = $"Seat {seat.Number} is occupied by {seat.Student.Name}; move them before disabling it." });
 
+        if (request.ReservedForWomen == true && seat.Student is not null && seat.Student.Gender != Gender.Female)
+            return BadRequest(new { message = $"Seat {seat.Number} is occupied by {seat.Student.Name}; move him to another seat before reserving it for women." });
+
         seat.Label = Clean(request.Label);
         if (request.Section is not null) seat.Section = Clean(request.Section);
         if (request.IsAc.HasValue) seat.IsAc = request.IsAc.Value;
+        if (request.ReservedForWomen.HasValue) seat.ReservedForWomen = request.ReservedForWomen.Value;
+        var wasActive = seat.IsActive;
         seat.IsActive = request.IsActive;
         await _db.SaveChangesAsync();
+        if (wasActive != seat.IsActive) await _allocation.ApplyReservationAsync(seat.BranchId);
 
         var settings = await _settings.GetAsync();
         return ToDto(seat, SettingsService.Today(settings), settings.DueSoonDays);
@@ -153,7 +163,17 @@ public class SeatsController : ControllerBase
             return BadRequest(new { message = $"Seat {seat.Number} is occupied by {seat.Student.Name}." });
         _db.Seats.Remove(seat);
         await _db.SaveChangesAsync();
+        await _allocation.ApplyReservationAsync(seat.BranchId);
         return NoContent();
+    }
+
+    /// <summary>Re-designates reserved seats from the branch's percentage (e.g. after toggling seats by hand).</summary>
+    [HttpPost("apply-reservation")]
+    public async Task<ActionResult<SeatSummaryDto>> ApplyReservation([FromQuery] int branchId)
+    {
+        if (!await _db.Branches.AnyAsync(b => b.Id == branchId)) return NotFound(new { message = "Branch not found." });
+        await _allocation.ApplyReservationAsync(branchId);
+        return await _allocation.SummaryAsync(branchId);
     }
 
     // ----- helpers -----
@@ -179,6 +199,7 @@ public class SeatsController : ControllerBase
         Number = s.Number,
         Section = s.Section,
         IsAc = s.IsAc,
+        ReservedForWomen = s.ReservedForWomen,
         Label = s.Label,
         IsActive = s.IsActive,
         StudentId = s.Student?.Id,

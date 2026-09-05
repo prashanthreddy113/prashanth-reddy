@@ -66,8 +66,9 @@ export default function Seats() {
     if (!secForm.name.trim()) { toast.error('Give the floor / room / section a name'); return }
     run(() => api.addSeatSection({ branchId: branch, name: secForm.name.trim(), seats: Number(secForm.seats), isAc: secForm.isAc }), `Added ${secForm.seats} seats in "${secForm.name.trim()}"`).then((ok) => ok && setSecForm({ name: '', seats: 10, isAc: true }))
   }
-  const openSeat = (s) => { setSeat(s); setSeatForm({ label: s.label || '', section: s.section || '', isAc: s.isAc }) }
-  const saveSeat = (isActive) => run(() => api.updateSeat(selected.id, { label: seatForm.label, section: seatForm.section, isAc: seatForm.isAc, isActive }), `Seat ${selected.number} updated`).then((ok) => ok && setSeat(null))
+  const openSeat = (s) => { setSeat(s); setSeatForm({ label: s.label || '', section: s.section || '', isAc: s.isAc, reservedForWomen: s.reservedForWomen }) }
+  const saveSeat = (isActive) => run(() => api.updateSeat(selected.id, { label: seatForm.label, section: seatForm.section, isAc: seatForm.isAc, reservedForWomen: seatForm.reservedForWomen, isActive }), `Seat ${selected.number} updated`).then((ok) => ok && setSeat(null))
+  const reapply = () => run(() => api.applySeatReservation(branch), 'Reserved seats re-applied from the percentage')
 
   if (!branches.length) return <div className="alert warn">Create a branch first on the <Link to="/branches"><strong>Branches</strong></Link> page.</div>
   if (error && !seats) return <div className="alert error">{error}</div>
@@ -86,9 +87,19 @@ export default function Seats() {
             )}
           </h2>
           <p>{seats.length} seats · {sections.filter((s) => s.name).length} section{sections.filter((s) => s.name).length === 1 ? '' : 's'} · {quota?.acSeats ?? 0} AC · {quota?.nonAcSeats ?? 0} non-AC{!branchId && branches.length > 1 ? ' · pick a branch above or in the top bar' : ''}</p>
+          {quota && (
+            <div className="row" style={{ gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+              <span className="badge green" style={{ fontSize: 13 }}>{quota.free} seats available in total</span>
+              <span className="badge navy">{quota.generalFree} open to anyone</span>
+              <span className="badge" style={{ color: '#be185d', background: '#fce7f3', borderColor: '#f9a8d4' }}>{quota.reservedFree} women only</span>
+              <span className="badge grey">{quota.acFree} AC · {quota.nonAcFree} non-AC free</span>
+            </div>
+          )}
         </div>
         <div className="legend">
-          <span><span className="dot green" />Free</span>
+          <span><span className="dot green" />Free (anyone)</span>
+          <span><span className="dot pink-light" />Reserved for women</span>
+          <span><span className="dot pink-dark" />Occupied by a woman</span>
           <span><span className="dot" style={{ background: '#e8eef7', borderColor: '#c9d6e8' }} />Occupied</span>
           <span><span className="dot amber" />Due soon</span>
           <span><span className="dot red" />Overdue</span>
@@ -113,10 +124,11 @@ export default function Seats() {
                 </div>
                 <div className="seat-grid" style={{ marginTop: 10 }}>
                   {list.map((s) => (
-                    <div key={s.id} className={`seat ${s.isOccupied ? `occupied ${s.studentStatus || ''}` : ''} ${!s.isActive ? 'inactive' : ''}`} onClick={() => openSeat(s)}
-                      title={s.isOccupied ? `${s.studentName} · due ${fmtDate(s.studentDueDate)}` : s.isActive ? 'Free seat' : 'Disabled'}>
+                    <div key={s.id} className={`seat ${s.isOccupied ? `occupied ${s.studentStatus || ''}` : ''} ${s.isOccupied && s.studentGender === 'Female' ? 'woman' : ''} ${!s.isOccupied && s.reservedForWomen ? 'reserved' : ''} ${!s.isActive ? 'inactive' : ''}`} onClick={() => openSeat(s)}
+                      title={s.isOccupied ? `${s.studentName} · due ${fmtDate(s.studentDueDate)}${s.reservedForWomen ? ' · reserved for women' : ''}` : s.isActive ? (s.reservedForWomen ? 'Free · reserved for women' : 'Free · anyone can book') : 'Disabled'}>
+                      {s.reservedForWomen && <span className="rsv">W</span>}
                       <div className="no">{s.number}</div>
-                      {s.isOccupied ? <div className="who">{s.studentGender === 'Female' ? <span className="gender-tag Female" style={{ marginRight: 4, marginLeft: 0 }}>F</span> : null}{s.studentName}</div> : <div className="tag">{s.isActive ? 'Free' : 'Disabled'}</div>}
+                      {s.isOccupied ? <div className="who">{s.studentName}</div> : <div className="tag">{s.isActive ? (s.reservedForWomen ? 'Women only' : 'Free') : 'Disabled'}</div>}
                       <div className="sec">{s.isAc ? 'AC' : 'Non-AC'}{s.label ? ` · ${s.label}` : ''}</div>
                     </div>
                   ))}
@@ -177,17 +189,16 @@ export default function Seats() {
 
           {quota && (
             <div className="card">
-              <div className="card-head"><h3>Women's reservation</h3><Link to="/branches" className="btn sm">Change</Link></div>
+              <div className="card-head"><h3>Women's reservation</h3><div className="row" style={{ gap: 6 }}><button className="btn sm" onClick={reapply} disabled={busy} title="Re-mark reserved seats from the percentage">Re-apply</button><Link to="/branches" className="btn sm">Change %</Link></div></div>
               <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div className="kv">
                   <span className="k">Reserved share</span><span className="v">{quota.femaleReservationPercent}% · {quota.reservedForWomen} of {quota.active} seats</span>
-                  <span className="k">Women seated</span><span className="v">{quota.womenSeated}</span>
-                  <span className="k">Open to men/others</span><span className="v">{quota.generalCapacity} seats · {quota.generalOccupied} taken</span>
-                  <span className="k">Still open to men</span><span className="v" style={{ color: quota.generalFree > 0 ? 'var(--green)' : 'var(--red)' }}>{quota.generalFree}</span>
+                  <span className="k">Reserved seats free</span><span className="v" style={{ color: '#be185d' }}>{quota.reservedFree}</span>
+                  <span className="k">Women seated</span><span className="v">{quota.womenSeated} <span className="secondary">({quota.womenOnReservedSeats} on reserved seats)</span></span>
+                  <span className="k">Open to anyone</span><span className="v">{quota.generalCapacity} seats · {quota.generalFree} free</span>
                   <span className="k">AC free / Non-AC free</span><span className="v">{quota.acFree} / {quota.nonAcFree}</span>
                 </div>
-                <div className="progress"><span style={{ width: `${quota.generalCapacity ? Math.min(100, Math.round((quota.generalOccupied / quota.generalCapacity) * 100)) : 0}%`, background: quota.quotaExceeded ? 'var(--red)' : 'var(--navy)' }} /></div>
-                {quota.quotaExceeded && <div className="alert warn">More men/others are seated than the reservation allows. Existing seats are kept; no new seats go to men until the count drops.</div>}
+                <p className="muted" style={{ fontSize: 12 }}>Light pink seats can only be given to women. Every other seat can be booked by men or women. Click a seat to change its reservation; “Re-apply” re-marks seats from the percentage.</p>
               </div>
             </div>
           )}
@@ -205,6 +216,7 @@ export default function Seats() {
             <div className="field"><label>Section</label><input value={seatForm.section} onChange={(e) => setSeatForm({ ...seatForm, section: e.target.value })} placeholder="e.g. Room A" maxLength={80} /></div>
             <div className="field"><label>Label<span className="opt">(optional)</span></label><input value={seatForm.label} onChange={(e) => setSeatForm({ ...seatForm, label: e.target.value })} placeholder="Window, Near door" maxLength={50} /></div>
             <div className="field full"><label style={{ display: 'flex', alignItems: 'center', gap: 8 }}><input type="checkbox" checked={seatForm.isAc} onChange={(e) => setSeatForm({ ...seatForm, isAc: e.target.checked })} /> Air-conditioned seat</label></div>
+            <div className="field full"><label style={{ display: 'flex', alignItems: 'center', gap: 8 }}><input type="checkbox" checked={!!seatForm.reservedForWomen} onChange={(e) => setSeatForm({ ...seatForm, reservedForWomen: e.target.checked })} /> Reserved for women (only women can be given this seat)</label></div>
           </div>
           <div className="form-actions" style={{ justifyContent: 'space-between' }}>
             {selected.isActive

@@ -26,7 +26,7 @@ public class DashboardDto
     public decimal NetAllTime { get; set; }
     public decimal ExpectedMonthlyRevenue { get; set; }
 
-    public SeatSummaryDto Seats { get; set; } = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0);
+    public SeatSummaryDto Seats { get; set; } = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0);
     /// <summary>Per-branch roll-up, populated when the dashboard is not filtered to one branch.</summary>
     public List<BranchSummaryDto> Branches { get; set; } = new();
     public List<StudentDto> Students { get; set; } = new();

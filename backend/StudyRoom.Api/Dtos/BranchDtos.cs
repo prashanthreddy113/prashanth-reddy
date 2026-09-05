@@ -27,4 +27,5 @@ public class BranchDto
 
 public record BranchSummaryDto(int Id, string Name, string? Code, bool IsActive,
     int ActiveStudents, int DueSoon, int Overdue, int SeatsTotal, int SeatsActive, int SeatsOccupied, int SeatsFree,
-    int AcSeats, int WomenSeated, int ReservedForWomen, decimal Outstanding, decimal CollectedThisMonth, decimal ExpensesThisMonth, decimal NetThisMonth);
+    int AcSeats, int WomenSeated, int ReservedForWomen, int SeatsOpenFree, int SeatsReservedFree,
+    decimal Outstanding, decimal CollectedThisMonth, decimal ExpensesThisMonth, decimal NetThisMonth);

@@ -16,6 +16,9 @@ public class Seat
     /// <summary>Air-conditioned seat.</summary>
     public bool IsAc { get; set; }
 
+    /// <summary>Only women may be given this seat. Auto-designated from the branch's reservation percentage; admins can toggle per seat.</summary>
+    public bool ReservedForWomen { get; set; }
+
     /// <summary>Optional label, e.g. "Window", "Near door".</summary>
     public string? Label { get; set; }
 

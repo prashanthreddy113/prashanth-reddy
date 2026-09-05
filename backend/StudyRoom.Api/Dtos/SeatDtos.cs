@@ -11,6 +11,7 @@ public class SeatDto
     public int Number { get; set; }
     public string? Section { get; set; }
     public bool IsAc { get; set; }
+    public bool ReservedForWomen { get; set; }
     public string? Label { get; set; }
     public bool IsActive { get; set; }
     public bool IsOccupied => StudentId.HasValue;
@@ -54,10 +55,11 @@ public class SeatUpdateRequest
     [StringLength(50)] public string? Label { get; set; }
     [StringLength(80)] public string? Section { get; set; }
     public bool? IsAc { get; set; }
+    public bool? ReservedForWomen { get; set; }
     public bool IsActive { get; set; } = true;
 }
 
-public record SeatSectionDto(string? Name, int Total, int Active, int Occupied, int Free, int AcSeats);
+public record SeatSectionDto(string? Name, int Total, int Active, int Occupied, int Free, int AcSeats, int ReservedForWomen);
 
 /// <summary>
 /// Seat counts including the women's reservation quota.
@@ -67,4 +69,5 @@ public record SeatSummaryDto(
     int Total, int Active, int Occupied, int Free,
     int FemaleReservationPercent, int ReservedForWomen, int WomenSeated,
     int GeneralCapacity, int GeneralOccupied, int GeneralFree, bool QuotaExceeded,
-    int AcSeats, int AcFree, int NonAcSeats, int NonAcFree);
+    int AcSeats, int AcFree, int NonAcSeats, int NonAcFree,
+    int ReservedFree, int WomenOnReservedSeats);

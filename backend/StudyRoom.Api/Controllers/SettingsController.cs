@@ -14,10 +14,13 @@ public class SettingsController : ControllerBase
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
 
-    public SettingsController(AppDbContext db, SettingsService settings)
+    private readonly SeatAllocationService _allocation;
+
+    public SettingsController(AppDbContext db, SettingsService settings, SeatAllocationService allocation)
     {
         _db = db;
         _settings = settings;
+        _allocation = allocation;
     }
 
     [HttpGet]
@@ -46,6 +49,7 @@ public class SettingsController : ControllerBase
         s.DueSoonDays = request.DueSoonDays;
         s.TimeZoneId = request.TimeZoneId.Trim();
         s.Currency = request.Currency.Trim().ToUpperInvariant();
+        var pctChanged = s.FemaleReservationPercent != request.FemaleReservationPercent;
         s.FemaleReservationPercent = request.FemaleReservationPercent;
         s.MinimumMonthlyFee = request.MinimumMonthlyFee;
         s.SendPaymentReceipts = request.SendPaymentReceipts;
@@ -59,6 +63,7 @@ public class SettingsController : ControllerBase
         s.WhatsAppTemplateName = request.WhatsAppTemplateName.Trim();
         s.WhatsAppLanguageCode = request.WhatsAppLanguageCode.Trim();
         await _db.SaveChangesAsync();
+        if (pctChanged) await _allocation.ApplyReservationToAllAsync();
         return await Get();
     }
 }

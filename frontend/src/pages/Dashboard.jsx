@@ -124,9 +124,9 @@ export default function Dashboard() {
           <span className="sub">Follow up before expiry</span>
         </div>
         <div className="card stat gold clickable" onClick={() => navigate('/seats')}>
-          <span className="label">Seats</span>
-          <span className="value">{data.seats.occupied}<span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 600 }}> / {data.seats.active}</span></span>
-          <span className="sub">{data.seats.free} free · {data.seats.acFree} AC free · {data.seats.reservedForWomen} reserved for women</span>
+          <span className="label">Seats available</span>
+          <span className="value">{data.seats.free}<span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 600 }}> / {data.seats.active}</span></span>
+          <span className="sub">{data.seats.generalFree} open to anyone · {data.seats.reservedFree} women only · {data.seats.acFree} AC free</span>
         </div>
         <div className="card stat green clickable" onClick={() => navigate('/expenses')}>
           <span className="label">Collected this month</span>
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <div key={b.id} className="card branch-card" onClick={() => setSelected(String(b.id))} title="Show only this branch">
                   <div className="name">
                     <span>{b.name}{!b.isActive && <span className="badge grey" style={{ marginLeft: 8 }}>Inactive</span>}</span>
-                    <span className="muted" style={{ fontSize: 12, fontWeight: 600 }}>{b.seatsOccupied}/{b.seatsActive} seats</span>
+                    <span className="muted" style={{ fontSize: 12, fontWeight: 600 }}>{b.seatsFree} free · {b.seatsOpenFree} anyone · {b.seatsReservedFree} women</span>
                   </div>
                   <div className="progress"><span style={{ width: `${b.seatsActive ? Math.round((b.seatsOccupied / b.seatsActive) * 100) : 0}%` }} /></div>
                   <div className="nums">
@@ -213,9 +213,15 @@ export default function Dashboard() {
             <div className="progress"><span style={{ width: `${occupancy}%` }} /></div>
             <div className="row" style={{ justifyContent: 'space-between' }}>
               <span><strong>{data.seats.occupied}</strong> occupied</span>
-              <span><strong>{data.seats.free}</strong> free</span>
-              <span><strong>{data.seats.acSeats}</strong> AC · <strong>{data.seats.nonAcSeats}</strong> non-AC</span>
+              <span><strong>{data.seats.free}</strong> free in total</span>
               <span className="muted">{data.seats.total - data.seats.active} disabled</span>
+            </div>
+            <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
+              <span className="badge green">{data.seats.generalFree} free · anyone</span>
+              <span className="badge" style={{ color: '#be185d', background: '#fce7f3', borderColor: '#f9a8d4' }}>{data.seats.reservedFree} free · women only</span>
+              <span className="badge navy">{data.seats.acFree} AC free</span>
+              <span className="badge grey">{data.seats.nonAcFree} non-AC free</span>
+              <span className="badge" style={{ color: '#be185d', background: '#fce7f3', borderColor: '#f9a8d4' }}>{data.seats.womenSeated} women seated</span>
             </div>
           </div>
         </div>

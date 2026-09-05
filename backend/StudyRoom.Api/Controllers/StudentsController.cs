@@ -312,8 +312,8 @@ public class StudentsController : ControllerBase
         if (seat.Student is not null && seat.Student.Id != currentStudentId)
             return (null, $"Seat {seatNumber} is already occupied by {seat.Student.Name}.");
 
-        var quotaError = await _allocation.CheckAsync(branchId, gender, currentStudentId);
-        if (quotaError is not null) return (null, quotaError);
+        var reservedError = SeatAllocationService.CheckSeat(seat, gender);
+        if (reservedError is not null) return (null, reservedError);
         return (seat, null);
     }
 

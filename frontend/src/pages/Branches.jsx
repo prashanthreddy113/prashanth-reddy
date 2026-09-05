@@ -67,7 +67,7 @@ export default function Branches() {
                   <td>{b.activeStudents}</td>
                   <td>{b.overdue ? <span className="badge red">{b.overdue}</span> : <span className="muted">0</span>}</td>
                   <td>{b.dueSoon ? <span className="badge amber">{b.dueSoon}</span> : <span className="muted">0</span>}</td>
-                  <td><strong>{b.seatsOccupied}</strong> / {b.seatsActive} <span className="secondary">({b.seatsFree} free)</span></td>
+                  <td><strong>{b.seatsOccupied}</strong> / {b.seatsActive}<div className="secondary">{b.seatsFree} free · {b.seatsOpenFree} anyone · {b.seatsReservedFree} women</div></td>
                   <td>{b.acSeats}</td>
                   <td>{b.womenSeated} <span className="secondary">/ {b.reservedForWomen} reserved</span></td>
                   <td className="num pos">{money(b.collectedThisMonth)}</td>

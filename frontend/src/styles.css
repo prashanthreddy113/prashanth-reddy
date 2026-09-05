@@ -305,6 +305,17 @@ td .pos { color: var(--green); font-weight: 600; }
 .seat.occupied.Active { background: #e8eef7; }
 .seat.occupied.DueSoon { background: var(--amber-bg); border-color: var(--amber-border); }
 .seat.occupied.DueToday, .seat.occupied.Overdue { background: var(--red-bg); border-color: var(--red-border); }
+/* Reserved for women: light pink when free; any seat held by a woman: dark pink. Due status stays on the border. */
+.seat.reserved { background: #fce7f3; border-color: #f9a8d4; }
+.seat.reserved .no { color: #be185d; }
+.seat.occupied.woman, .seat.occupied.woman.Active, .seat.occupied.woman.DueSoon, .seat.occupied.woman.DueToday, .seat.occupied.woman.Overdue { background: #db2777; border-color: #be185d; }
+.seat.occupied.woman .no, .seat.occupied.woman .who, .seat.occupied.woman .sec, .seat.occupied.woman .tag { color: #fff; }
+.seat.occupied.woman.DueSoon { box-shadow: inset 0 0 0 3px var(--amber); }
+.seat.occupied.woman.DueToday, .seat.occupied.woman.Overdue { box-shadow: inset 0 0 0 3px #7f1d1d; }
+.seat .rsv { position: absolute; top: 4px; right: 5px; font-size: 9px; font-weight: 800; color: #be185d; letter-spacing: 0.04em; }
+.seat.occupied.woman .rsv { color: #fbcfe8; }
+.legend .dot.pink-light { background: #fce7f3; border-color: #f9a8d4; }
+.legend .dot.pink-dark { background: #db2777; border-color: #be185d; }
 .seat.inactive { background: var(--grey-bg); border-color: var(--grey-border); opacity: 0.7; }
 .seat.inactive .no { color: var(--muted); text-decoration: line-through; }
 .seat.selected { outline: 3px solid var(--navy-light); outline-offset: 1px; }

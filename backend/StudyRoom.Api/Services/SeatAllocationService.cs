@@ -6,9 +6,10 @@ using StudyRoom.Api.Models;
 namespace StudyRoom.Api.Services;
 
 /// <summary>
-/// Seat counts and the women's reservation, computed per branch (or across all branches).
-/// A share of a branch's active seats (branch override, else Settings → FemaleReservationPercent) is held for women:
-/// women may take any free seat, men/others may only occupy seats outside the reserved share.
+/// Women's seat reservation. Specific seats carry ReservedForWomen: only women may be given those seats,
+/// every other seat is open to anyone. The number of reserved seats per branch follows the branch's percentage
+/// (branch override, else Settings) and is re-applied whenever seats or the percentage change; admins can also
+/// toggle individual seats.
 /// </summary>
 public class SeatAllocationService
 {
@@ -21,69 +22,82 @@ public class SeatAllocationService
         _settings = settings;
     }
 
-    public static int ReservedSeats(int activeSeats, int percent) =>
+    public static int TargetReserved(int activeSeats, int percent) =>
         percent <= 0 ? 0 : Math.Min(activeSeats, (int)Math.Ceiling(activeSeats * percent / 100.0));
 
-    private async Task<int> PercentForBranchAsync(int branchId, RoomSettings settings, CancellationToken ct)
+    /// <summary>Error message when this student may not have this seat; null when allowed.</summary>
+    public static string? CheckSeat(Seat seat, Gender? gender) =>
+        seat.ReservedForWomen && gender != Gender.Female
+            ? $"Seat {seat.Number} is reserved for women. Choose a seat that is not reserved, or change the reservation on the Seats page."
+            : null;
+
+    public async Task<int> PercentForBranchAsync(int branchId, CancellationToken ct = default)
     {
+        var settings = await _settings.GetAsync(ct);
         var overridePct = await _db.Branches.Where(b => b.Id == branchId).Select(b => b.FemaleReservationPercent).FirstOrDefaultAsync(ct);
         return overridePct ?? settings.FemaleReservationPercent;
     }
 
-    /// <summary>Summary for one branch, or for every branch combined when branchId is null (quota figures are summed per branch).</summary>
+    /// <summary>
+    /// Marks/unmarks seats so the branch has ceil(active × percent) reserved seats.
+    /// Adds reservation to the lowest-numbered free unreserved seats (never a seat held by a man);
+    /// removes it from the highest-numbered free reserved seats first, then from seats held by women.
+    /// </summary>
+    public async Task<int> ApplyReservationAsync(int branchId, CancellationToken ct = default)
+    {
+        var pct = await PercentForBranchAsync(branchId, ct);
+        var seats = await _db.Seats.Include(s => s.Student).Where(s => s.BranchId == branchId && s.IsActive).OrderBy(s => s.Number).ToListAsync(ct);
+        var target = TargetReserved(seats.Count, pct);
+        var current = seats.Count(s => s.ReservedForWomen);
+
+        if (current < target)
+        {
+            foreach (var s in seats.Where(s => !s.ReservedForWomen && (s.Student == null || s.Student.Gender == Gender.Female)))
+            {
+                s.ReservedForWomen = true;
+                if (++current >= target) break;
+            }
+        }
+        else if (current > target)
+        {
+            var candidates = seats.Where(s => s.ReservedForWomen).OrderBy(s => s.Student == null ? 0 : 1).ThenByDescending(s => s.Number);
+            foreach (var s in candidates)
+            {
+                s.ReservedForWomen = false;
+                if (--current <= target) break;
+            }
+        }
+
+        await _db.SaveChangesAsync(ct);
+        return current;
+    }
+
+    public async Task ApplyReservationToAllAsync(CancellationToken ct = default)
+    {
+        foreach (var id in await _db.Branches.Select(b => b.Id).ToListAsync(ct))
+            await ApplyReservationAsync(id, ct);
+    }
+
+    /// <summary>Summary for one branch, or every branch combined when branchId is null.</summary>
     public async Task<SeatSummaryDto> SummaryAsync(int? branchId, CancellationToken ct = default)
     {
         var settings = await _settings.GetAsync(ct);
-        var branchIds = branchId.HasValue ? new[] { branchId.Value } : await _db.Branches.Select(b => b.Id).ToArrayAsync(ct);
+        var q = _db.Seats.AsNoTracking().AsQueryable();
+        if (branchId.HasValue) q = q.Where(s => s.BranchId == branchId.Value);
+        var seats = await q.Select(s => new { s.IsActive, s.IsAc, s.ReservedForWomen, Occupied = s.Student != null, Female = s.Student != null && s.Student.Gender == Gender.Female }).ToListAsync(ct);
 
-        int total = 0, active = 0, occupied = 0, women = 0, reserved = 0, generalCap = 0, generalOcc = 0, ac = 0, acFree = 0, nonAc = 0, nonAcFree = 0;
-        var pctShown = branchId.HasValue ? await PercentForBranchAsync(branchId.Value, settings, ct) : settings.FemaleReservationPercent;
+        var active = seats.Where(s => s.IsActive).ToList();
+        var reserved = active.Where(s => s.ReservedForWomen).ToList();
+        var general = active.Where(s => !s.ReservedForWomen).ToList();
+        var pct = branchId.HasValue ? await PercentForBranchAsync(branchId.Value, ct) : settings.FemaleReservationPercent;
 
-        foreach (var id in branchIds)
-        {
-            var seats = await _db.Seats.Where(s => s.BranchId == id)
-                .Select(s => new { s.IsActive, s.IsAc, Occupied = s.Student != null, Female = s.Student != null && s.Student.Gender == Gender.Female })
-                .ToListAsync(ct);
-            var bActive = seats.Count(s => s.IsActive);
-            var bOccupied = seats.Count(s => s.Occupied);
-            var bWomen = seats.Count(s => s.Female);
-            var pct = await PercentForBranchAsync(id, settings, ct);
-            var bReserved = ReservedSeats(bActive, pct);
-
-            total += seats.Count; active += bActive; occupied += bOccupied; women += bWomen; reserved += bReserved;
-            generalCap += Math.Max(0, bActive - bReserved); generalOcc += bOccupied - bWomen;
-            ac += seats.Count(s => s.IsAc && s.IsActive); acFree += seats.Count(s => s.IsAc && s.IsActive && !s.Occupied);
-            nonAc += seats.Count(s => !s.IsAc && s.IsActive); nonAcFree += seats.Count(s => !s.IsAc && s.IsActive && !s.Occupied);
-        }
-
-        return new SeatSummaryDto(total, active, occupied, Math.Max(0, active - occupied),
-            pctShown, reserved, women, generalCap, generalOcc, Math.Max(0, generalCap - generalOcc), generalOcc > generalCap,
-            ac, acFree, nonAc, nonAcFree);
-    }
-
-    /// <summary>Returns an error message if giving a seat in this branch to this student would eat into the women's reservation; null when allowed.</summary>
-    public async Task<string?> CheckAsync(int branchId, Gender? gender, int currentStudentId, CancellationToken ct = default)
-    {
-        if (gender == Gender.Female) return null;
-
-        var settings = await _settings.GetAsync(ct);
-        var pct = await PercentForBranchAsync(branchId, settings, ct);
-        if (pct <= 0) return null;
-
-        // Keeping or moving a seat inside the same branch does not change the count.
-        if (currentStudentId > 0 && await _db.Students.AnyAsync(s => s.Id == currentStudentId && s.SeatId != null && s.BranchId == branchId, ct))
-            return null;
-
-        var active = await _db.Seats.CountAsync(s => s.BranchId == branchId && s.IsActive, ct);
-        var reserved = ReservedSeats(active, pct);
-        var generalCapacity = Math.Max(0, active - reserved);
-        var generalOccupied = await _db.Students.CountAsync(
-            s => s.BranchId == branchId && s.SeatId != null && s.Gender != Gender.Female && s.Id != currentStudentId, ct);
-
-        if (generalOccupied + 1 > generalCapacity)
-            return $"No seat available for this student in this branch: {reserved} of {active} seats ({pct}%) are reserved for women and all {generalCapacity} general seats are taken. Free a seat or change the reservation.";
-
-        return null;
+        return new SeatSummaryDto(
+            seats.Count, active.Count, active.Count(s => s.Occupied), active.Count(s => !s.Occupied),
+            pct, reserved.Count, active.Count(s => s.Female),
+            general.Count, general.Count(s => s.Occupied), general.Count(s => !s.Occupied),
+            QuotaExceeded: reserved.Any(s => s.Occupied && !s.Female),
+            active.Count(s => s.IsAc), active.Count(s => s.IsAc && !s.Occupied), active.Count(s => !s.IsAc), active.Count(s => !s.IsAc && !s.Occupied),
+            reserved.Count(s => !s.Occupied), reserved.Count(s => s.Female));
     }
 
     public async Task<List<BranchSummaryDto>> BranchSummariesAsync(CancellationToken ct = default)
@@ -107,6 +121,7 @@ public class SeatAllocationService
                 statuses.Count(s => s == DueStatus.DueSoon),
                 statuses.Count(s => s is DueStatus.Overdue or DueStatus.DueToday),
                 seats.Total, seats.Active, seats.Occupied, seats.Free, seats.AcSeats, seats.WomenSeated, seats.ReservedForWomen,
+                seats.GeneralFree, seats.ReservedFree,
                 students.Sum(s => Math.Max(0, s.Balance)), collected, spent, collected - spent));
         }
         return result;

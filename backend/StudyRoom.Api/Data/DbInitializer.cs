@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudyRoom.Api.Models;
+using StudyRoom.Api.Services;
 
 namespace StudyRoom.Api.Data;
 
@@ -52,6 +53,9 @@ public static class DbInitializer
         }
 
         await db.SaveChangesAsync();
+
+        // Keep reserved-for-women seats in line with the configured percentage (idempotent).
+        await scope.ServiceProvider.GetRequiredService<SeatAllocationService>().ApplyReservationToAllAsync();
     }
 
     /// <summary>

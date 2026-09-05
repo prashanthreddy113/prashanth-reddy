@@ -121,6 +121,7 @@ export const api = {
   setSeatCapacity: (data) => request('PUT', '/api/seats/capacity', data),
   addSeatSection: (data) => request('POST', '/api/seats/sections', data),
   updateSeatSection: (data) => request('PUT', '/api/seats/sections', data),
+  applySeatReservation: (branchId) => request('POST', `/api/seats/apply-reservation?branchId=${branchId}`, {}),
   deleteSeatSection: (branchId, name) => request('DELETE', `/api/seats/sections?branchId=${branchId}&name=${encodeURIComponent(name)}`),
   updateSeat: (id, data) => request('PUT', `/api/seats/${id}`, data),
   deleteSeat: (id) => request('DELETE', `/api/seats/${id}`),
