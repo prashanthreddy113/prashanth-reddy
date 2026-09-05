@@ -9,7 +9,7 @@ name: Deploy frontend to Netlify
 
 on:
   push:
-    branches: [main, master, claude/study-room-admin-dashboard-mygaop]
+    branches: [main, master, feature/study-room-admin-dashboard]
     paths: [frontend/**, netlify.toml, .github/workflows/deploy-frontend.yml]
   workflow_dispatch:
 
