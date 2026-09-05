@@ -84,13 +84,8 @@ export default function Dashboard() {
     <>
       <ReadingRoomScene
         title={current ? `${data.roomName} · ${current.name}` : data.roomName}
-        subtitle={`${fmtDate(data.today)} · ${scope} · students due within ${data.dueSoonDays} days are highlighted`}
-        stats={[
-          { label: 'Active students', value: data.activeStudents },
-          { label: 'Seats occupied', value: data.seats.occupied },
-          { label: 'Need attention', value: data.overdueCount + data.dueTodayCount + data.dueSoonCount },
-          { label: 'Net this month', value: Math.abs(Math.round(data.netThisMonth)), prefix: data.netThisMonth < 0 ? '−₹' : '₹' },
-        ]}
+        subtitle={`${scope} · students due within ${data.dueSoonDays} days are highlighted below`}
+        data={data}
       />
 
       <div className="page-head reveal">

@@ -1,105 +1,145 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { money, fmtDate } from '../lib/format'
+
 /**
- * Cinematic reading-room banner for the dashboard: a night-time study hall with a warm desk lamp,
- * slow breathing light, drifting dust motes, page-turn shimmer and a gentle camera drift.
- * Pure CSS/SVG, no libraries; honours prefers-reduced-motion.
+ * Rich animated dashboard hero.
+ * Layers (back → front): brand aurora · perspective light-grid floor · drifting particles · glass panels.
+ * Right side: a "seat constellation" built from the real seat counts that lights up in a wave, orbited by the BrightLoop loop.
+ * Mouse parallax nudges the layers; a payments ticker runs along the bottom. Honours prefers-reduced-motion.
  */
-export default function ReadingRoomScene({ title, subtitle, stats }) {
-  const motes = Array.from({ length: 18 }, (_, i) => ({
-    left: (i * 53) % 100,
-    top: 20 + ((i * 37) % 60),
-    size: 2 + (i % 3),
-    delay: (i * 0.7) % 8,
-    dur: 9 + (i % 5) * 2,
-  }))
+export default function ReadingRoomScene({ title, subtitle, data }) {
+  const ref = useRef(null)
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect()
+      setTilt({ x: ((e.clientX - r.left) / r.width - 0.5) * 2, y: ((e.clientY - r.top) / r.height - 0.5) * 2 })
+    }
+    const onLeave = () => setTilt({ x: 0, y: 0 })
+    el.addEventListener('mousemove', onMove); el.addEventListener('mouseleave', onLeave)
+    return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave) }
+  }, [])
+
+  const seats = data.seats
+  const occupancy = seats.active ? Math.round((seats.occupied / seats.active) * 100) : 0
+  const attention = data.overdueCount + data.dueTodayCount + data.dueSoonCount
+  const attentionPct = data.activeStudents ? Math.round((attention / data.activeStudents) * 100) : 0
+  const collectedPct = data.expectedMonthlyRevenue > 0 ? Math.min(100, Math.round((data.collectedThisMonth / data.expectedMonthlyRevenue) * 100)) : 0
+
+  // Seat constellation: up to 72 cells, proportional to real counts.
+  const cells = useMemo(() => {
+    const total = Math.max(1, seats.active)
+    const n = Math.min(72, Math.max(12, total))
+    const scale = (v) => Math.round((v / total) * n)
+    const women = scale(seats.womenSeated)
+    const men = Math.max(0, scale(seats.occupied) - women)
+    const reservedFree = scale(seats.reservedFree)
+    const kinds = [...Array(women).fill('woman'), ...Array(men).fill('taken'), ...Array(reservedFree).fill('reserved')]
+    while (kinds.length < n) kinds.push('free')
+    // deterministic shuffle so the map looks organic but stable between renders
+    let seed = 7
+    for (let i = kinds.length - 1; i > 0; i--) { seed = (seed * 9301 + 49297) % 233280; const j = Math.floor((seed / 233280) * (i + 1)); [kinds[i], kinds[j]] = [kinds[j], kinds[i]] }
+    return kinds.slice(0, n)
+  }, [seats])
+
+  const particles = useMemo(() => Array.from({ length: 26 }, (_, i) => ({
+    left: (i * 37) % 100, top: (i * 53) % 100, size: 1.5 + (i % 3), delay: (i * 0.9) % 12, dur: 10 + (i % 6) * 2,
+  })), [])
+
+  const ticker = data.recentPayments?.length ? data.recentPayments : []
+  const px = (k) => `translate3d(${tilt.x * k}px, ${tilt.y * k}px, 0)`
 
   return (
-    <div className="scene card" aria-hidden="false">
-      <div className="scene-sky" />
-      <div className="scene-light" />
-      <div className="scene-window">
-        <span /><span /><span /><span />
+    <div className="hero card" ref={ref}>
+      <div className="hero-aurora" style={{ transform: px(-6) }}><span /><span /><span /></div>
+      <div className="hero-floor" style={{ transform: `perspective(600px) rotateX(62deg) translateY(40px) translateX(${tilt.x * -10}px)` }} />
+      <div className="hero-particles">{particles.map((p, i) => <span key={i} style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size, animationDelay: `${p.delay}s`, animationDuration: `${p.dur}s` }} />)}</div>
+      <div className="hero-sweep" />
+
+      <div className="hero-body">
+        <div className="hero-left" style={{ transform: px(4) }}>
+          <div className="hero-kicker"><span className="hero-live" /> Live overview · {fmtDate(data.today)}</div>
+          <h2 className="hero-title">{title}</h2>
+          <p className="hero-sub">{subtitle}</p>
+
+          <div className="hero-tiles">
+            <Gauge value={occupancy} label="Occupancy" big={`${seats.occupied}/${seats.active}`} hint={`${seats.free} free`} tone="pink" delay={0.2} />
+            <Gauge value={collectedPct} label="Collected vs expected" big={money(data.collectedThisMonth)} hint={`of ${money(data.expectedMonthlyRevenue)}`} tone="orange" delay={0.35} />
+            <Gauge value={attentionPct} label="Need attention" big={attention} hint={`${data.overdueCount + data.dueTodayCount} overdue · ${data.dueSoonCount} due soon`} tone="violet" delay={0.5} />
+          </div>
+
+          <div className="hero-chips">
+            <span className="hero-chip"><b><CountUp value={data.activeStudents} /></b> active students</span>
+            <span className="hero-chip"><b><CountUp value={seats.generalFree} /></b> seats open to anyone</span>
+            <span className="hero-chip pink"><b><CountUp value={seats.reservedFree} /></b> women-only free</span>
+            <span className={`hero-chip ${data.netThisMonth >= 0 ? 'green' : 'red'}`}><b>{data.netThisMonth < 0 ? '−' : ''}<CountUp value={Math.abs(Math.round(data.netThisMonth))} prefix="₹" /></b> net this month</span>
+          </div>
+        </div>
+
+        <div className="hero-right" style={{ transform: px(10) }}>
+          <div className="hero-loop" aria-hidden="true">
+            <svg viewBox="0 0 200 200" width="100%" height="100%">
+              <defs>
+                <linearGradient id="hl-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#7c3aed" /><stop offset="0.5" stopColor="#ec4899" /><stop offset="1" stopColor="#f97316" /></linearGradient>
+                <filter id="hl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+              </defs>
+              <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" strokeDasharray="2 8" className="hero-ring-slow" />
+              <path className="hero-ring" d="M22 100 C22 55 58 22 100 22 C142 22 178 55 178 100 C178 145 142 178 100 178" fill="none" stroke="url(#hl-g)" strokeWidth="9" strokeLinecap="round" filter="url(#hl-glow)" />
+              <circle className="hero-spark" cx="178" cy="100" r="7" fill="#fff" filter="url(#hl-glow)" />
+            </svg>
+          </div>
+          <div className="hero-constellation" style={{ gridTemplateColumns: `repeat(${cells.length > 48 ? 12 : cells.length > 24 ? 8 : 6}, 1fr)` }}>
+            {cells.map((k, i) => <span key={i} className={`cell ${k}`} style={{ animationDelay: `${0.6 + (i % 12) * 0.05 + Math.floor(i / 12) * 0.08}s` }} />)}
+          </div>
+          <div className="hero-legend">
+            <span><i className="free" />free</span><span><i className="reserved" />women only</span><span><i className="woman" />woman</span><span><i className="taken" />occupied</span>
+          </div>
+        </div>
       </div>
-      <svg className="scene-room" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="rr-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#1b1a35" /><stop offset="1" stopColor="#0e0d22" /></linearGradient>
-          <linearGradient id="rr-desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#5b3a1e" /><stop offset="1" stopColor="#3b2412" /></linearGradient>
-          <radialGradient id="rr-lamp" cx="0.5" cy="0.2" r="0.9"><stop offset="0" stopColor="#ffd98a" stopOpacity="0.95" /><stop offset="0.45" stopColor="#ffb347" stopOpacity="0.35" /><stop offset="1" stopColor="#ffb347" stopOpacity="0" /></radialGradient>
-          <linearGradient id="rr-shelf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#2a2247" /><stop offset="1" stopColor="#1c1838" /></linearGradient>
-        </defs>
-        {/* back wall shelves */}
-        <g className="scene-shelves" opacity="0.9">
-          {[0, 1, 2].map((row) => (
-            <g key={row} transform={`translate(0 ${40 + row * 70})`}>
-              <rect x="60" y="44" width="1080" height="6" fill="url(#rr-shelf)" />
-              {Array.from({ length: 34 }, (_, i) => {
-                const h = 26 + ((i * 7 + row * 5) % 16)
-                const colors = ['#7c3aed', '#ec4899', '#f97316', '#12b5a5', '#f4c95d', '#3b82f6', '#a78bfa']
-                return <rect key={i} x={70 + i * 31} y={44 - h} width={i % 4 === 0 ? 12 : 18} height={h} rx="1.5" fill={colors[(i + row) % colors.length]} opacity={0.35 + ((i * 13 + row * 7) % 40) / 100} />
-              })}
-            </g>
-          ))}
-        </g>
-        {/* floor */}
-        <rect x="0" y="250" width="1200" height="70" fill="url(#rr-floor)" />
-        {/* long desks */}
-        <g className="scene-desks">
-          <rect x="120" y="222" width="960" height="14" rx="3" fill="url(#rr-desk)" />
-          <rect x="140" y="236" width="10" height="40" fill="#2e1b0e" /><rect x="1050" y="236" width="10" height="40" fill="#2e1b0e" />
-          <rect x="590" y="236" width="10" height="40" fill="#2e1b0e" />
-          {/* chairs */}
-          {[220, 380, 540, 700, 860].map((x) => (
-            <g key={x} transform={`translate(${x} 240)`}>
-              <rect x="0" y="0" width="52" height="8" rx="2" fill="#26213f" />
-              <rect x="4" y="8" width="5" height="30" fill="#26213f" /><rect x="43" y="8" width="5" height="30" fill="#26213f" />
-            </g>
-          ))}
-          {/* open books with page shimmer */}
-          {[260, 420, 740, 900].map((x, i) => (
-            <g key={x} transform={`translate(${x} 208)`} className="scene-book" style={{ animationDelay: `${i * 1.3}s` }}>
-              <path d="M0 14 Q22 4 44 14 L44 18 Q22 8 0 18 Z" fill="#f6efe0" />
-              <path d="M44 14 Q66 4 88 14 L88 18 Q66 8 44 18 Z" fill="#fbf5e8" />
-              <path d="M44 6 L44 18" stroke="#c9b48a" strokeWidth="1" />
-            </g>
-          ))}
-          {/* reading lamps */}
-          {[330, 640, 950].map((x, i) => (
-            <g key={x} transform={`translate(${x} 150)`}>
-              <ellipse className="scene-glow" cx="0" cy="66" rx="120" ry="70" fill="url(#rr-lamp)" style={{ animationDelay: `${i * 0.9}s` }} />
-              <rect x="-2" y="20" width="4" height="52" fill="#3d3a5c" />
-              <path d="M-26 22 L26 22 L14 0 L-14 0 Z" fill="#2b2848" />
-              <path d="M-14 0 L14 0 L12 -6 L-12 -6 Z" fill="#f4c95d" opacity="0.9" />
-            </g>
-          ))}
-        </g>
-      </svg>
-      <div className="scene-motes">
-        {motes.map((m, i) => (
-          <span key={i} style={{ left: `${m.left}%`, top: `${m.top}%`, width: m.size, height: m.size, animationDelay: `${m.delay}s`, animationDuration: `${m.dur}s` }} />
-        ))}
-      </div>
-      <div className="scene-copy">
-        <div className="scene-kicker">Live overview</div>
-        <h2 className="scene-title">{title}</h2>
-        <p className="scene-sub">{subtitle}</p>
-        {stats && (
-          <div className="scene-stats">
-            {stats.map((s) => (
-              <div key={s.label} className="scene-stat">
-                <span className="v"><CountUp value={s.value} prefix={s.prefix} /></span>
-                <span className="k">{s.label}</span>
-              </div>
+
+      {ticker.length > 0 && (
+        <div className="hero-ticker" aria-hidden="true">
+          <div className="hero-ticker-track">
+            {[...ticker, ...ticker].map((p, i) => (
+              <span key={i} className="hero-tick"><b>+{money(p.amount)}</b> {p.studentName} <em>{fmtDate(p.paidOn)}</em></span>
             ))}
           </div>
-        )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function Gauge({ value, label, big, hint, tone, delay }) {
+  const r = 26, c = 2 * Math.PI * r
+  const [v, setV] = useState(0)
+  useEffect(() => {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) { setV(value); return }
+    const t = setTimeout(() => setV(value), 150 + delay * 1000)
+    return () => clearTimeout(t)
+  }, [value, delay])
+  return (
+    <div className={`hero-tile ${tone}`} style={{ animationDelay: `${delay}s` }}>
+      <svg width="64" height="64" viewBox="0 0 64 64" className="hero-gauge">
+        <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="6" />
+        <circle cx="32" cy="32" r={r} fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c - (c * Math.min(100, v)) / 100} transform="rotate(-90 32 32)" />
+        <text x="32" y="36" textAnchor="middle" fontSize="13" fontWeight="800" fill="#fff"><CountUp value={value} />%</text>
+      </svg>
+      <div className="hero-tile-text">
+        <div className="big">{big}</div>
+        <div className="lbl">{label}</div>
+        <div className="hint">{hint}</div>
       </div>
     </div>
   )
 }
 
-import { useEffect, useRef, useState } from 'react'
-
 /** Counts from 0 to value once when it first renders (or when value changes). */
-export function CountUp({ value, prefix = '', duration = 1100 }) {
+export function CountUp({ value, prefix = '', duration = 1200 }) {
   const [shown, setShown] = useState(0)
   const raf = useRef(null)
   useEffect(() => {
