@@ -5,7 +5,7 @@ namespace StudyRoom.Api.Dtos;
 
 public class ExpenseUpsertRequest
 {
-    [Required, Range(1, int.MaxValue, ErrorMessage = "Branch is required.")] public int BranchId { get; set; }
+    public int? BranchId { get; set; }
     public ExpenseCategory Category { get; set; } = ExpenseCategory.Other;
     [StringLength(120)] public string? Title { get; set; }
     [Range(0.01, 100_000_000)] public decimal Amount { get; set; }

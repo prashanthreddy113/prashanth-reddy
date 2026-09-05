@@ -44,6 +44,7 @@ public static class StudentMapper
             SeatLabel = s.Seat?.Label,
             SeatSection = s.Seat?.Section,
             SeatIsAc = s.Seat?.IsAc,
+            SeatReservedForWomen = s.Seat?.ReservedForWomen,
             IsActive = s.IsActive,
             CreatedAt = s.CreatedAt,
             UpdatedAt = s.UpdatedAt,

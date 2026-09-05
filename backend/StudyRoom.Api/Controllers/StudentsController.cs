@@ -175,6 +175,95 @@ public class StudentsController : ControllerBase
         return StudentMapper.ToDto(student, SettingsService.Today(settings), settings.DueSoonDays);
     }
 
+    /// <summary>Release the student's seat but keep the membership active (e.g. temporarily away).</summary>
+    [HttpPost("{id:int}/vacate-seat")]
+    public async Task<ActionResult<StudentDto>> VacateSeat(int id)
+    {
+        var settings = await _settings.GetAsync();
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
+        if (student is null) return NotFound();
+        if (student.SeatId is null) return BadRequest(new { message = $"{student.Name} has no seat to vacate." });
+
+        student.SeatId = null;
+        student.Seat = null;
+        student.UpdatedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+        return StudentMapper.ToDto(student, SettingsService.Today(settings), settings.DueSoonDays);
+    }
+
+    /// <summary>
+    /// Move the student to another seat (any branch). A free target seat is simply assigned; an occupied one can be
+    /// swapped with its occupant when Swap is true. Reserved-for-women rules apply to everyone who moves.
+    /// </summary>
+    [HttpPost("{id:int}/transfer")]
+    public async Task<ActionResult<StudentDto>> Transfer(int id, TransferSeatRequest request)
+    {
+        var settings = await _settings.GetAsync();
+        var today = SettingsService.Today(settings);
+
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
+        if (student is null) return NotFound();
+        if (!student.IsActive) return BadRequest(new { message = "Reactivate the student before giving them a seat." });
+
+        var branchId = request.BranchId ?? student.BranchId;
+        var branch = await _db.Branches.FirstOrDefaultAsync(b => b.Id == branchId);
+        if (branch is null) return BadRequest(new { message = "Target branch not found." });
+        if (!branch.IsActive) return BadRequest(new { message = $"Branch '{branch.Name}' is inactive." });
+
+        var target = await _db.Seats.Include(x => x.Student).FirstOrDefaultAsync(x => x.BranchId == branchId && x.Number == request.SeatNumber);
+        if (target is null) return BadRequest(new { message = $"Seat {request.SeatNumber} does not exist in {branch.Name}." });
+        if (!target.IsActive) return BadRequest(new { message = $"Seat {request.SeatNumber} is disabled." });
+        if (target.Id == student.SeatId) return BadRequest(new { message = $"{student.Name} already has seat {target.Number}." });
+
+        var err = SeatAllocationService.CheckSeat(target, student.Gender);
+        if (err is not null) return BadRequest(new { message = err });
+
+        var occupant = target.Student;
+        var oldSeat = student.Seat;
+
+        if (occupant is not null)
+        {
+            if (!request.Swap)
+                return BadRequest(new { message = $"Seat {target.Number} is occupied by {occupant.Name}. Turn on “swap seats” to exchange their seats." });
+            if (oldSeat is null)
+                return BadRequest(new { message = $"{student.Name} has no seat to swap; choose a free seat instead." });
+            var backErr = SeatAllocationService.CheckSeat(oldSeat, occupant.Gender);
+            if (backErr is not null) return BadRequest(new { message = $"Cannot swap: {occupant.Name} may not take seat {oldSeat.Number}. {backErr}" });
+        }
+
+        await using var tx = await _db.Database.BeginTransactionAsync();
+
+        // Step 1: free the mover's seat so the one-student-per-seat index is never violated mid-way.
+        student.SeatId = null; student.Seat = null;
+        await _db.SaveChangesAsync();
+
+        if (occupant is not null)
+        {
+            occupant.SeatId = oldSeat!.Id; occupant.Seat = oldSeat;
+            occupant.BranchId = oldSeat.BranchId;
+            occupant.UpdatedAt = DateTime.UtcNow;
+            occupant.Notes = AppendNote(occupant.Notes, $"Swapped to seat {oldSeat.Number} with {student.Name} on {today:dd MMM yyyy}");
+            await _db.SaveChangesAsync();
+        }
+
+        student.SeatId = target.Id; student.Seat = target;
+        student.BranchId = branchId; student.Branch = branch;
+        student.UpdatedAt = DateTime.UtcNow;
+        var from = oldSeat is null ? "no seat" : $"seat {oldSeat.Number}";
+        student.Notes = AppendNote(student.Notes, $"Transferred from {from} to seat {target.Number} ({branch.Name}) on {today:dd MMM yyyy}");
+        await _db.SaveChangesAsync();
+        await tx.CommitAsync();
+
+        await _db.Entry(student).Reference(x => x.Seat).LoadAsync();
+        return StudentMapper.ToDto(student, today, settings.DueSoonDays);
+    }
+
+    private static string? AppendNote(string? notes, string line)
+    {
+        var combined = string.IsNullOrWhiteSpace(notes) ? line : $"{notes}\n{line}";
+        return combined.Length > 1000 ? combined[^1000..] : combined;
+    }
+
     /// <summary>Record a payment; increases the student's total paid amount.</summary>
     [HttpPost("{id:int}/payments")]
     public async Task<ActionResult<StudentDto>> AddPayment(int id, PaymentRequest request)
@@ -263,7 +352,8 @@ public class StudentsController : ControllerBase
 
     private async Task<string?> ApplyAsync(Student student, StudentUpsertRequest request)
     {
-        var branch = await _db.Branches.FirstOrDefaultAsync(b => b.Id == request.BranchId);
+        var branchId = request.BranchId is > 0 ? request.BranchId.Value : (student.BranchId > 0 ? student.BranchId : await _settings.DefaultBranchIdAsync());
+        var branch = await _db.Branches.FirstOrDefaultAsync(b => b.Id == branchId);
         if (branch is null) return "Selected branch does not exist.";
         if (!branch.IsActive && student.BranchId != branch.Id) return $"Branch '{branch.Name}' is inactive.";
 

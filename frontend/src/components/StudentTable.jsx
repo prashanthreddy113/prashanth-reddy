@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import StatusBadge from './StatusBadge'
 import { money, fmtDate, dueText } from '../lib/format'
-import { IconEdit, IconMoney, IconRefresh } from './Icons'
+import { IconEdit, IconMoney, IconRefresh, IconTransfer } from './Icons'
 
-export default function StudentTable({ students, onEdit, onPay, onRenew, compact, showBranch }) {
+export default function StudentTable({ students, onEdit, onPay, onRenew, onTransfer, compact, showBranch }) {
   if (!students.length) {
     return (
       <div className="empty">
@@ -62,6 +62,7 @@ export default function StudentTable({ students, onEdit, onPay, onRenew, compact
                 <div className="row-actions">
                   {onPay && <button className="btn sm" title="Record payment" onClick={() => onPay(s)}><IconMoney /></button>}
                   {onRenew && <button className="btn sm" title="Renew / extend" onClick={() => onRenew(s)}><IconRefresh /></button>}
+                  {onTransfer && s.isActive && <button className="btn sm" title="Transfer seat" onClick={() => onTransfer(s)}><IconTransfer /></button>}
                   {onEdit && <button className="btn sm" title="Edit" onClick={() => onEdit(s)}><IconEdit /></button>}
                 </div>
               </td>

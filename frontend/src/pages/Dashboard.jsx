@@ -8,6 +8,7 @@ import StudentTable from '../components/StudentTable'
 import StudentFormModal from '../components/StudentFormModal'
 import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
+import TransferSeatModal from '../components/TransferSeatModal'
 import ReadingRoomScene from '../components/ReadingRoomScene'
 import { IconPlus, IconSearch } from '../components/Icons'
 
@@ -35,7 +36,8 @@ export default function Dashboard() {
   const [modal, setModal] = useState(null)
   const toast = useToast()
   const navigate = useNavigate()
-  const { branchId, current, setSelected, multi } = useBranch()
+  const { branchId } = useBranch()
+  const current = null, multi = false
 
   const load = useCallback(async () => {
     try {
@@ -78,20 +80,19 @@ export default function Dashboard() {
   if (!data) return <div className="loading"><div className="spinner" />Loading dashboard…</div>
 
   const occupancy = data.seats.active ? Math.round((data.seats.occupied / data.seats.active) * 100) : 0
-  const scope = current ? current.name : multi ? 'All branches' : data.roomName
 
   return (
     <>
       <ReadingRoomScene
-        title={current ? `${data.roomName} · ${current.name}` : data.roomName}
-        subtitle={`${scope} · students due within ${data.dueSoonDays} days are highlighted below`}
+        title={data.roomName}
+        subtitle={`Students due within ${data.dueSoonDays} days are highlighted below`}
         data={data}
       />
 
       <div className="page-head reveal">
         <div>
-          <h2>{scope}</h2>
-          <p>{current ? 'Showing this branch only. Switch to “All branches” in the top bar for the full picture.' : multi ? 'Combined view across every branch.' : 'Overview of students, dues, seats and money.'}</p>
+          <h2>Today at a glance</h2>
+          <p>Overview of students, dues, seats and money.</p>
         </div>
         <div className="row">
           <button className="btn primary" onClick={() => setModal({ type: 'add' })}><IconPlus /> Add student</button>
@@ -99,7 +100,7 @@ export default function Dashboard() {
       </div>
 
       {data.seats.total === 0 && (
-        <div className="alert warn">No seats configured{current ? ` in ${current.name}` : ''} yet. <Link to="/seats"><strong>Set up seats</strong></Link> so you can assign seat numbers while registering students.</div>
+        <div className="alert warn">No seats configured yet. <Link to="/seats"><strong>Set up seats</strong></Link> so you can assign seat numbers while registering students.</div>
       )}
 
       <div className="stats reveal" style={{ animationDelay: '0.1s' }}>
@@ -140,33 +141,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {!current && data.branches.length > 1 && (
-        <div className="card reveal" style={{ animationDelay: '0.2s' }}>
-          <div className="card-head"><h3>Branches</h3><Link to="/branches" className="btn sm">Manage</Link></div>
-          <div className="card-body">
-            <div className="branch-cards">
-              {data.branches.map((b) => (
-                <div key={b.id} className="card branch-card" onClick={() => setSelected(String(b.id))} title="Show only this branch">
-                  <div className="name">
-                    <span>{b.name}{!b.isActive && <span className="badge grey" style={{ marginLeft: 8 }}>Inactive</span>}</span>
-                    <span className="muted" style={{ fontSize: 12, fontWeight: 600 }}>{b.seatsFree} free · {b.seatsOpenFree} anyone · {b.seatsReservedFree} women</span>
-                  </div>
-                  <div className="progress"><span style={{ width: `${b.seatsActive ? Math.round((b.seatsOccupied / b.seatsActive) * 100) : 0}%` }} /></div>
-                  <div className="nums">
-                    <div><div className="k">Students</div><div className="v">{b.activeStudents}</div></div>
-                    <div><div className="k">Overdue</div><div className="v" style={{ color: b.overdue ? 'var(--red)' : undefined }}>{b.overdue}</div></div>
-                    <div><div className="k">Due soon</div><div className="v" style={{ color: b.dueSoon ? 'var(--amber)' : undefined }}>{b.dueSoon}</div></div>
-                    <div><div className="k">Collected</div><div className="v" style={{ fontSize: 14 }}>{money(b.collectedThisMonth)}</div></div>
-                    <div><div className="k">Expenses</div><div className="v" style={{ fontSize: 14 }}>{money(b.expensesThisMonth)}</div></div>
-                    <div><div className="k">Net</div><div className="v" style={{ fontSize: 14, color: b.netThisMonth >= 0 ? 'var(--green)' : 'var(--red)' }}>{money(b.netThisMonth)}</div></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="card reveal" style={{ animationDelay: '0.25s' }}>
         <div className="card-head">
           <div className="chips">
@@ -197,6 +171,7 @@ export default function Dashboard() {
           onEdit={(s) => setModal({ type: 'edit', student: s })}
           onPay={(s) => setModal({ type: 'pay', student: s })}
           onRenew={(s) => setModal({ type: 'renew', student: s })}
+          onTransfer={(s) => setModal({ type: 'transfer', student: s })}
           compact
         />
       </div>
@@ -244,6 +219,7 @@ export default function Dashboard() {
       {modal?.type === 'add' && <StudentFormModal onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'edit' && <StudentFormModal student={modal.student} onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'pay' && <PaymentModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s); load() }} />}
+      {modal?.type === 'transfer' && <TransferSeatModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); toast.success(`${s.name} moved to seat ${s.seatNumber}`); load() }} />}
       {modal?.type === 'renew' && <RenewModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s, `Renewed until ${fmtDate(s.dueDate)}`); load() }} />}
     </>
   )

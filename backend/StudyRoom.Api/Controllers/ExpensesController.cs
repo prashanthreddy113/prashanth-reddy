@@ -75,6 +75,7 @@ public class ExpensesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ExpenseDto>> Create(ExpenseUpsertRequest request)
     {
+        request.BranchId ??= await _settings.DefaultBranchIdAsync();
         if (!await _db.Branches.AnyAsync(b => b.Id == request.BranchId)) return BadRequest(new { message = "Branch not found." });
         var e = new Expense();
         Apply(e, request);
@@ -89,6 +90,7 @@ public class ExpensesController : ControllerBase
     {
         var e = await _db.Expenses.Include(x => x.Branch).FirstOrDefaultAsync(x => x.Id == id);
         if (e is null) return NotFound();
+        request.BranchId ??= e.BranchId;
         if (!await _db.Branches.AnyAsync(b => b.Id == request.BranchId)) return BadRequest(new { message = "Branch not found." });
         Apply(e, request);
         await _db.SaveChangesAsync();
@@ -117,7 +119,7 @@ public class ExpensesController : ControllerBase
 
     private static void Apply(Expense e, ExpenseUpsertRequest r)
     {
-        e.BranchId = r.BranchId;
+        e.BranchId = r.BranchId!.Value;
         e.Category = r.Category;
         e.Title = string.IsNullOrWhiteSpace(r.Title) ? null : r.Title.Trim();
         e.Amount = r.Amount;

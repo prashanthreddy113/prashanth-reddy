@@ -25,7 +25,7 @@ public class SeatDto
 /// <summary>Direct setup: "this branch has N seats". New seats go to Section (optional) with the given AC flag.</summary>
 public class SeatCapacityRequest
 {
-    [Required, Range(1, int.MaxValue)] public int BranchId { get; set; }
+    public int? BranchId { get; set; }
     [Range(0, 10_000)] public int TotalSeats { get; set; }
     [StringLength(80)] public string? Section { get; set; }
     public bool IsAc { get; set; }
@@ -34,7 +34,7 @@ public class SeatCapacityRequest
 /// <summary>Structured setup: add N seats under a floor/room/section name.</summary>
 public class SeatSectionRequest
 {
-    [Required, Range(1, int.MaxValue)] public int BranchId { get; set; }
+    public int? BranchId { get; set; }
     [Required, StringLength(80, MinimumLength = 1)] public string Name { get; set; } = string.Empty;
     [Range(1, 5_000)] public int Seats { get; set; }
     public bool IsAc { get; set; }
@@ -42,7 +42,7 @@ public class SeatSectionRequest
 
 public class SeatSectionUpdateRequest
 {
-    [Required, Range(1, int.MaxValue)] public int BranchId { get; set; }
+    public int? BranchId { get; set; }
     [Required, StringLength(80, MinimumLength = 1)] public string Name { get; set; } = string.Empty;
     [StringLength(80)] public string? NewName { get; set; }
     public bool? IsAc { get; set; }

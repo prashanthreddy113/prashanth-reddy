@@ -10,7 +10,6 @@ import StudentDetail from './pages/StudentDetail'
 import Seats from './pages/Seats'
 import Settings from './pages/Settings'
 import Reminders from './pages/Reminders'
-import Branches from './pages/Branches'
 import Expenses from './pages/Expenses'
 
 function RequireAuth({ children }) {
@@ -33,7 +32,6 @@ export default function App() {
               <Route path="students/:id" element={<StudentDetail />} />
               <Route path="seats" element={<Seats />} />
               <Route path="reminders" element={<Reminders />} />
-              <Route path="branches" element={<Branches />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="settings" element={<Settings />} />
             </Route>

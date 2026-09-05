@@ -11,11 +11,11 @@ A complete admin console for the BrightLoop reading room. Admins register studen
 ## Features
 
 - **Admin login** (JWT). A default admin is seeded on first run; change the password from Settings.
-- **Branches** – one owner, many locations. Every branch has its own seats, students and expenses. The top-bar switcher shows all branches combined or one at a time; the dashboard shows per-branch cards in the combined view.
-- **Seat layout per branch** – set a total directly ("this branch has 100 seats") or add floors / rooms / sections with a seat count each. Seat numbers are unique within a branch. Every seat is **AC or Non-AC** and can be labelled, moved between sections, or disabled.
-- **Gender & women's reservation** – gender is mandatory at registration. A configurable share of each branch's seats (default 20%, overridable per branch) is reserved for women: women may take any free seat, men/others only the seats outside the reserved share.
-- **Minimum monthly fee** – set in Settings; pre-fills the form and blocks lower amounts. Partial payments show the remainder as balance.
-- **Expenses & net revenue** – record rent, electricity, salaries and other costs per branch; the dashboard and Expenses page show collected vs spent and the net, per month and per branch.
+- **Seat layout** – set a total directly ("the room has 100 seats") or add floors / rooms / sections with a seat count each. Every seat is **AC or Non-AC** and can be labelled, moved between sections, or disabled.
+- **Gender & women's reservation** – gender is mandatory at registration. A configurable share of seats (default 20%) is marked *reserved for women*: only women can be given those seats, every other seat is open to anyone. Reserved seats show light pink, seats held by women dark pink.
+- **Transfer & vacate** – move a student to any free seat (or swap with another student), or vacate a seat while keeping the membership active.
+- **Standard monthly fee** – set in Settings; shown as the amount per month and lower amounts are blocked. The amount paid at registration is mandatory; any shortfall shows as balance.
+- **Expenses & net revenue** – record rent, electricity, salaries and other costs; the dashboard and Expenses page show collected vs spent and the net per month.
 - **WhatsApp receipts** – after every payment a receipt template is sent automatically (can be switched off).
 - **Register students** – mandatory: name, mobile. Optional: address, Aadhaar, study/course, months to join, amount per month, total paid, joining date, seat number, notes.
 - **Seats** – admin sets how many seats the room has; the seat map shows free / occupied / due-soon / overdue seats. Seats can be labelled or disabled. Register a student directly from a free seat.
@@ -148,20 +148,20 @@ All endpoints except login and health require `Authorization: Bearer <token>`. F
 | --- | --- | --- |
 | POST | `/api/auth/login` | Get a JWT |
 | POST | `/api/auth/change-password` | Change the admin password |
-| GET | `/api/dashboard` | Stats + students with status (`?branchId=` for one branch; combined view includes per-branch cards) |
-| GET / POST | `/api/students` | List (`?search=&status=&branchId=`) / register |
+| GET | `/api/dashboard` | Stats + students with status |
+| GET / POST | `/api/students` | List (`?search=&status=`) / register |
 | GET / PUT / DELETE | `/api/students/{id}` | Read / update / delete |
 | POST | `/api/students/{id}/payments` | Record a payment |
 | POST | `/api/students/{id}/renew` | Extend by N months |
 | POST | `/api/students/{id}/deactivate` · `/activate` | Mark as left / reactivate |
-| GET | `/api/seats` | Seat map with occupants, section and AC flag (`?branchId=`) |
+| GET | `/api/seats` | Seat map with occupants, section, AC and reserved-for-women flags |
 | PUT | `/api/seats/capacity` | Set total number of seats |
 | PUT / DELETE | `/api/seats/{id}` | Label / enable / disable / remove |
-| GET / POST / PUT / DELETE | `/api/branches` · `/api/branches/summary` | Branches and per-branch roll-up |
-| PUT | `/api/seats/capacity` | Set a branch's total seats directly |
+| PUT | `/api/seats/capacity` | Set the total number of seats directly |
 | GET / POST / PUT / DELETE | `/api/seats/sections` | Floor / room / section groups (add N seats, rename, AC toggle, remove) |
-| GET / POST / PUT / DELETE | `/api/expenses` · `/api/expenses/summary` | Expenses and collected-vs-spent summary (`?branchId=&from=&to=`) |
-| GET / PUT | `/api/settings` | Room name, due-soon days, time zone, currency, women's reservation %, minimum fee, reminder & receipt rules |
+| GET / POST / PUT / DELETE | `/api/expenses` · `/api/expenses/summary` | Expenses and collected-vs-spent summary (`?from=&to=`) |
+| POST | `/api/students/{id}/transfer` · `/vacate-seat` | Move (or swap) a student's seat / free the seat |
+| GET / PUT | `/api/settings` | Room name, due-soon days, time zone, currency, women's reservation %, standard monthly fee, reminder & receipt rules |
 | GET | `/api/reminders/status` · `/preview` · `/logs` | Reminder configuration, today's candidates, history |
 | POST | `/api/reminders/run` · `/send/{studentId}` | Send today's reminders / one manual reminder |
 | POST | `/api/reminders/run-external` | Same as run, for external cron (header `X-Reminder-Key`) |

@@ -8,6 +8,7 @@ import StudentTable from '../components/StudentTable'
 import StudentFormModal from '../components/StudentFormModal'
 import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
+import TransferSeatModal from '../components/TransferSeatModal'
 import { IconPlus, IconSearch, IconPrint } from '../components/Icons'
 
 const STATUS_OPTIONS = [
@@ -22,7 +23,8 @@ export default function Students() {
   const [includeInactive, setIncludeInactive] = useState(true)
   const [modal, setModal] = useState(null)
   const toast = useToast()
-  const { branchId, current, multi } = useBranch()
+  const { branchId } = useBranch()
+  const current = null, multi = false
 
   const load = useCallback(async () => {
     try {
@@ -70,13 +72,14 @@ export default function Students() {
         {error && <div className="alert error" style={{ margin: 16 }}>{error}</div>}
         {students === null ? <div className="loading"><div className="spinner" />Loading…</div> : (
           <>
-            <div style={{ padding: '8px 20px 0' }} className="muted">{visible.length} student{visible.length === 1 ? '' : 's'}{current ? ` in ${current.name}` : multi ? ' across all branches' : ''}</div>
+            <div style={{ padding: '8px 20px 0' }} className="muted">{visible.length} student{visible.length === 1 ? '' : 's'}</div>
             <StudentTable
               students={visible}
               showBranch={!current && multi}
               onEdit={(s) => setModal({ type: 'edit', student: s })}
               onPay={(s) => setModal({ type: 'pay', student: s })}
               onRenew={(s) => setModal({ type: 'renew', student: s })}
+          onTransfer={(s) => setModal({ type: 'transfer', student: s })}
             />
           </>
         )}
@@ -85,6 +88,7 @@ export default function Students() {
       {modal?.type === 'add' && <StudentFormModal onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'edit' && <StudentFormModal student={modal.student} onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'pay' && <PaymentModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s); load() }} />}
+      {modal?.type === 'transfer' && <TransferSeatModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); toast.success(`${s.name} moved to seat ${s.seatNumber}`); load() }} />}
       {modal?.type === 'renew' && <RenewModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s, `Renewed until ${fmtDate(s.dueDate)}`); load() }} />}
     </>
   )

@@ -8,8 +8,9 @@ import StudentFormModal from '../components/StudentFormModal'
 import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
 import ConfirmDialog from '../components/ConfirmDialog'
+import TransferSeatModal from '../components/TransferSeatModal'
 import { paymentToast } from './Dashboard'
-import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp } from '../components/Icons'
+import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp, IconTransfer } from '../components/Icons'
 
 export default function StudentDetail() {
   const { id } = useParams()
@@ -56,7 +57,7 @@ export default function StudentDetail() {
           <button className="btn ghost" onClick={() => navigate(-1)}><IconBack /> Back</button>
           <div>
             <h2 className="row" style={{ gap: 10 }}>{s.name} <StatusBadge status={s.status} /></h2>
-            <p>{s.branchName ? `${s.branchName} · ` : ''}{s.seatNumber ? `Seat ${s.seatNumber}${s.seatSection ? ` · ${s.seatSection}` : ''}${s.seatIsAc ? ' · AC' : ''}${s.seatLabel ? ` · ${s.seatLabel}` : ''}` : 'No seat assigned'} · {dueText(s)}</p>
+            <p>{s.seatNumber ? `Seat ${s.seatNumber}${s.seatSection ? ` · ${s.seatSection}` : ''}${s.seatIsAc ? ' · AC' : ''}${s.seatLabel ? ` · ${s.seatLabel}` : ''}` : 'No seat assigned'} · {dueText(s)}</p>
           </div>
         </div>
         <div className="row">
@@ -64,6 +65,7 @@ export default function StudentDetail() {
           <button className="btn" disabled={sending} title="Send an automatic WhatsApp reminder now" onClick={sendReminder}><IconWhatsapp width={16} height={16} /> {sending ? 'Sending…' : 'Send reminder'}</button>
           <button className="btn" onClick={() => setModal('pay')}><IconMoney /> Record payment</button>
           <button className="btn" onClick={() => setModal('renew')}><IconRefresh /> Renew</button>
+          {s.isActive && <button className="btn" onClick={() => setModal('transfer')}><IconTransfer /> Transfer seat</button>}
           <button className="btn primary" onClick={() => setModal('edit')}><IconEdit /> Edit</button>
         </div>
       </div>
@@ -76,7 +78,6 @@ export default function StudentDetail() {
               <div className="kv">
                 <span className="k">Mobile</span><span className="v"><a href={`tel:${s.mobile}`}>{s.mobile}</a></span>
                 <span className="k">Gender</span><span className="v">{s.gender || '—'}</span>
-                <span className="k">Branch</span><span className="v">{s.branchName || '—'}</span>
                 <span className="k">Address</span><span className="v">{s.address || '—'}</span>
                 <span className="k">Aadhaar</span><span className="v">{s.aadhaar ? s.aadhaar.replace(/(\d{4})(?=\d)/g, '$1 ') : '—'}</span>
                 <span className="k">Studying for</span><span className="v">{s.study || '—'}</span>
@@ -131,8 +132,17 @@ export default function StudentDetail() {
             <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {s.isActive ? (
                 <>
-                  <p className="muted">Marking as left releases seat {s.seatNumber || '—'} and hides the student from due reminders. Their record and payments are kept.</p>
-                  <button className="btn danger" onClick={() => setModal('deactivate')}>Mark as left</button>
+                  {s.seatNumber ? (
+                    <>
+                      <p className="muted">Vacate seat {s.seatNumber} while keeping {s.name.split(' ')[0]} as an active member (they keep their plan and can be given another seat later).</p>
+                      <div className="row"><button className="btn" onClick={() => setModal('vacate')}>Vacate seat {s.seatNumber}</button><button className="btn" onClick={() => setModal('transfer')}><IconTransfer /> Transfer seat</button></div>
+                    </>
+                  ) : (
+                    <div className="row"><span className="muted">No seat assigned.</span><button className="btn" onClick={() => setModal('transfer')}><IconTransfer /> Assign a seat</button></div>
+                  )}
+                  <hr style={{ border: 0, borderTop: '1px solid var(--border)', margin: '4px 0' }} />
+                  <p className="muted">Marking as left releases the seat and hides the student from due reminders. Their record and payments are kept.</p>
+                  <button className="btn danger" onClick={() => setModal('deactivate')}>Mark as left (vacate)</button>
                 </>
               ) : (
                 <>
@@ -151,6 +161,11 @@ export default function StudentDetail() {
       {modal === 'edit' && <StudentFormModal student={s} onClose={() => setModal(null)} onSaved={() => { setModal(null); toast.success('Student updated'); load() }} />}
       {modal === 'pay' && <PaymentModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u) }} />}
       {modal === 'renew' && <RenewModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u, `Renewed until ${fmtDate(u.dueDate)}`) }} />}
+      {modal === 'transfer' && <TransferSeatModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); toast.success(`Moved to seat ${u.seatNumber}`); load() }} />}
+      {modal === 'vacate' && (
+        <ConfirmDialog title={`Vacate seat ${s.seatNumber}?`} message={`${s.name} stays an active member without a seat. The seat becomes free immediately.`} confirmLabel="Vacate seat"
+          onClose={() => setModal(null)} onConfirm={async () => { await api.vacateSeat(s.id); toast.info(`Seat ${s.seatNumber} vacated`); load() }} />
+      )}
       {modal === 'deactivate' && (
         <ConfirmDialog title="Mark as left?" message={`${s.name} will be marked inactive and their seat released.`} confirmLabel="Mark as left" danger
           onClose={() => setModal(null)} onConfirm={async () => { await api.deactivateStudent(s.id); toast.info(`${s.name} marked as left`); load() }} />

@@ -14,8 +14,8 @@ public enum DueStatus
 
 public class StudentUpsertRequest
 {
-    [Required, Range(1, int.MaxValue, ErrorMessage = "Branch is required.")]
-    public int BranchId { get; set; }
+    /// <summary>Optional; the app uses its single branch when omitted.</summary>
+    public int? BranchId { get; set; }
 
     [Required, StringLength(120, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
@@ -72,6 +72,15 @@ public class RenewRequest
     [StringLength(300)] public string? Note { get; set; }
 }
 
+public class TransferSeatRequest
+{
+    /// <summary>Target branch; defaults to the student's current branch.</summary>
+    public int? BranchId { get; set; }
+    [Required, Range(1, int.MaxValue)] public int SeatNumber { get; set; }
+    /// <summary>If the target seat is occupied, swap seats with its occupant instead of failing.</summary>
+    public bool Swap { get; set; }
+}
+
 public class StudentDto
 {
     public int Id { get; set; }
@@ -98,6 +107,7 @@ public class StudentDto
     public string? SeatLabel { get; set; }
     public string? SeatSection { get; set; }
     public bool? SeatIsAc { get; set; }
+    public bool? SeatReservedForWomen { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

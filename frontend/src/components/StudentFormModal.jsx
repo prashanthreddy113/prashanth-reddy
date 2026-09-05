@@ -21,7 +21,6 @@ function toForm(s) {
 
 function validate(f, minFee, editing) {
   const e = {}
-  if (!f.branchId) e.branchId = 'Select the branch.'
   if (minFee > 0 && Number(f.amountPerMonth || 0) < minFee) e.amountPerMonth = `Minimum fee is ${money(minFee)} per month (change it in Settings).`
   if (!f.name.trim() || f.name.trim().length < 2) e.name = 'Name is required (min 2 characters).'
   if (!/^\+?[0-9]{10,15}$/.test(f.mobile.trim())) e.mobile = 'Enter a valid mobile number (10–15 digits).'
@@ -107,7 +106,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
     if (Object.keys(errs).length) return
 
     const payload = {
-      branchId: Number(form.branchId),
+      branchId: form.branchId ? Number(form.branchId) : null,
       name: form.name.trim(),
       mobile: form.mobile.trim(),
       gender: form.gender,
@@ -138,14 +137,6 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
     <Modal title={editing ? `Edit ${student.name}` : 'Register new student'} onClose={onClose} size="wide">
       <form onSubmit={submit} noValidate>
         <div className="form-grid">
-          {(branches.length > 1 || !form.branchId) && (
-            <Field k="branchId" error={errors.branchId} label="Branch" required className="full">
-              <select id="f-branchId" value={form.branchId} onChange={changeBranch}>
-                <option value="">Select branch…</option>
-                {branches.filter((b) => b.isActive || String(b.id) === String(form.branchId)).map((b) => <option key={b.id} value={b.id}>{b.name}{b.isActive ? '' : ' (inactive)'}</option>)}
-              </select>
-            </Field>
-          )}
           <Field k="name" error={errors.name} label="Full name" required>
             <input id="f-name" value={form.name} onChange={set('name')} placeholder="e.g. Ravi Kumar" autoFocus />
           </Field>

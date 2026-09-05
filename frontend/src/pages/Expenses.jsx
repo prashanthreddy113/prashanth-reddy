@@ -17,7 +17,8 @@ function monthRange(ym) {
 }
 
 export default function Expenses() {
-  const { branchId, current, branches, activeBranches, multi } = useBranch()
+  const { branchId, activeBranches } = useBranch()
+  const current = null, multi = false, branches = []
   const [month, setMonth] = useState(() => todayIso().slice(0, 7))
   const [summary, setSummary] = useState(null)
   const [rows, setRows] = useState(null)
@@ -66,7 +67,7 @@ export default function Expenses() {
     <>
       <div className="page-head">
         <div>
-          <h2>{current ? current.name : multi ? 'All branches' : 'Expenses & revenue'}</h2>
+          <h2>Expenses & revenue</h2>
           <p>Money collected from students minus rent, bills and salaries. Pick a month to review.</p>
         </div>
         <div className="row">
@@ -137,7 +138,6 @@ export default function Expenses() {
         <Modal title={modal.id ? 'Edit expense' : 'Add expense'} onClose={() => setModal(null)}>
           <form onSubmit={save} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div className="form-grid">
-              {branches.length > 1 && <div className="field"><label>Branch<span className="req">*</span></label><select value={form.branchId} onChange={(e) => setForm({ ...form, branchId: e.target.value })}><option value="">Select…</option>{branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select></div>}
               <div className="field"><label>Category</label><select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></div>
               <div className="field"><label>Amount<span className="req">*</span></label><input type="number" min="1" step="1" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} autoFocus inputMode="decimal" /></div>
               <div className="field"><label>Date</label><input type="date" value={form.paidOn} onChange={(e) => setForm({ ...form, paidOn: e.target.value })} /></div>

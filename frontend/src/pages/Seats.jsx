@@ -7,15 +7,15 @@ import { fmtDate, STATUS } from '../lib/format'
 import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import StudentFormModal from '../components/StudentFormModal'
+import TransferSeatModal from '../components/TransferSeatModal'
 import { IconSnow, IconPlus } from '../components/Icons'
 
 function AcTag({ ac }) { return <span className={`ac-tag ${ac ? '' : 'non'}`}>{ac ? <><IconSnow width={10} height={10} /> AC</> : 'NON-AC'}</span> }
 
 export default function Seats() {
-  const { branchId, activeBranches, branches, setSelected } = useBranch()
-  const [localBranch, setLocalBranch] = useState(null)
-  const branch = branchId || localBranch || activeBranches[0]?.id || branches[0]?.id || null
-  const branchObj = branches.find((b) => b.id === branch)
+  const { branchId, branches, loaded } = useBranch()
+  const branch = branchId
+  const branchObj = { name: 'the reading room' }
 
   const [seats, setSeats] = useState(null)
   const [sections, setSections] = useState([])
@@ -24,6 +24,8 @@ export default function Seats() {
   const [busy, setBusy] = useState(false)
   const [selected, setSeat] = useState(null)
   const [assignSeat, setAssignSeat] = useState(null)
+  const [transfer, setTransfer] = useState(null)
+  const [vacate, setVacate] = useState(null)
   const [seatForm, setSeatForm] = useState({ label: '', section: '', isAc: false })
   const [mode, setMode] = useState('total')
   const [capacity, setCapacity] = useState('')
@@ -59,7 +61,7 @@ export default function Seats() {
     e.preventDefault()
     const n = Number(capacity)
     if (!Number.isInteger(n) || n < 0) { toast.error('Enter a whole number of seats'); return }
-    run(() => api.setSeatCapacity({ branchId: branch, totalSeats: n, section: totalForm.section || null, isAc: totalForm.isAc }), `${branchObj?.name || 'Branch'} now has ${n} seat${n === 1 ? '' : 's'}`)
+    run(() => api.setSeatCapacity({ branchId: branch, totalSeats: n, section: totalForm.section || null, isAc: totalForm.isAc }), `The room now has ${n} seat${n === 1 ? '' : 's'}`)
   }
   const addSection = (e) => {
     e.preventDefault()
@@ -70,23 +72,16 @@ export default function Seats() {
   const saveSeat = (isActive) => run(() => api.updateSeat(selected.id, { label: seatForm.label, section: seatForm.section, isAc: seatForm.isAc, reservedForWomen: seatForm.reservedForWomen, isActive }), `Seat ${selected.number} updated`).then((ok) => ok && setSeat(null))
   const reapply = () => run(() => api.applySeatReservation(branch), 'Reserved seats re-applied from the percentage')
 
-  if (!branches.length) return <div className="alert warn">Create a branch first on the <Link to="/branches"><strong>Branches</strong></Link> page.</div>
+  if (loaded && !branches.length) return <div className="alert error">The API has no room record yet. Restart the API once; it creates it automatically.</div>
   if (error && !seats) return <div className="alert error">{error}</div>
-  if (!seats) return <div className="loading"><div className="spinner" />Loading seats…</div>
+  if (!seats || !branch) return <div className="loading"><div className="spinner" />Loading seats…</div>
 
   return (
     <>
       <div className="page-head">
         <div>
-          <h2 className="row" style={{ gap: 10 }}>
-            {branchObj?.name || 'Seats'}
-            {!branchId && branches.length > 1 && (
-              <select value={branch || ''} onChange={(e) => setLocalBranch(Number(e.target.value))} style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #cbd5e1', font: 'inherit' }}>
-                {branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
-            )}
-          </h2>
-          <p>{seats.length} seats · {sections.filter((s) => s.name).length} section{sections.filter((s) => s.name).length === 1 ? '' : 's'} · {quota?.acSeats ?? 0} AC · {quota?.nonAcSeats ?? 0} non-AC{!branchId && branches.length > 1 ? ' · pick a branch above or in the top bar' : ''}</p>
+          <h2>Seat map</h2>
+          <p>{seats.length} seats · {sections.filter((s) => s.name).length} section{sections.filter((s) => s.name).length === 1 ? '' : 's'} · {quota?.acSeats ?? 0} AC · {quota?.nonAcSeats ?? 0} non-AC</p>
           {quota && (
             <div className="row" style={{ gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
               <span className="badge green" style={{ fontSize: 13 }}>{quota.free} seats available in total</span>
@@ -112,7 +107,7 @@ export default function Seats() {
           <div className="card-head"><div><h3>Seat map</h3><span className="muted">Click a seat to register a student on it, label it, move it to a section, or disable it.</span></div></div>
           <div className="card-body">
             {seats.length === 0 ? (
-              <div className="empty"><strong>No seats in {branchObj?.name} yet</strong>Set a total on the right, or add floors / rooms / sections one by one.</div>
+              <div className="empty"><strong>No seats yet</strong>Set a total on the right, or add floors / rooms / sections one by one.</div>
             ) : grouped.map(([name, list]) => (
               <div key={name || '__none'}>
                 <div className="section-head">
@@ -150,7 +145,7 @@ export default function Seats() {
             {mode === 'total' ? (
               <form className="card-body" onSubmit={saveCapacity} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div className="field">
-                  <label>Total seats in {branchObj?.name}</label>
+                  <label>Total seats in the reading room</label>
                   <input type="number" min="0" max="10000" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
                   <span className="help">Increasing adds new seat numbers. Decreasing removes the highest-numbered seats if they are free.</span>
                 </div>
@@ -167,7 +162,7 @@ export default function Seats() {
                   <div className="field"><label>Number of seats</label><input type="number" min="1" max="5000" value={secForm.seats} onChange={(e) => setSecForm({ ...secForm, seats: e.target.value })} /></div>
                   <div className="field"><label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24 }}><input type="checkbox" checked={secForm.isAc} onChange={(e) => setSecForm({ ...secForm, isAc: e.target.checked })} /> Air-conditioned</label></div>
                 </div>
-                <span className="help">Seat numbers continue from the branch's highest seat, so every seat stays unique within the branch.</span>
+                <span className="help">Seat numbers continue from the highest existing seat, so every seat number stays unique.</span>
                 <button className="btn primary" type="submit" disabled={busy}><IconPlus /> {busy ? 'Adding…' : 'Add section'}</button>
               </form>
             )}
@@ -189,7 +184,7 @@ export default function Seats() {
 
           {quota && (
             <div className="card">
-              <div className="card-head"><h3>Women's reservation</h3><div className="row" style={{ gap: 6 }}><button className="btn sm" onClick={reapply} disabled={busy} title="Re-mark reserved seats from the percentage">Re-apply</button><Link to="/branches" className="btn sm">Change %</Link></div></div>
+              <div className="card-head"><h3>Women's reservation</h3><div className="row" style={{ gap: 6 }}><button className="btn sm" onClick={reapply} disabled={busy} title="Re-mark reserved seats from the percentage">Re-apply</button><Link to="/settings" className="btn sm">Change %</Link></div></div>
               <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div className="kv">
                   <span className="k">Reserved share</span><span className="v">{quota.femaleReservationPercent}% · {quota.reservedForWomen} of {quota.active} seats</span>
@@ -206,9 +201,15 @@ export default function Seats() {
       </div>
 
       {selected && (
-        <Modal title={`Seat ${selected.number} · ${branchObj?.name}`} onClose={() => setSeat(null)} size="narrow">
+        <Modal title={`Seat ${selected.number}`} onClose={() => setSeat(null)} size="narrow">
           {selected.isOccupied ? (
-            <div className="alert info">Occupied by <Link to={`/students/${selected.studentId}`}><strong>{selected.studentName}</strong></Link>{selected.studentStatus && <> · {STATUS[selected.studentStatus]?.label} (due {fmtDate(selected.studentDueDate)})</>}</div>
+            <>
+              <div className="alert info">Occupied by <Link to={`/students/${selected.studentId}`}><strong>{selected.studentName}</strong></Link>{selected.studentStatus && <> · {STATUS[selected.studentStatus]?.label} (due {fmtDate(selected.studentDueDate)})</>}</div>
+              <div className="row">
+                <button className="btn" onClick={async () => { const st = await api.student(selected.studentId).catch(() => null); if (st) { setTransfer(st); setSeat(null) } }}>Transfer {selected.studentName?.split(' ')[0]} to another seat</button>
+                <button className="btn danger" onClick={() => { setVacate({ id: selected.studentId, name: selected.studentName, number: selected.number }); setSeat(null) }}>Vacate seat</button>
+              </div>
+            </>
           ) : selected.isActive ? (
             <button className="btn primary" onClick={() => { setAssignSeat(selected.number); setSeat(null) }}>Register a student on this seat</button>
           ) : <div className="alert warn">This seat is disabled and cannot be assigned.</div>}
@@ -245,6 +246,11 @@ export default function Seats() {
         </Modal>
       )}
 
+      {transfer && <TransferSeatModal student={transfer} onClose={() => setTransfer(null)} onSaved={(u) => { setTransfer(null); toast.success(`${u.name} moved to seat ${u.seatNumber}`); load() }} />}
+      {vacate && (
+        <ConfirmDialog title={`Vacate seat ${vacate.number}?`} message={`${vacate.name} stays an active member without a seat. Seat ${vacate.number} becomes free immediately.`} confirmLabel="Vacate seat"
+          onClose={() => setVacate(null)} onConfirm={async () => { await api.vacateSeat(vacate.id); toast.info(`Seat ${vacate.number} vacated`); load() }} />
+      )}
       {assignSeat && <StudentFormModal presetSeat={assignSeat} presetBranchId={branch} onClose={() => setAssignSeat(null)} onSaved={(s) => { setAssignSeat(null); toast.success(`${s.name} registered on seat ${s.seatNumber}`); load() }} />}
     </>
   )

@@ -1,16 +1,15 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { api } from './api'
 
-const KEY = 'studyroom.branch'
 const BranchContext = createContext(null)
 
-/** Holds the list of branches and the admin's current selection ('all' or a branch id). */
+/**
+ * The app runs a single reading room. This context only resolves the internal branch id the API
+ * stores seats and students under; nothing branch-related is shown to the admin.
+ */
 export function BranchProvider({ children }) {
   const [branches, setBranches] = useState([])
   const [loaded, setLoaded] = useState(false)
-  const [selected, setSelectedState] = useState(() => {
-    try { return localStorage.getItem(KEY) || 'all' } catch { return 'all' }
-  })
 
   const reload = useCallback(async () => {
     try { setBranches(await api.branches(true)) } catch { setBranches([]) }
@@ -19,25 +18,18 @@ export function BranchProvider({ children }) {
 
   useEffect(() => { reload() }, [reload])
 
-  // If the remembered branch disappeared, fall back to "all".
-  useEffect(() => {
-    if (loaded && selected !== 'all' && !branches.some((b) => String(b.id) === String(selected))) setSelectedState('all')
-  }, [loaded, branches, selected])
-
-  const setSelected = useCallback((v) => {
-    setSelectedState(v)
-    try { localStorage.setItem(KEY, String(v)) } catch { /* ignore */ }
-  }, [])
-
   const value = useMemo(() => {
-    const branchId = selected === 'all' ? null : Number(selected)
-    const current = branchId ? branches.find((b) => b.id === branchId) || null : null
+    const first = branches[0] || null
     return {
-      branches, loaded, selected, setSelected, branchId, current, reload,
+      branches, loaded, reload,
+      branchId: first ? first.id : null,
+      current: null,
+      selected: first ? String(first.id) : 'all',
+      setSelected: () => {},
       activeBranches: branches.filter((b) => b.isActive),
-      multi: branches.length > 1,
+      multi: false,
     }
-  }, [branches, loaded, selected, setSelected, reload])
+  }, [branches, loaded, reload])
 
   return <BranchContext.Provider value={value}>{children}</BranchContext.Provider>
 }
