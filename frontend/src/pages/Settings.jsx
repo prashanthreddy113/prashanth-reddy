@@ -117,9 +117,9 @@ export default function Settings() {
             <span className="help">Students whose due date falls within this many days are shown in amber on the dashboard.</span>
           </div>
           <div className="field">
-            <label>Minimum fee per month</label>
+            <label>Monthly fee (standard)</label>
             <input type="number" min="0" step="1" value={form.minimumMonthlyFee} onChange={(e) => setForm({ ...form, minimumMonthlyFee: e.target.value })} />
-            <span className="help">Pre-fills the registration form and blocks a lower monthly amount. Students paying part of it show the rest as balance. 0 = no minimum.</span>
+            <span className="help">Shown as the amount per month when registering; a lower amount is not allowed. What the student pays now is mandatory, and any shortfall shows as balance. 0 = no standard fee.</span>
           </div>
           <div className="field">
             <label>Seats reserved for women (%)</label>

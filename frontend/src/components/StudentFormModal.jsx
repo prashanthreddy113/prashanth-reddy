@@ -19,7 +19,7 @@ function toForm(s) {
   }
 }
 
-function validate(f, minFee) {
+function validate(f, minFee, editing) {
   const e = {}
   if (!f.branchId) e.branchId = 'Select the branch.'
   if (minFee > 0 && Number(f.amountPerMonth || 0) < minFee) e.amountPerMonth = `Minimum fee is ${money(minFee)} per month (change it in Settings).`
@@ -28,7 +28,8 @@ function validate(f, minFee) {
   if (!f.gender) e.gender = 'Select the gender.'
   if (f.aadhaar && !/^[0-9]{12}$/.test(f.aadhaar.trim())) e.aadhaar = 'Aadhaar must be exactly 12 digits.'
   if (!f.months || Number(f.months) < 1) e.months = 'At least 1 month.'
-  if (f.amountPerMonth === '' || Number(f.amountPerMonth) < 0) e.amountPerMonth = 'Enter the monthly amount.'
+  if (f.amountPerMonth === '' || Number(f.amountPerMonth) <= 0) e.amountPerMonth = 'Enter the monthly amount (set a standard fee in Settings to pre-fill it).'
+  if (!editing && (f.totalPaid === '' || Number(f.totalPaid) <= 0)) e.totalPaid = 'Amount paid is required to register.'
   if (f.totalPaid !== '' && Number(f.totalPaid) < 0) e.totalPaid = 'Cannot be negative.'
   if (!f.joiningDate) e.joiningDate = 'Joining date is required.'
   return e
@@ -100,7 +101,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
 
   const submit = async (e) => {
     e.preventDefault()
-    const errs = validate(form, minFee)
+    const errs = validate(form, minFee, editing)
     setErrors(errs)
     if (Object.keys(errs).length) return
 
@@ -179,11 +180,19 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             <input id="f-months" type="number" min="1" max="120" value={form.months} onChange={set('months')} />
           </Field>
 
-          <Field k="amountPerMonth" error={errors.amountPerMonth} label="Amount per month" required help={minFee > 0 ? `Minimum ${money(minFee)} per month` : undefined}>
-            <input id="f-amountPerMonth" type="number" min="0" step="1" value={form.amountPerMonth} onChange={set('amountPerMonth')} placeholder="e.g. 1500" inputMode="decimal" />
+          <Field k="amountPerMonth" error={errors.amountPerMonth} label="Amount per month" help={minFee > 0 ? `Standard fee ${money(minFee)} per month from Settings. You may charge more, not less.` : 'Set a standard monthly fee in Settings to pre-fill this.'}>
+            <input id="f-amountPerMonth" type="number" min="0" step="1" value={form.amountPerMonth} onChange={set('amountPerMonth')} placeholder={minFee > 0 ? String(minFee) : 'e.g. 1500'} inputMode="decimal" />
           </Field>
-          <Field k="totalPaid" error={errors.totalPaid} label="Total paid amount" help={editing ? 'Adjusts the running total (use “Record payment” for a receipt entry).' : 'Amount collected now. A payment entry is created automatically.'}>
-            <input id="f-totalPaid" type="number" min="0" step="1" value={form.totalPaid} onChange={set('totalPaid')} placeholder="0" inputMode="decimal" />
+          <div className="field">
+            <label>Amount to be paid</label>
+            <input readOnly value={money(totalFee)} tabIndex={-1} />
+            <span className="help">{form.months || 0} month{Number(form.months) === 1 ? '' : 's'} × {money(form.amountPerMonth || 0)}</span>
+          </div>
+          <Field k="totalPaid" error={errors.totalPaid} label={editing ? 'Total paid so far' : 'Amount paid now'} required={!editing} help={editing ? 'Adjusts the running total (use “Record payment” for a receipt entry).' : 'Collected at registration. A payment entry and WhatsApp receipt are created automatically; any shortfall shows as balance.'} className={editing ? '' : 'full'}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input id="f-totalPaid" type="number" min="0" step="1" value={form.totalPaid} onChange={set('totalPaid')} placeholder={editing ? '0' : 'Enter amount received'} inputMode="decimal" style={{ flex: 1 }} />
+              {!editing && <button type="button" className="btn" onClick={() => setForm((f) => ({ ...f, totalPaid: String(totalFee) }))} disabled={!totalFee}>Pay full {money(totalFee)}</button>}
+            </div>
           </Field>
 
           <Field k="aadhaar" error={errors.aadhaar} label="Aadhaar number">

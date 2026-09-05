@@ -81,6 +81,9 @@ public class StudentsController : ControllerBase
         var settings = await _settings.GetAsync();
         var today = SettingsService.Today(settings);
 
+        if (request.TotalPaid <= 0)
+            return BadRequest(new { message = "Amount paid is required when registering a student." });
+
         var student = new Student();
         var error = await ApplyAsync(student, request);
         if (error is not null) return BadRequest(new { message = error });
@@ -265,8 +268,10 @@ public class StudentsController : ControllerBase
         if (!branch.IsActive && student.BranchId != branch.Id) return $"Branch '{branch.Name}' is inactive.";
 
         var settings = await _settings.GetAsync();
+        // Blank amount per month falls back to the standard monthly fee from Settings.
+        if (request.AmountPerMonth <= 0 && settings.MinimumMonthlyFee > 0) request.AmountPerMonth = settings.MinimumMonthlyFee;
         if (settings.MinimumMonthlyFee > 0 && request.AmountPerMonth < settings.MinimumMonthlyFee)
-            return $"Amount per month cannot be below the minimum fee of {ReminderService.FormatMoney(settings.MinimumMonthlyFee, settings.Currency)} set in Settings.";
+            return $"Amount per month cannot be below the monthly fee of {ReminderService.FormatMoney(settings.MinimumMonthlyFee, settings.Currency)} set in Settings.";
 
         student.BranchId = branch.Id;
         student.Branch = branch;
