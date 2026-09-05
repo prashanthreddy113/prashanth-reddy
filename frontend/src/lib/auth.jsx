@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     store.clear()
+    try { sessionStorage.removeItem('studyroom.dueAlertShown') } catch { /* ignore */ }
     setUser(null)
   }, [])
 

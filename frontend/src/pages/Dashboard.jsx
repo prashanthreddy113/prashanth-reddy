@@ -10,7 +10,8 @@ import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
 import TransferSeatModal from '../components/TransferSeatModal'
 import ReadingRoomScene from '../components/ReadingRoomScene'
-import { IconPlus, IconSearch } from '../components/Icons'
+import DueAlertModal, { splitDue, shouldShowDueAlert, markDueAlertShown } from '../components/DueAlertModal'
+import { IconPlus, IconSearch, IconBell } from '../components/Icons'
 
 const FILTERS = [
   { key: 'attention', label: 'Needs attention' },
@@ -34,6 +35,7 @@ export default function Dashboard() {
   const [filter, setFilter] = useState('attention')
   const [search, setSearch] = useState('')
   const [modal, setModal] = useState(null)
+  const [dueAlert, setDueAlert] = useState(false)
   const toast = useToast()
   const navigate = useNavigate()
   const { branchId } = useBranch()
@@ -49,6 +51,14 @@ export default function Dashboard() {
   }, [branchId])
 
   useEffect(() => { load() }, [load])
+
+  // After sign-in: pop up who is overdue, due today and due tomorrow (once per session, snoozable for the day).
+  useEffect(() => {
+    if (!data) return
+    const g = splitDue(data.students)
+    if (g.overdue.length + g.today.length + g.tomorrow.length === 0) return
+    if (shouldShowDueAlert(data.today)) { setDueAlert(true); markDueAlertShown(data.today) }
+  }, [data])
 
   const counts = useMemo(() => {
     if (!data) return {}
@@ -95,6 +105,10 @@ export default function Dashboard() {
           <p>Overview of students, dues, seats and money.</p>
         </div>
         <div className="row">
+          <button className="btn" onClick={() => setDueAlert(true)} title="Overdue, due today and due tomorrow">
+            <IconBell /> Due alerts
+            {(() => { const g = splitDue(data.students); const n = g.overdue.length + g.today.length + g.tomorrow.length; return n ? <span className="badge red" style={{ marginLeft: 4 }}>{n}</span> : null })()}
+          </button>
           <button className="btn primary" onClick={() => setModal({ type: 'add' })}><IconPlus /> Add student</button>
         </div>
       </div>
@@ -216,6 +230,7 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {dueAlert && <DueAlertModal students={data.students} today={data.today} onClose={() => setDueAlert(false)} />}
       {modal?.type === 'add' && <StudentFormModal onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'edit' && <StudentFormModal student={modal.student} onClose={() => setModal(null)} onSaved={onSaved} />}
       {modal?.type === 'pay' && <PaymentModal student={modal.student} onClose={() => setModal(null)} onSaved={(s) => { setModal(null); paymentToast(toast, s); load() }} />}
