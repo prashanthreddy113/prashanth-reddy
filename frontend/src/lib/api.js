@@ -111,6 +111,7 @@ export const api = {
   deleteStudent: (id) => request('DELETE', `/api/students/${id}`),
   deactivateStudent: (id) => request('POST', `/api/students/${id}/deactivate`, {}),
   activateStudent: (id, seatNumber) => request('POST', `/api/students/${id}/activate`, {}, { query: { seatNumber } }),
+  setDueDate: (id, data) => request('PUT', `/api/students/${id}/due-date`, data),
   vacateSeat: (id) => request('POST', `/api/students/${id}/vacate-seat`, {}),
   transferSeat: (id, data) => request('POST', `/api/students/${id}/transfer`, data),
   addPayment: (id, data) => request('POST', `/api/students/${id}/payments`, data),

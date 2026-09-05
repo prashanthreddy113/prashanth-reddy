@@ -5,7 +5,7 @@ import { money, todayIso, addMonths, fmtDate } from '../lib/format'
 import { useBranch } from '../lib/branch'
 
 const empty = {
-  branchId: '', name: '', mobile: '', gender: '', address: '', aadhaar: '', study: '', notes: '',
+  branchId: '', name: '', mobile: '', gender: '', address: '', dueDateOverride: '', aadhaar: '', study: '', notes: '',
   months: 1, amountPerMonth: '', totalPaid: '', joiningDate: todayIso(), seatNumber: '', isActive: true,
 }
 
@@ -16,6 +16,7 @@ function toForm(s) {
     study: s.study || '', notes: s.notes || '', months: s.months || 1,
     amountPerMonth: s.amountPerMonth ?? '', totalPaid: s.totalPaid ?? '',
     joiningDate: s.joiningDate || todayIso(), seatNumber: s.seatNumber ?? '', isActive: s.isActive ?? true,
+    dueDateOverride: s.dueDateOverridden ? s.dueDate : '',
   }
 }
 
@@ -119,6 +120,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
       totalPaid: Number(form.totalPaid || 0),
       joiningDate: form.joiningDate,
       seatNumber: form.seatNumber === '' ? null : Number(form.seatNumber),
+      dueDateOverride: editing && form.dueDateOverride ? form.dueDateOverride : null,
       isActive: !!form.isActive,
     }
 
@@ -194,6 +196,11 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
             <input id="f-address" value={form.address} onChange={set('address')} placeholder="Street, area, city" />
           </Field>
 
+          {editing && (
+            <Field k="dueDateOverride" error={errors.dueDateOverride} label="Custom due date" help={`Real due date is ${fmtDate(dueDate)} (joining date + months). Leave empty to use it; a custom date drives reminders, colours and the due popup.`}>
+              <input id="f-dueDateOverride" type="date" value={form.dueDateOverride} min={form.joiningDate} onChange={set('dueDateOverride')} />
+            </Field>
+          )}
           <Field k="notes" error={errors.notes} label="Notes" className="full">
             <textarea id="f-notes" rows={2} value={form.notes} onChange={set('notes')} placeholder="Anything to remember about this student" />
           </Field>
@@ -212,7 +219,7 @@ export default function StudentFormModal({ student, onClose, onSaved, presetSeat
           <div><div className="k">Total fee</div><div className="v">{money(totalFee)}</div></div>
           <div><div className="k">Paid</div><div className="v">{money(form.totalPaid || 0)}</div></div>
           <div><div className="k">Balance</div><div className="v" style={{ color: balance > 0 ? 'var(--red)' : 'var(--green)' }}>{money(Math.max(0, balance))}</div></div>
-          <div><div className="k">Due date</div><div className="v">{dueDate ? fmtDate(dueDate) : '—'}</div></div>
+          <div><div className="k">Due date</div><div className="v">{editing && form.dueDateOverride ? <>{fmtDate(form.dueDateOverride)} <span className="help">(edited · real {fmtDate(dueDate)})</span></> : dueDate ? fmtDate(dueDate) : '—'}</div></div>
         </div>
 
         {serverError && <div className="alert error" style={{ marginTop: 12 }}>{serverError}</div>}

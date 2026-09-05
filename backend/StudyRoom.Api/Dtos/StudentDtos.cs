@@ -45,7 +45,17 @@ public class StudentUpsertRequest
     /// <summary>Seat number (not id). Null = no seat.</summary>
     public int? SeatNumber { get; set; }
 
+    /// <summary>Custom due date; null keeps the scheduled date (joining date + months).</summary>
+    public DateOnly? DueDateOverride { get; set; }
+
     public bool IsActive { get; set; } = true;
+}
+
+public class DueDateRequest
+{
+    /// <summary>New due date; null resets to the scheduled (real) due date.</summary>
+    public DateOnly? DueDate { get; set; }
+    [StringLength(300)] public string? Reason { get; set; }
 }
 
 public record PaymentDto(int Id, decimal Amount, DateOnly PaidOn, string? Note, DateTime CreatedAt);
@@ -100,6 +110,9 @@ public class StudentDto
     public decimal Balance { get; set; }
     public DateOnly JoiningDate { get; set; }
     public DateOnly DueDate { get; set; }
+    /// <summary>Joining date + months, regardless of any override.</summary>
+    public DateOnly ScheduledDueDate { get; set; }
+    public bool DueDateOverridden { get; set; }
     public int DaysUntilDue { get; set; }
     public DueStatus Status { get; set; }
     public int? SeatId { get; set; }

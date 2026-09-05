@@ -52,8 +52,8 @@ export default function StudentTable({ students, onEdit, onPay, onRenew, onTrans
                 <div className="secondary">Total {money(s.totalFee)}</div>
               </td>
               <td>
-                <div className="primary">{fmtDate(s.dueDate)}</div>
-                <div className="secondary">{dueText(s)}</div>
+                <div className="primary">{fmtDate(s.dueDate)}{s.dueDateOverridden && <span className="badge amber" style={{ marginLeft: 6, padding: '1px 6px', fontSize: 10 }} title={`Edited by admin · real due date ${fmtDate(s.scheduledDueDate)}`}>edited</span>}</div>
+                <div className="secondary">{dueText(s)}{s.dueDateOverridden && <> · real {fmtDate(s.scheduledDueDate)}</>}</div>
               </td>
               <td><StatusBadge status={s.status} /></td>
               <td className="num">{money(s.totalPaid)}</td>

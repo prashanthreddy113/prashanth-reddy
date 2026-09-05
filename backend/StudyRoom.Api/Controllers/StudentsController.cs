@@ -175,6 +175,34 @@ public class StudentsController : ControllerBase
         return StudentMapper.ToDto(student, SettingsService.Today(settings), settings.DueSoonDays);
     }
 
+    /// <summary>Set a custom due date (or reset to the scheduled one). Everything downstream uses the effective date.</summary>
+    [HttpPut("{id:int}/due-date")]
+    public async Task<ActionResult<StudentDto>> SetDueDate(int id, DueDateRequest request)
+    {
+        var settings = await _settings.GetAsync();
+        var today = SettingsService.Today(settings);
+        var student = await _db.Students.Include(s => s.Seat).Include(s => s.Branch).FirstOrDefaultAsync(s => s.Id == id);
+        if (student is null) return NotFound();
+
+        var before = student.DueDate;
+        if (request.DueDate.HasValue && request.DueDate.Value != student.ScheduledDueDate)
+        {
+            if (request.DueDate.Value < student.JoiningDate)
+                return BadRequest(new { message = "Due date cannot be before the joining date." });
+            student.DueDateOverride = request.DueDate.Value;
+            student.Notes = AppendNote(student.Notes, $"Due date changed from {before:dd MMM yyyy} to {request.DueDate.Value:dd MMM yyyy} on {today:dd MMM yyyy}{(string.IsNullOrWhiteSpace(request.Reason) ? "" : $": {request.Reason.Trim()}")}");
+        }
+        else
+        {
+            student.DueDateOverride = null;
+            if (before != student.ScheduledDueDate)
+                student.Notes = AppendNote(student.Notes, $"Due date reset to scheduled {student.ScheduledDueDate:dd MMM yyyy} on {today:dd MMM yyyy}");
+        }
+        student.UpdatedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+        return StudentMapper.ToDto(student, today, settings.DueSoonDays);
+    }
+
     /// <summary>Release the student's seat but keep the membership active (e.g. temporarily away).</summary>
     [HttpPost("{id:int}/vacate-seat")]
     public async Task<ActionResult<StudentDto>> VacateSeat(int id)
@@ -323,6 +351,7 @@ public class StudentsController : ControllerBase
             return BadRequest(new { message = $"Amount per month cannot be below the minimum fee of {ReminderService.FormatMoney(settings.MinimumMonthlyFee, settings.Currency)} set in Settings." });
 
         student.Months += request.Months;
+        if (student.DueDateOverride.HasValue) student.DueDateOverride = student.DueDateOverride.Value.AddMonths(request.Months);
         if (request.AmountPerMonth.HasValue) student.AmountPerMonth = request.AmountPerMonth.Value;
         student.IsActive = true;
 
@@ -376,6 +405,9 @@ public class StudentsController : ControllerBase
         student.AmountPerMonth = request.AmountPerMonth;
         student.TotalPaid = request.TotalPaid;
         student.JoiningDate = request.JoiningDate;
+        student.DueDateOverride = request.DueDateOverride.HasValue && request.DueDateOverride.Value != request.JoiningDate.AddMonths(request.Months)
+            ? request.DueDateOverride
+            : null;
         student.IsActive = request.IsActive;
 
         if (request.SeatNumber.HasValue && request.IsActive)

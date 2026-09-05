@@ -19,7 +19,7 @@ export function BranchProvider({ children }) {
   useEffect(() => { reload() }, [reload])
 
   const value = useMemo(() => {
-    const first = branches[0] || null
+    const first = branches.length ? [...branches].sort((a, b) => a.id - b.id)[0] : null
     return {
       branches, loaded, reload,
       branchId: first ? first.id : null,

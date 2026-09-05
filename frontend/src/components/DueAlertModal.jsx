@@ -69,7 +69,7 @@ export default function DueAlertModal({ students, today, onClose }) {
                     <td>{s.seatNumber ? <span className="seat-chip">{s.seatNumber}</span> : <span className="seat-chip none">—</span>}</td>
                     <td><Link to={`/students/${s.id}`} className="primary" onClick={close}>{s.name}</Link>{s.study && <div className="secondary">{s.study}</div>}</td>
                     <td><a href={`tel:${s.mobile}`}>{s.mobile}</a></td>
-                    <td><strong>{fmtDate(s.dueDate)}</strong></td>
+                    <td><strong>{fmtDate(s.dueDate)}</strong>{s.dueDateOverridden && <div className="secondary" title={`Real due date ${fmtDate(s.scheduledDueDate)}`}>edited · real {fmtDate(s.scheduledDueDate)}</div>}</td>
                     <td><span className="badge" style={{ color: g.color, background: g.bg, borderColor: g.border }}>{g.hint(s)}</span></td>
                     <td className="num">{s.balance > 0 ? <span className="neg">{money(s.balance)}</span> : <span className="pos">Paid</span>}</td>
                   </tr>

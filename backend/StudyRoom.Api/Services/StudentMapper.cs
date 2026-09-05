@@ -37,6 +37,8 @@ public static class StudentMapper
             Balance = s.Balance,
             JoiningDate = s.JoiningDate,
             DueDate = s.DueDate,
+            ScheduledDueDate = s.ScheduledDueDate,
+            DueDateOverridden = s.DueDateOverride.HasValue,
             DaysUntilDue = s.DueDate.DayNumber - today.DayNumber,
             Status = ComputeStatus(s, today, dueSoonDays),
             SeatId = s.SeatId,

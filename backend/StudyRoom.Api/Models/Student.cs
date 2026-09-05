@@ -45,8 +45,14 @@ public class Student
 
     public List<Payment> Payments { get; set; } = new();
 
-    /// <summary>Membership expiry: joining date + subscribed months.</summary>
-    public DateOnly DueDate => JoiningDate.AddMonths(Months);
+    /// <summary>Admin-edited due date. When set it replaces the scheduled date everywhere (status, reminders, popups, lists).</summary>
+    public DateOnly? DueDateOverride { get; set; }
+
+    /// <summary>The "real" due date from the plan: joining date + subscribed months.</summary>
+    public DateOnly ScheduledDueDate => JoiningDate.AddMonths(Months);
+
+    /// <summary>Effective due date: the admin override if set, otherwise the scheduled date.</summary>
+    public DateOnly DueDate => DueDateOverride ?? ScheduledDueDate;
 
     public decimal TotalFee => Months * AmountPerMonth;
     public decimal Balance => TotalFee - TotalPaid;

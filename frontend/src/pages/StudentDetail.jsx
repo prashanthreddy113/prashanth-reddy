@@ -9,6 +9,7 @@ import PaymentModal from '../components/PaymentModal'
 import RenewModal from '../components/RenewModal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import TransferSeatModal from '../components/TransferSeatModal'
+import DueDateModal from '../components/DueDateModal'
 import { paymentToast } from './Dashboard'
 import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp, IconTransfer } from '../components/Icons'
 
@@ -83,7 +84,13 @@ export default function StudentDetail() {
                 <span className="k">Studying for</span><span className="v">{s.study || '—'}</span>
                 <span className="k">Joining date</span><span className="v">{fmtDate(s.joiningDate)}</span>
                 <span className="k">Plan</span><span className="v">{s.months} month{s.months === 1 ? '' : 's'} × {money(s.amountPerMonth)}</span>
-                <span className="k">Due date</span><span className="v" style={{ color: s.daysUntilDue <= 0 && s.isActive ? 'var(--red)' : undefined }}>{fmtDate(s.dueDate)} ({dueText(s)})</span>
+                <span className="k">Due date</span>
+                <span className="v" style={{ color: s.daysUntilDue <= 0 && s.isActive ? 'var(--red)' : undefined }}>
+                  {fmtDate(s.dueDate)} ({dueText(s)})
+                  {s.dueDateOverridden && <span className="badge amber" style={{ marginLeft: 8 }} title="Edited by admin">edited</span>}
+                  <button className="btn sm ghost" style={{ marginLeft: 8 }} onClick={() => setModal('dueDate')}><IconEdit /> Edit</button>
+                </span>
+                {s.dueDateOverridden && <><span className="k">Real due date</span><span className="v muted">{fmtDate(s.scheduledDueDate)} (joining date + {s.months} month{s.months === 1 ? '' : 's'})</span></>}
                 <span className="k">Notes</span><span className="v">{s.notes || '—'}</span>
                 <span className="k">Registered</span><span className="v">{new Date(s.createdAt).toLocaleString('en-IN')}</span>
               </div>
@@ -161,6 +168,7 @@ export default function StudentDetail() {
       {modal === 'edit' && <StudentFormModal student={s} onClose={() => setModal(null)} onSaved={() => { setModal(null); toast.success('Student updated'); load() }} />}
       {modal === 'pay' && <PaymentModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u) }} />}
       {modal === 'renew' && <RenewModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u, `Renewed until ${fmtDate(u.dueDate)}`) }} />}
+      {modal === 'dueDate' && <DueDateModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); toast.success(u.dueDateOverridden ? `Due date set to ${fmtDate(u.dueDate)}` : `Due date reset to ${fmtDate(u.dueDate)}`); load() }} />}
       {modal === 'transfer' && <TransferSeatModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); toast.success(`Moved to seat ${u.seatNumber}`); load() }} />}
       {modal === 'vacate' && (
         <ConfirmDialog title={`Vacate seat ${s.seatNumber}?`} message={`${s.name} stays an active member without a seat. The seat becomes free immediately.`} confirmLabel="Vacate seat"

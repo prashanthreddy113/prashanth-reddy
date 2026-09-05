@@ -64,6 +64,7 @@ public class AppDbContext : DbContext
              .OnDelete(DeleteBehavior.SetNull);
 
             e.Ignore(s => s.DueDate);
+            e.Ignore(s => s.ScheduledDueDate);
             e.Ignore(s => s.TotalFee);
             e.Ignore(s => s.Balance);
         });
