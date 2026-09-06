@@ -44,6 +44,16 @@ the `WhatsApp__*` and `Razorpay__*` values when you have them, and switch `Otp__
 repository with base directory `yukktha-platform/apps/admin` or `yukktha-platform/apps/storefront`; the `netlify.toml` in
 each app proxies `/api/*` to the Render API. Set `VITE_STORE_SLUG` on the storefront project to the store it should show.
 
+## Billing (BL-1 to BL-3)
+
+Create three monthly plans in Razorpay (Subscriptions → Plans) and put their ids in `Razorpay:PlanIds`. The owner opens
+**Settings → Plan & billing**, picks a plan, and Razorpay Checkout collects a UPI autopay or card mandate; the API verifies the
+checkout signature and marks the payment method attached. With `Platform:TrialRequiresPaymentMethod` true (the default) the
+storefront stays closed until that happens; the first charge is scheduled for the end of the 14-day trial. Webhooks
+(`subscription.authenticated`, `activated`, `charged`, `halted`, `cancelled`) keep the store's status current, and a
+PastDue store keeps its storefront open for the 7-day grace period. When Razorpay keys are empty the API runs a dev-mode
+subscription so the flow can be tested without a gateway.
+
 ## First store
 
 Open the admin, tap **Create your store**, enter shop name + phone, enter the dev OTP. You land in the 3-step onboarding: add products → delivery options → share link. The slug is derived from the shop name; the storefront is `https://{slug}.yukktha.in` (or the dev URL with `VITE_STORE_SLUG`).

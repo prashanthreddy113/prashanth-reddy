@@ -64,6 +64,14 @@ services:
         sync: false
       - key: Razorpay__WebhookSecret
         sync: false
+      - key: Razorpay__PlanIds__Starter
+        sync: false   # plan_xxx ids from Razorpay → Subscriptions → Plans (₹999, ₹2,499, ₹7,500 monthly)
+      - key: Razorpay__PlanIds__Growth
+        sync: false
+      - key: Razorpay__PlanIds__MultiBranch
+        sync: false
+      - key: Platform__TrialRequiresPaymentMethod
+        value: "true"   # BL-2: storefront opens only after UPI autopay or a card is authorised
       - key: Storage__BlobConnectionString
         sync: false   # Azure Blob Storage for product images (optional)
 

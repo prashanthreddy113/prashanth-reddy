@@ -39,6 +39,8 @@ public class Store
     public DateTime TrialEndsAt { get; set; }
     public DateTime? CurrentPeriodEndsAt { get; set; }
     public string? RazorpaySubscriptionId { get; set; }
+    public bool PaymentMethodAttached { get; set; }      // BL-2: UPI autopay or card authorised for the subscription
+    public DateTime? SubscriptionStartedAt { get; set; }
     public string? RazorpayAccountId { get; set; }      // payouts to the store's bank
     public string? ReferralCode { get; set; }
     public Guid? ReferredByStoreId { get; set; }

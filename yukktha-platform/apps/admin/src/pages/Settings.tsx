@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { api, session } from '../api'
 import { useT } from '../i18n'
 import { Toggle } from './Onboarding'
@@ -17,7 +17,7 @@ export default function Settings() {
     <h1>{t('settings')}</h1>
     <div className="card">
       <div className="row between"><div><div className="muted">{t('plan')}</div><b>{planName}</b></div>
-        {s.plan === 1 && <button className="btn sm" onClick={() => alert('Razorpay subscription checkout goes here (BL-2).')}>{t('upgrade')}</button>}</div>
+        <Link className="btn sm" to="/billing">{t('billing')}</Link></div>
     </div>
     <div className="card">
       <label>{t('storeName')}</label><input value={s.name} onChange={e => set({ name: e.target.value })} />
@@ -33,7 +33,7 @@ export default function Settings() {
       {s.localDeliveryEnabled && <><label>{t('charge')}</label><input type="number" value={s.localDeliveryCharge} onChange={e => set({ localDeliveryCharge: +e.target.value })} /></>}
       <Toggle label={t('courier')} on={s.courierEnabled} set={v => set({ courierEnabled: v })} />
       {s.courierEnabled && <><label>{t('charge')}</label><input type="number" value={s.courierCharge} onChange={e => set({ courierCharge: +e.target.value })} /></>}
-      {!s.features.delivery && <p className="muted">{t('upgrade')} → {t('localDelivery')}, {t('courier')}</p>}
+      {!s.features.delivery && <p className="muted"><Link to="/billing">{t('upgrade')}</Link> → {t('localDelivery')}, {t('courier')}</p>}
     </div>
     <div className="card">
       <Toggle label={t('googleReview')} on={s.googleReviewPromptEnabled} set={v => set({ googleReviewPromptEnabled: v })} />

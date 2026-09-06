@@ -23,7 +23,7 @@ public class StoreController(AppDbContext db, TenantContext tenant, Subscription
             s.GoogleReviewUrl, s.GoogleReviewPromptEnabled, s.InstagramHandle, s.Plan, s.Status, s.TrialEndsAt, s.CurrentPeriodEndsAt,
             s.ReferralCode, s.OnboardingCompleted, s.CustomDomain,
             storefrontUrl = $"https://{s.Slug}.{cfg["Platform:RootDomain"]}",
-            storefrontOpen = subs.IsStorefrontOpen(s),
+            storefrontOpen = subs.IsStorefrontOpen(s), closedReason = subs.ClosedReason(s), s.PaymentMethodAttached,
             features = new { onlinePayments = subs.HasFeature(s, "online_payments"), delivery = subs.HasFeature(s, "delivery"), broadcast = subs.HasFeature(s, "broadcast") }
         });
     }

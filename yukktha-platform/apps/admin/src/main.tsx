@@ -10,6 +10,7 @@ import Products from './pages/Products'
 import ProductEdit from './pages/ProductEdit'
 import Orders from './pages/Orders'
 import Settings from './pages/Settings'
+import Billing from './pages/Billing'
 import './styles.css'
 
 function TabBar() {
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/products/:id" element={<Private><ProductEdit /></Private>} />
           <Route path="/orders" element={<Private><Orders /></Private>} />
           <Route path="/settings" element={<Private><Settings /></Private>} />
+          <Route path="/billing" element={<Private><Billing /></Private>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

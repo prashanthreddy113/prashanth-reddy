@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, inr } from '../api'
 import { useT } from '../i18n'
+import { Link } from 'react-router-dom'
 
 // MK-6: the weekly card. Everything the owner needs in one glance.
 export default function Home() {
@@ -12,8 +13,10 @@ export default function Home() {
   const copy = () => { navigator.clipboard.writeText(s.storefrontUrl); setCopied(true); setTimeout(() => setCopied(false), 1500) }
   return <div className="page">
     <div className="topbar"><h1 style={{ margin: 0 }}>{s.name}</h1><button className="lang" onClick={() => setLang(lang === 'te' ? 'en' : 'te')}>{lang === 'te' ? 'EN' : 'తె'}</button></div>
-    {s.status === 0 && <div className="card" style={{ background: '#FFF2DC', borderColor: '#F2A93B' }}><b>{t('trialEnds')}: {daysLeft} {t('daysLeft')}</b></div>}
-    {!s.storefrontOpen && <div className="card" style={{ background: '#FFE4EB' }}><b>Shop is closed — subscription needs payment.</b></div>}
+    {s.status === 0 && <div className="card" style={{ background: '#FFF2DC', borderColor: '#F2A93B' }}><b>{t('trialEnds')}: {daysLeft} {t('daysLeft')}</b>
+      {!s.paymentMethodAttached && <div style={{ marginTop: 6 }}><Link to="/billing">{t('addPaymentMethod')} →</Link></div>}</div>}
+    {!s.storefrontOpen && <div className="card" style={{ background: '#FFE4EB', borderColor: '#E0607E' }}><b>{t('shopClosed')}</b>
+      <div className="muted" style={{ marginTop: 4 }}>{t('closed_' + s.closedReason)}</div><div style={{ marginTop: 6 }}><Link to="/billing">{t('billing')} →</Link></div></div>}
     <div className="card">
       <div className="muted">{t('storeLink')}</div>
       <div style={{ fontWeight: 700, wordBreak: 'break-all' }}>{s.storefrontUrl}</div>

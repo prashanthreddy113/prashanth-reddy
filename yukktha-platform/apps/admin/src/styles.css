@@ -37,3 +37,5 @@ textarea{min-height:80px}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .lang{font-size:13px;font-weight:700;color:var(--brand);background:#EEE9FF;border:0;padding:6px 10px;border-radius:999px;cursor:pointer}
 .steps{display:flex;gap:6px;margin-bottom:16px}.steps i{flex:1;height:5px;border-radius:5px;background:var(--line)}.steps i.on{background:var(--brand)}
+.features{margin:10px 0 0;padding-left:18px;color:var(--ink2);font-size:14px;display:grid;gap:4px}
+.features li::marker{color:var(--ok)}
