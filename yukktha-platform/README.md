@@ -1,27 +1,25 @@
 # Yukktha Platform
 
-Multi-tenant commerce SaaS for boutiques. One deployment, one SQL Server database, every store isolated by `StoreId`.
+Multi-tenant commerce SaaS for boutiques. One deployment, one PostgreSQL database, every store isolated by `StoreId`.
 Built to the Product Requirements Document v1.0 (Phase 1 / P0 scope). The existing Yukktha Saree Studio site is untouched — this is a new codebase.
 
 ```
 src/Yukktha.Api        .NET 8 Web API + EF Core          → api.yukktha.in
 apps/admin             React PWA for store owners (te/en) → app.yukktha.in
 apps/storefront        React storefront per store         → {slug}.yukktha.in
+src/Dockerfile         API container image (Render, Railway, any Docker host)
 azure-pipelines.yml    Build + deploy (App Service slots, Static Web Apps)
 ```
 
 ## Run locally
 
-Prereqs: .NET 8 SDK, Node 20, SQL Server (LocalDB or Docker `mcr.microsoft.com/mssql/server`).
+Prereqs: .NET 8 SDK, Node 20, PostgreSQL 16 (local install or Docker `postgres:16-alpine` with user/password/db `yukktha`).
 
 ```bash
 # 1. API
 cd src/Yukktha.Api
 dotnet restore
-dotnet tool install --global dotnet-ef        # once
-dotnet ef migrations add Initial              # creates Migrations/
-dotnet ef database update
-dotnet run --urls http://localhost:5000        # Swagger at /swagger
+dotnet run --urls http://localhost:5000        # migrations run on startup; Swagger at /swagger
 
 # 2. Admin PWA
 cd apps/admin && npm install && npm run dev    # http://localhost:5173
@@ -32,6 +30,19 @@ VITE_STORE_SLUG=sri-lakshmi-sarees npm run dev # http://localhost:5174
 ```
 
 `Otp:DevMode` is `true` in `appsettings.json`, so the OTP is returned in the API response and shown on the login screen. Turn it off before production.
+
+## Deploy
+
+**API on Render:** New → Blueprint → select this repository. The root `render.yaml` creates the `yukktha-api` web service
+(built from `src/Dockerfile`) and a free `yukktha-db` PostgreSQL database, wired together through `DATABASE_URL`.
+Migrations run on startup; verify with `https://yukktha-api.onrender.com/api/health`. In the service's environment set
+the `WhatsApp__*` and `Razorpay__*` values when you have them, and switch `Otp__DevMode` to `false` once WhatsApp works.
+
+**Any Docker host:** build `src/Dockerfile` and set `DATABASE_URL` (postgres://…) or `ConnectionStrings__Default`, plus `Jwt__Key`.
+
+**Admin and storefront on Netlify:** the Netlify projects `yukktha-admin` and `yukktha-storefront` exist. Link each to this
+repository with base directory `yukktha-platform/apps/admin` or `yukktha-platform/apps/storefront`; the `netlify.toml` in
+each app proxies `/api/*` to the Render API. Set `VITE_STORE_SLUG` on the storefront project to the store it should show.
 
 ## First store
 

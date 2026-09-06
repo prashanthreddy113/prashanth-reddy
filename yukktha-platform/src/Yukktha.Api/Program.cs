@@ -16,7 +16,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddDbContext<AppDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+    o.UseNpgsql(DbConnection.Resolve(builder.Configuration)));
 
 // Tenancy: one deployment, one database, tenant resolved per request.
 builder.Services.AddScoped<TenantContext>();
@@ -51,6 +51,14 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
 
 var app = builder.Build();
 
+// Render/Railway/etc. inject PORT; honour it when ASPNETCORE_URLS is not set explicitly.
+if (Environment.GetEnvironmentVariable("PORT") is { Length: > 0 } port && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_URLS")))
+    app.Urls.Add($"http://0.0.0.0:{port}");
+
+// Apply pending migrations so a fresh database is ready on first start.
+using (var scope = app.Services.CreateScope())
+    await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -63,5 +71,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { ok = true, at = DateTime.UtcNow }));
+app.MapGet("/api/health", () => Results.Ok(new { ok = true, at = DateTime.UtcNow }));
 
 app.Run();

@@ -26,7 +26,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
     protected override void OnModelCreating(ModelBuilder mb)
     {
         mb.Entity<Store>().HasIndex(s => s.Slug).IsUnique();
-        mb.Entity<Store>().HasIndex(s => s.CustomDomain).IsUnique().HasFilter("[CustomDomain] IS NOT NULL");
+        mb.Entity<Store>().HasIndex(s => s.CustomDomain).IsUnique().HasFilter("\"CustomDomain\" IS NOT NULL");
         mb.Entity<Store>().HasIndex(s => s.OwnerPhone);
         mb.Entity<User>().HasIndex(u => new { u.StoreId, u.Phone }).IsUnique();
         mb.Entity<Product>().HasIndex(p => new { p.StoreId, p.Slug }).IsUnique();

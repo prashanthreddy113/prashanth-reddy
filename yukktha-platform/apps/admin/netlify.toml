@@ -10,7 +10,7 @@
 # Proxy API calls to the .NET backend so the app can keep using relative /api paths.
 [[redirects]]
   from   = "/api/*"
-  to     = "https://api.yukktha.in/api/:splat"
+  to     = "https://yukktha-api.onrender.com/api/:splat"
   status = 200
   force  = true
 
