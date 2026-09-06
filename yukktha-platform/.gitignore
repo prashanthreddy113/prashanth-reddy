@@ -6,3 +6,4 @@ wwwroot/media/
 appsettings.Development.json
 .env*
 *.user
+*.tsbuildinfo
