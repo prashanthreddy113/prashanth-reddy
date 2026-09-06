@@ -11,13 +11,13 @@ namespace Yukktha.Api.Controllers;
 /// so a token for store A can never act on store B even if the request is sent to B's subdomain.
 /// </summary>
 [ApiController, Authorize(Policy = "StoreStaff")]
-public abstract class TenantControllerBase(TenantContext tenant) : ControllerBase
+public abstract class TenantControllerBase(TenantContext tenant) : ControllerBase, IActionFilter
 {
-    public override void OnActionExecuting(ActionExecutingContext context)
+    public void OnActionExecuting(ActionExecutingContext context)
     {
         tenant.StoreId = User.StoreId();
         tenant.Slug = User.FindFirst("store_slug")?.Value;
-        base.OnActionExecuting(context);
     }
+    public void OnActionExecuted(ActionExecutedContext context) { }
     protected Guid StoreId => tenant.StoreId!.Value;
 }
