@@ -1,0 +1,26 @@
+# Netlify configuration. Build from this directory; publish the Vite output.
+# The .NET API is hosted separately. Change the /api proxy target below to that API's public URL.
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Proxy API calls to the .NET backend so the app can keep using relative /api paths.
+[[redirects]]
+  from   = "/api/*"
+  to     = "https://api.yukktha.in/api/:splat"
+  status = 200
+  force  = true
+
+# Single-page app: every other route is served by index.html.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
