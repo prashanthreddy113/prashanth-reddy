@@ -1,0 +1,8 @@
+bin/
+obj/
+node_modules/
+dist/
+wwwroot/media/
+appsettings.Development.json
+.env*
+*.user

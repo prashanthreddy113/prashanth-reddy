@@ -1,0 +1,18 @@
+{
+  "appName": "యుక్త",
+  "login": "లాగిన్", "signup": "మీ షాప్ సృష్టించండి", "phone": "మొబైల్ నంబర్", "sendOtp": "కోడ్ పంపండి", "enterOtp": "6 అంకెల కోడ్ నమోదు చేయండి", "verify": "ధృవీకరించండి",
+  "storeName": "షాప్ పేరు", "referral": "రిఫరల్ కోడ్ (ఐచ్ఛికం)", "haveStore": "ఇప్పటికే షాప్ ఉందా? లాగిన్", "newStore": "కొత్తవారా? మీ షాప్ సృష్టించండి",
+  "products": "ప్రొడక్ట్స్", "orders": "ఆర్డర్లు", "customers": "కస్టమర్లు", "settings": "సెట్టింగ్స్", "home": "హోమ్",
+  "addProduct": "ప్రొడక్ట్ జోడించండి", "productName": "ప్రొడక్ట్ పేరు", "price": "ధర", "comparePrice": "అసలు ధర (ఐచ్ఛికం)", "description": "వివరణ", "category": "కేటగిరీ",
+  "photos": "ఫోటోలు", "takePhoto": "ఫోటో తీయండి / ఎంచుకోండి", "variants": "రంగులు మరియు సైజులు", "addVariant": "రంగు / సైజు జోడించండి", "color": "రంగు", "size": "సైజు", "stock": "స్టాక్",
+  "save": "సేవ్", "cancel": "రద్దు", "delete": "తొలగించు", "search": "వెతకండి", "soldOut": "అమ్ముడయింది", "inStock": "స్టాక్ ఉంది", "share": "షేర్", "copyLink": "లింక్ కాపీ", "copied": "కాపీ అయింది",
+  "orderNo": "ఆర్డర్", "status": "స్థితి", "total": "మొత్తం", "call": "కాల్", "whatsapp": "వాట్సాప్", "markAs": "మార్చండి", "tracking": "ట్రాకింగ్ లింక్",
+  "status_New": "కొత్తది", "status_Confirmed": "కన్ఫర్మ్", "status_Packed": "ప్యాక్ అయింది", "status_Shipped": "పంపబడింది", "status_Delivered": "డెలివరీ అయింది", "status_Cancelled": "రద్దు",
+  "thisWeek": "ఈ వారం", "revenue": "అమ్మకాలు", "pending": "పంపాల్సినవి", "newCustomers": "కొత్త కస్టమర్లు", "topProducts": "ఎక్కువ అమ్ముడైనవి", "storeLink": "మీ షాప్ లింక్", "openStore": "షాప్ చూడండి",
+  "trialEnds": "ఉచిత ట్రయల్ ముగుస్తుంది", "plan": "ప్లాన్", "upgrade": "Growth ప్లాన్‌కు అప్‌గ్రేడ్", "referralCode": "మీ రిఫరల్ కోడ్", "referralHint": "ఇది మరో షాప్ యజమానికి ఇవ్వండి. వారు చెల్లించినప్పుడు, మీ ఇద్దరికీ ఒక నెల ఉచితం.",
+  "whatsappNumber": "ఆర్డర్ల కోసం వాట్సాప్ నంబర్", "address": "షాప్ చిరునామా", "cod": "క్యాష్ ఆన్ డెలివరీ", "localDelivery": "లోకల్ డెలివరీ", "courier": "కొరియర్", "charge": "ఛార్జ్",
+  "language": "భాష", "googleReview": "డెలివరీ తర్వాత Google రివ్యూ అడగండి", "googleReviewUrl": "Google రివ్యూ లింక్", "instagram": "Instagram హ్యాండిల్", "themeColor": "షాప్ రంగు",
+  "onboard_title": "మీ షాప్ సెటప్ చేద్దాం", "onboard_1": "మొదటి 3 ప్రొడక్ట్స్ జోడించండి", "onboard_2": "డెలివరీ ఎలా చేస్తారో ఎంచుకోండి", "onboard_3": "వాట్సాప్‌లో మీ షాప్ లింక్ షేర్ చేయండి",
+  "onboard_done": "పూర్తయింది", "onboard_skip": "తర్వాత చేస్తాను", "next": "తర్వాత", "logout": "లాగ్ అవుట్", "noProducts": "ఇంకా ప్రొడక్ట్స్ లేవు. మొదటిది జోడించండి.", "noOrders": "ఇంకా ఆర్డర్లు లేవు. మీ షాప్ లింక్ షేర్ చేయండి.",
+  "manualOrder": "వాట్సాప్ ఆర్డర్ నమోదు చేయండి", "customerName": "కస్టమర్ పేరు", "quantity": "సంఖ్య", "create": "సృష్టించు", "daysLeft": "రోజులు మిగిలాయి"
+}

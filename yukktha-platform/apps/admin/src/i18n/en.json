@@ -1,0 +1,18 @@
+{
+  "appName": "Yukktha",
+  "login": "Log in", "signup": "Create your store", "phone": "Mobile number", "sendOtp": "Send code", "enterOtp": "Enter the 6-digit code", "verify": "Verify",
+  "storeName": "Shop name", "referral": "Referral code (optional)", "haveStore": "Already have a store? Log in", "newStore": "New here? Create your store",
+  "products": "Products", "orders": "Orders", "customers": "Customers", "settings": "Settings", "home": "Home",
+  "addProduct": "Add product", "productName": "Product name", "price": "Price", "comparePrice": "Original price (optional)", "description": "Description", "category": "Category",
+  "photos": "Photos", "takePhoto": "Take or choose photo", "variants": "Colours and sizes", "addVariant": "Add colour / size", "color": "Colour", "size": "Size", "stock": "Stock",
+  "save": "Save", "cancel": "Cancel", "delete": "Remove", "search": "Search", "soldOut": "Sold out", "inStock": "In stock", "share": "Share", "copyLink": "Copy link", "copied": "Copied",
+  "orderNo": "Order", "status": "Status", "total": "Total", "call": "Call", "whatsapp": "WhatsApp", "markAs": "Mark as", "tracking": "Tracking link",
+  "status_New": "New", "status_Confirmed": "Confirmed", "status_Packed": "Packed", "status_Shipped": "Shipped", "status_Delivered": "Delivered", "status_Cancelled": "Cancelled",
+  "thisWeek": "This week", "revenue": "Sales", "pending": "To be shipped", "newCustomers": "New customers", "topProducts": "Best sellers", "storeLink": "Your shop link", "openStore": "Open shop",
+  "trialEnds": "Free trial ends", "plan": "Plan", "upgrade": "Upgrade to Growth", "referralCode": "Your referral code", "referralHint": "Give this to another shop owner. When they pay, you both get a month free.",
+  "whatsappNumber": "WhatsApp number for orders", "address": "Shop address", "cod": "Cash on delivery", "localDelivery": "Local delivery", "courier": "Courier", "charge": "Charge",
+  "language": "Language", "googleReview": "Ask customers for a Google review after delivery", "googleReviewUrl": "Google review link", "instagram": "Instagram handle", "themeColor": "Shop colour",
+  "onboard_title": "Let's set up your shop", "onboard_1": "Add your first 3 products", "onboard_2": "Choose how you deliver", "onboard_3": "Share your shop link on WhatsApp",
+  "onboard_done": "Done", "onboard_skip": "I'll do this later", "next": "Next", "logout": "Log out", "noProducts": "No products yet. Add your first one.", "noOrders": "No orders yet. Share your shop link to get started.",
+  "manualOrder": "Record a WhatsApp order", "customerName": "Customer name", "quantity": "Qty", "create": "Create", "daysLeft": "days left"
+}

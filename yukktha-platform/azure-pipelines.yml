@@ -1,0 +1,76 @@
+# Azure DevOps: build API + both React apps, deploy API to App Service (staging slot → swap) and static apps to Azure Static Web Apps.
+trigger:
+  branches: { include: [main] }
+
+variables:
+  buildConfiguration: Release
+  azureSubscription: 'yukktha-azure'         # service connection name
+  apiAppName: 'yukktha-api'
+  resourceGroup: 'yukktha-rg'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Api
+    pool: { vmImage: ubuntu-latest }
+    steps:
+    - task: UseDotNet@2
+      inputs: { version: '8.x' }
+    - script: dotnet restore src/Yukktha.Api/Yukktha.Api.csproj
+    - script: dotnet build src/Yukktha.Api/Yukktha.Api.csproj -c $(buildConfiguration) --no-restore
+    - script: dotnet publish src/Yukktha.Api/Yukktha.Api.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/api --no-build
+    - publish: $(Build.ArtifactStagingDirectory)/api
+      artifact: api
+  - job: Web
+    pool: { vmImage: ubuntu-latest }
+    steps:
+    - task: NodeTool@0
+      inputs: { versionSpec: '20.x' }
+    - script: |
+        cd apps/admin && npm ci && npm run build
+        cd ../storefront && npm ci && npm run build
+    - publish: apps/admin/dist
+      artifact: admin
+    - publish: apps/storefront/dist
+      artifact: storefront
+
+- stage: Deploy
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployApi
+    environment: production
+    pool: { vmImage: ubuntu-latest }
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: api
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appName: $(apiAppName)
+              deployToSlotOrASE: true
+              resourceGroupName: $(resourceGroup)
+              slotName: staging
+              package: $(Pipeline.Workspace)/api
+          - task: AzureAppServiceManage@0
+            inputs:
+              azureSubscription: $(azureSubscription)
+              Action: 'Swap Slots'
+              WebAppName: $(apiAppName)
+              ResourceGroupName: $(resourceGroup)
+              SourceSlot: staging
+  - deployment: DeployWeb
+    environment: production
+    pool: { vmImage: ubuntu-latest }
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+          - task: AzureStaticWebApp@0
+            inputs: { app_location: $(Pipeline.Workspace)/admin, skip_app_build: true, azure_static_web_apps_api_token: $(ADMIN_SWA_TOKEN) }
+          - task: AzureStaticWebApp@0
+            inputs: { app_location: $(Pipeline.Workspace)/storefront, skip_app_build: true, azure_static_web_apps_api_token: $(STOREFRONT_SWA_TOKEN) }
