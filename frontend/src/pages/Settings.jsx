@@ -9,10 +9,35 @@ export default function Settings() {
   const [busy, setBusy] = useState(false)
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' })
   const [pwBusy, setPwBusy] = useState(false)
+  const [demo, setDemo] = useState(null)
+  const [demoMobile, setDemoMobile] = useState('')
+  const [demoBusy, setDemoBusy] = useState(false)
   const toast = useToast()
   const { setRoomName } = useOutletContext()
 
   useEffect(() => { api.settings().then(setForm).catch((e) => toast.error(e.message)) }, [toast])
+  useEffect(() => { api.demoStatus().then(setDemo).catch(() => setDemo(null)) }, [])
+
+  const loadDemo = async () => {
+    setDemoBusy(true)
+    try {
+      const r = await api.demoSeed(demoMobile.trim() || undefined)
+      toast.success(r.message)
+      setDemo(await api.demoStatus())
+    } catch (err) { toast.error(err.message) }
+    finally { setDemoBusy(false) }
+  }
+
+  const removeDemo = async () => {
+    if (!window.confirm('Remove all sample students, their payments and sample expenses? Real records are not touched.')) return
+    setDemoBusy(true)
+    try {
+      const r = await api.demoRemove()
+      toast.success(`Removed ${r.students} sample students, ${r.payments} payments and ${r.expenses} expenses`)
+      setDemo(await api.demoStatus())
+    } catch (err) { toast.error(err.message) }
+    finally { setDemoBusy(false) }
+  }
 
   const save = async (e) => {
     e.preventDefault()
@@ -138,6 +163,33 @@ export default function Settings() {
           <div className="form-actions"><button className="btn primary" disabled={busy}>{busy ? 'Saving…' : 'Save settings'}</button></div>
         </div>
       </form>
+
+      <div className="card">
+        <div className="card-head">
+          <div>
+            <h3>Sample data</h3>
+            <span className="muted">Fill the room with 25 example students (overdue, due today, due tomorrow, due soon, running and a few who left), their payments, seat assignments and two months of expenses. Everything is tagged and can be removed in one click.</span>
+          </div>
+          {demo && demo.students > 0 && <span className="badge amber">{demo.students} sample students loaded</span>}
+        </div>
+        <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {(!demo || demo.students === 0) ? (
+            <>
+              <div className="field">
+                <label>Mobile number for the sample students (optional)</label>
+                <input value={demoMobile} onChange={(e) => setDemoMobile(e.target.value)} placeholder="Your own WhatsApp number, e.g. 9876543210" inputMode="numeric" maxLength={15} />
+                <span className="help">Leave empty to use placeholder numbers that cannot receive messages. Enter your own number to have every test reminder and receipt land on your phone.</span>
+              </div>
+              <div className="form-actions"><button type="button" className="btn primary" onClick={loadDemo} disabled={demoBusy}>{demoBusy ? 'Loading…' : 'Load sample data'}</button></div>
+            </>
+          ) : (
+            <>
+              <div className="muted">{demo.students} students · {demo.payments} payments · {demo.expenses} expenses are sample records. Remove them before you start real registrations, or keep them while you explore.</div>
+              <div className="form-actions"><button type="button" className="btn danger" onClick={removeDemo} disabled={demoBusy}>{demoBusy ? 'Removing…' : 'Remove sample data'}</button></div>
+            </>
+          )}
+        </div>
+      </div>
 
       <form className="card" onSubmit={changePassword}>
         <div className="card-head"><h3>Change password</h3></div>

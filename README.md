@@ -59,6 +59,8 @@ npm run dev
 
 Login with **admin / admin123** (from `appsettings.json`), then go to **Seats** and set the number of seats.
 
+To explore with data before real registrations, open **Settings → Sample data → Load sample data**: it adds 25 example students (overdue, due today, due tomorrow, due soon, running, left), their payments, seat assignments and two months of expenses, and creates 40 seats if the room has none. Enter your own mobile there to receive the test reminders. **Remove sample data** deletes only those records.
+
 Or run everything but the frontend with Docker: `docker compose up --build` (API on http://localhost:8080).
 
 ## Deploy

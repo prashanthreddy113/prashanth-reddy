@@ -144,4 +144,8 @@ export const api = {
 
   settings: () => request('GET', '/api/settings'),
   updateSettings: (data) => request('PUT', '/api/settings', data),
+
+  demoStatus: () => request('GET', '/api/demo'),
+  demoSeed: (mobile) => request('POST', '/api/demo/seed', {}, { query: { mobile } }),
+  demoRemove: () => request('DELETE', '/api/demo'),
 }
