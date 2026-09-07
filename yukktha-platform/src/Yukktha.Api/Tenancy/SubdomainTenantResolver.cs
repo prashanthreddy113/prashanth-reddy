@@ -5,8 +5,8 @@ using Yukktha.Api.Data;
 namespace Yukktha.Api.Tenancy;
 
 /// <summary>
-/// Resolves the store from, in order: X-Store-Slug header (admin PWA and local dev),
-/// custom domain, then subdomain of the root platform domain.
+/// Resolves the store from, in order: X-Store-Slug header (admin PWA, local dev, and the proxied storefront),
+/// X-Store-Domain header (proxied storefront on a custom domain), custom domain in Host, then subdomain of the root domain.
 /// </summary>
 public class SubdomainTenantResolver(AppDbContext db, IMemoryCache cache, IConfiguration cfg) : ITenantResolver
 {
@@ -18,6 +18,8 @@ public class SubdomainTenantResolver(AppDbContext db, IMemoryCache cache, IConfi
 
         if (ctx.Request.Headers.TryGetValue("X-Store-Slug", out var h) && !string.IsNullOrWhiteSpace(h))
             slug = h.ToString().ToLowerInvariant();
+        else if (ctx.Request.Headers.TryGetValue("X-Store-Domain", out var d) && !string.IsNullOrWhiteSpace(d))
+            host = d.ToString().ToLowerInvariant();      // storefront behind a proxy tells us the customer-facing domain
         else if (host.EndsWith("." + root))
             slug = host[..^(root.Length + 1)];
 
