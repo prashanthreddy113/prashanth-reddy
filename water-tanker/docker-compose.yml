@@ -1,0 +1,40 @@
+# Local development / self-hosting for AquaProof: PostgreSQL + the .NET API.
+# Run:  docker compose up --build      API: http://localhost:8090 (Swagger at /swagger)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: watertanker
+      POSTGRES_USER: watertanker
+      POSTGRES_PASSWORD: watertanker
+    ports:
+      - "5433:5432"
+    volumes:
+      - aquaproof-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U watertanker -d watertanker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=watertanker;Username=watertanker;Password=watertanker"
+      Jwt__Key: "change-this-to-a-long-random-secret-at-least-32-chars"
+      Admin__Email: "admin@aquaproof.local"
+      Admin__Password: "admin123"
+      Demo__Seed: "true"          # seeds an operator, communities, devices and two weeks of deliveries on first run
+      Cors__AllowedOrigins: ""    # empty = any origin; set to https://your-site.netlify.app in production
+      Photos__Directory: "/data/uploads"
+    volumes:
+      - aquaproof-uploads:/data/uploads
+    ports:
+      - "8090:8080"
+
+volumes:
+  aquaproof-pgdata:
+  aquaproof-uploads:

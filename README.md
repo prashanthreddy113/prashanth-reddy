@@ -1,3 +1,12 @@
+# Projects
+
+| Folder | Product |
+| --- | --- |
+| `/` (root) | **BrightLoop Reading Room – Admin** – study room admin console (below) |
+| [`water-tanker/`](water-tanker/README.md) | **AquaProof** – IoT-verified water tanker deliveries for Hyderabad gated communities: ESP32 + 4G meter on the tanker outlet, .NET API, React operator/RWA apps |
+
+---
+
 # BrightLoop Reading Room – Admin
 
 A complete admin console for the BrightLoop reading room. Admins register students, assign seat numbers, track fees, and see at a glance whose subscription is due.

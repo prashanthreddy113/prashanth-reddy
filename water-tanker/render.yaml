@@ -1,0 +1,35 @@
+# One-click deploy of the AquaProof API + PostgreSQL on Render (https://render.com).
+# Render → New → Blueprint → point at this repository (root: water-tanker). Then set VITE_API_URL on Netlify.
+services:
+  - type: web
+    name: aquaproof-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /api/health
+    disk:
+      name: uploads
+      mountPath: /data/uploads
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aquaproof-db
+          property: connectionString
+      - key: Jwt__Key
+        generateValue: true
+      - key: Admin__Email
+        value: admin@aquaproof.local
+      - key: Admin__Password
+        sync: false   # set this in the Render dashboard
+      - key: Demo__Seed
+        value: "true"
+      - key: Photos__Directory
+        value: /data/uploads
+      - key: Cors__AllowedOrigins
+        sync: false   # e.g. https://aquaproof.netlify.app
+
+databases:
+  - name: aquaproof-db
+    plan: free

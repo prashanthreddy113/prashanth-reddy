@@ -25,3 +25,6 @@ npm-debug.log*
 Thumbs.db
 .idea/
 .vscode/
+
+# AquaProof (water-tanker) runtime files
+water-tanker/backend/WaterTanker.Api/uploads/

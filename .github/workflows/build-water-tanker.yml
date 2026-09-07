@@ -1,0 +1,33 @@
+# Compiles the AquaProof API and builds its frontend on every push that touches them.
+name: Build AquaProof (water-tanker)
+
+on:
+  push:
+    paths: [water-tanker/**, .github/workflows/build-water-tanker.yml]
+  pull_request:
+    paths: [water-tanker/**]
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet build water-tanker/backend/WaterTanker.sln -c Release
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: water-tanker/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: water-tanker/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
