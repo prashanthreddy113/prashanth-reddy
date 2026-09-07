@@ -45,5 +45,6 @@ export default function Settings() {
     </div>
     <button className="btn" onClick={save}>{saved ? '✓' : t('save')}</button>
     <div style={{ height: 8 }} /><button className="btn ghost" onClick={() => { session.clear(); nav('/login') }}>{t('logout')}</button>
+    <div style={{ textAlign: 'center', marginTop: 24 }}><img src="/logo.svg" alt={t('appName')} style={{ height: 30, opacity: .85 }} /></div>
   </div>
 }

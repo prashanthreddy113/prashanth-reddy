@@ -1,4 +1,6 @@
-# Yukktha Platform
+<img src="apps/admin/public/logo.svg" alt="Angadi by BrightLoop" height="64">
+
+# Yukktha Platform (Angadi)
 
 Multi-tenant commerce SaaS for boutiques. One deployment, one PostgreSQL database, every store isolated by `StoreId`.
 Built to the Product Requirements Document v1.0 (Phase 1 / P0 scope). The existing Yukktha Saree Studio site is untouched — this is a new codebase.

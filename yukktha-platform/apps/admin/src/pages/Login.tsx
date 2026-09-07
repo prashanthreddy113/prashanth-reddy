@@ -37,7 +37,7 @@ export default function Login() {
 
   return (
     <div className="page" style={{ paddingTop: 48 }}>
-      <div className="topbar"><div className="big" style={{ color: 'var(--brand)' }}>{t('appName')}</div>
+      <div className="topbar"><img src="/logo.svg" alt={t('appName')} style={{ height: 44 }} />
         <button className="lang" onClick={() => setLang(lang === 'te' ? 'en' : 'te')}>{lang === 'te' ? 'English' : 'తెలుగు'}</button></div>
       <h1>{mode === 'signup' ? t('signup') : t('login')}</h1>
       <div className="card">

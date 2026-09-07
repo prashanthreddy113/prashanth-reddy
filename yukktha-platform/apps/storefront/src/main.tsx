@@ -35,6 +35,8 @@ function Shell() {
       {store.address && <div>{store.address}</div>}
       <a href={`https://wa.me/${store.whatsApp.replace('+', '')}`}>WhatsApp {store.whatsApp}</a>
       {store.instagramHandle && <> · <a href={`https://instagram.com/${store.instagramHandle.replace('@', '')}`}>Instagram</a></>}
+      <div style={{ marginTop: 18, fontSize: 12 }}>{store.defaultLanguage === 1 ? 'పవర్డ్ బై' : 'Powered by'}</div>
+      <img src="/logo.svg" alt="Angadi by BrightLoop" style={{ height: 28, marginTop: 4, opacity: .9 }} />
     </footer>
   </StoreCtx.Provider>
 }
