@@ -15,7 +15,8 @@ public class StorefrontController(AppDbContext db, TenantContext tenant, Subscri
     private async Task<(Store? store, IActionResult? error)> LoadAsync()
     {
         if (!tenant.IsResolved) return (null, NotFound(new { error = "Store not found" }));
-        var s = await db.Stores.AsNoTracking().FirstAsync(x => x.Id == tenant.StoreId);
+        var s = await db.Stores.AsNoTracking().FirstOrDefaultAsync(x => x.Id == tenant.StoreId);
+        if (s is null) return (null, NotFound(new { error = "Store not found" }));   // resolver cache can outlive a deleted store
         if (!subs.IsStorefrontOpen(s)) return (null, StatusCode(503, new { error = "temporarily_closed", name = s.Name }));
         return (s, null);
     }

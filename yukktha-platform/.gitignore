@@ -2,7 +2,7 @@ bin/
 obj/
 node_modules/
 dist/
-wwwroot/media/
+**/wwwroot/media/
 appsettings.Development.json
 .env*
 *.user

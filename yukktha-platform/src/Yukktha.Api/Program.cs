@@ -66,6 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();   // serves wwwroot/media when no blob storage is configured (dev fallback)
 app.UseCors();
 app.UseMiddleware<TenantResolutionMiddleware>();
 app.UseAuthentication();

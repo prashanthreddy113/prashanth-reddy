@@ -11,5 +11,5 @@ export default defineConfig({
       icons: [{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }]
     }
   })],
-  server: { port: 5173, proxy: { '/api': 'http://localhost:5000' } }
+  server: { port: 5173, proxy: { '/api': 'http://localhost:5000', '/media': 'http://localhost:5000' } }
 })
