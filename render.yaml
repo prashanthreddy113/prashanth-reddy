@@ -72,6 +72,14 @@ services:
         sync: false
       - key: Platform__TrialRequiresPaymentMethod
         value: "true"   # BL-2: storefront opens only after UPI autopay or a card is authorised
+      - key: Platform__AdminUrl
+        sync: false   # public admin URL used in referral join links, e.g. https://app.yukktha.in
+      - key: Platform__SuperAdminPhones__0
+        sync: false   # your mobile number; logging in with it opens the BrightLoop console at /super
+      - key: Referral__ReferredBonusDays
+        value: "30"   # extra free-trial days for a store that signs up with a referral code
+      - key: Referral__PayoutInr
+        value: "500"  # cash payout owed to a wholesaler/agent (no shop) per referred store's first payment
       - key: Storage__BlobConnectionString
         sync: false   # Azure Blob Storage for product images (optional)
 

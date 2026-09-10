@@ -10,8 +10,16 @@ using Yukktha.Api.Tenancy;
 namespace Yukktha.Api.Controllers;
 
 [ApiController, Route("api/auth")]
-public class AuthController(AppDbContext db, OtpService otp, JwtTokenService jwt, SubscriptionService subs, TenantContext tenant) : ControllerBase
+public class AuthController(AppDbContext db, OtpService otp, JwtTokenService jwt, SubscriptionService subs, TenantContext tenant, ReferralService referrals, IConfiguration cfg) : ControllerBase
 {
+    /// <summary>Shown on the signup screen when a referral link is opened: who is introducing this shop.</summary>
+    [HttpGet("referrer")]
+    public async Task<IActionResult> Referrer([FromQuery] string code)
+    {
+        var r = await referrals.FindByCodeAsync(code ?? "");
+        return r is null ? NotFound(new { error = "Unknown referral code" }) : Ok(new { r.Name, type = r.Type.ToString(), bonusDays = referrals.ReferredBonusDays });
+    }
+
     /// <summary>PL-2 step 1: request OTP. Same endpoint for signup and login.</summary>
     [HttpPost("otp")]
     public async Task<IActionResult> SendOtp(SendOtpRequest req)
@@ -38,8 +46,9 @@ public class AuthController(AppDbContext db, OtpService otp, JwtTokenService jwt
             DefaultLanguage = req.Language, TrialEndsAt = DateTime.UtcNow.AddDays(subs.TrialDays),
             ReferralCode = slug.ToUpperInvariant()[..Math.Min(6, slug.Length)] + Random.Shared.Next(100, 999)
         };
-        if (!string.IsNullOrWhiteSpace(req.ReferralCode))
-            store.ReferredByStoreId = (await db.Stores.IgnoreQueryFilters().FirstOrDefaultAsync(s => s.ReferralCode == req.ReferralCode))?.Id;
+        var referrer = string.IsNullOrWhiteSpace(req.ReferralCode) ? null : await referrals.FindByCodeAsync(req.ReferralCode);
+        if (referrer is not null) referrals.ApplySignup(store, referrer);
+        referrals.CreateForStore(store);                                   // the new store's own code, for referring others
 
         var owner = new User { StoreId = store.Id, Phone = phone, Name = "Owner", Role = UserRole.Owner, Language = req.Language, LastLoginAt = DateTime.UtcNow };
         db.Stores.Add(store); db.Users.Add(owner);
@@ -60,6 +69,10 @@ public class AuthController(AppDbContext db, OtpService otp, JwtTokenService jwt
     {
         if (!await otp.VerifyAsync(req.Phone, req.Code)) return Unauthorized(new { error = "Invalid or expired code" });
         var phone = PhoneUtil.Normalize(req.Phone);
+
+        var superAdmins = cfg.GetSection("Platform:SuperAdminPhones").Get<string[]>() ?? [];
+        if (superAdmins.Select(PhoneUtil.Normalize).Contains(phone))
+            return Ok(new { token = jwt.IssueSuperAdmin(phone), superAdmin = true, role = "SuperAdmin", storeSlug = "", storeName = "BrightLoop", onboardingCompleted = true });
 
         var users = await db.Users.IgnoreQueryFilters().Where(u => u.Phone == phone).ToListAsync();
         if (users.Count == 0) return NotFound(new { error = "No store for this phone. Sign up first." });

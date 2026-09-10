@@ -10,7 +10,7 @@ using Yukktha.Api.Services;
 namespace Yukktha.Api.Controllers;
 
 [ApiController, Route("api/webhooks")]
-public class WebhooksController(AppDbContext db, IConfiguration cfg, SubscriptionService subs, ILogger<WebhooksController> log) : ControllerBase
+public class WebhooksController(AppDbContext db, IConfiguration cfg, SubscriptionService subs, ReferralService referrals, ILogger<WebhooksController> log) : ControllerBase
 {
     /// <summary>BL-2/BL-3 and OR-2: Razorpay subscription + payment events. Verifies signature, then applies status.</summary>
     [HttpPost("razorpay")]
@@ -36,6 +36,16 @@ public class WebhooksController(AppDbContext db, IConfiguration cfg, Subscriptio
             DateTime? periodEnd = sub.TryGetProperty("current_end", out var ce) && ce.ValueKind == JsonValueKind.Number
                 ? DateTimeOffset.FromUnixTimeSeconds(ce.GetInt64()).UtcDateTime : null;
             subs.ApplyWebhook(store, evt, periodEnd);
+            if (evt is "subscription.activated" or "subscription.charged")
+            {
+                await referrals.OnFirstPaymentAsync(store);
+                if (evt == "subscription.charged" && payload.TryGetProperty("payment", out var pe) && pe.TryGetProperty("entity", out var pay))
+                {
+                    var paymentId = pay.TryGetProperty("id", out var pid) ? pid.GetString() : null;
+                    var amount = pay.TryGetProperty("amount", out var am) && am.ValueKind == JsonValueKind.Number ? am.GetInt64() / 100m : 0m;
+                    await referrals.OnChargedAsync(store, paymentId, amount);
+                }
+            }
             await db.SaveChangesAsync();
         }
         else if (evt == "payment.captured")

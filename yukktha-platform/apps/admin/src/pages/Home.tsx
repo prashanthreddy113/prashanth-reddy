@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom'
 export default function Home() {
   const { t, lang, setLang } = useT()
   const [s, setS] = useState<any>(null); const [sum, setSum] = useState<any>(null); const [copied, setCopied] = useState(false)
-  useEffect(() => { api('/api/admin/store').then(setS); api('/api/admin/summary?days=7').then(setSum) }, [])
+  const [ref, setRef] = useState<any>(null); const [refCopied, setRefCopied] = useState(false)
+  useEffect(() => { api('/api/admin/store').then(setS); api('/api/admin/summary?days=7').then(setSum); api('/api/admin/referrals/mine').then(setRef).catch(() => {}) }, [])
   if (!s || !sum) return <div className="page muted">…</div>
   const daysLeft = Math.max(0, Math.ceil((new Date(s.trialEndsAt).getTime() - Date.now()) / 86400000))
   const copy = () => { navigator.clipboard.writeText(s.storefrontUrl); setCopied(true); setTimeout(() => setCopied(false), 1500) }
@@ -36,8 +37,19 @@ export default function Home() {
     {sum.topProducts?.length > 0 && <div className="card"><div className="muted">{t('topProducts')}</div>
       <div className="list">{sum.topProducts.map((p: any) => <div className="item" key={p.name}><span style={{ flex: 1 }}>{p.name}</span><b>{p.qty}</b></div>)}</div></div>}
     <div className="card">
-      <div className="muted">{t('referralCode')}</div><div className="big" style={{ letterSpacing: 2 }}>{s.referralCode}</div>
-      <p className="muted" style={{ marginTop: 6 }}>{t('referralHint')}</p>
+      <div className="muted">{t('referralCode')}</div><div className="big" style={{ letterSpacing: 2 }}>{ref?.code ?? s.referralCode}</div>
+      <p className="muted" style={{ marginTop: 6 }}>{t('referralHint').replace('{n}', String(ref?.bonusDays ?? 30))}</p>
+      {ref && <>
+        <div className="row" style={{ marginTop: 10 }}>
+          <button className="btn sm wa" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(t('referralShareText').replace('{link}', ref.joinLink))}`)}>{t('share')}</button>
+          <button className="btn sm secondary" onClick={() => { navigator.clipboard.writeText(ref.joinLink); setRefCopied(true); setTimeout(() => setRefCopied(false), 1500) }}>{refCopied ? t('copied') : t('copyLink')}</button>
+        </div>
+        <div className="grid2" style={{ marginTop: 12 }}>
+          <div><div className="muted">{t('refSignups')}</div><b style={{ fontSize: 20 }}>{ref.signups}</b></div>
+          <div><div className="muted">{t('refPaying')}</div><b style={{ fontSize: 20 }}>{ref.paying}</b></div>
+        </div>
+        {(ref.creditMonths > 0 || ref.freeMonthsEarned > 0) && <p className="muted" style={{ marginTop: 8 }}><span className="chip ok">{t('freeMonths').replace('{n}', String(ref.freeMonthsEarned))}</span> {ref.creditMonths > 0 && t('creditPending').replace('{n}', String(ref.creditMonths))}</p>}
+      </>}
     </div>
   </div>
 }

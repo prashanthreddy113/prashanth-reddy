@@ -25,7 +25,7 @@ public class SuperAdminController(AppDbContext db, TenantContext tenant, JwtToke
         var lastLogins = await db.Users.IgnoreQueryFilters().Where(u => ids.Contains(u.StoreId)).GroupBy(u => u.StoreId).Select(g => new { g.Key, t = g.Max(u => u.LastLoginAt) }).ToDictionaryAsync(x => x.Key, x => x.t);
         return Ok(list.Select(s => new
         {
-            s.Id, s.Slug, s.Name, s.OwnerPhone, s.City, s.Plan, s.Status, s.TrialEndsAt, s.CurrentPeriodEndsAt, s.CreatedAt, s.OnboardingCompleted, s.ReferralCode, s.ReferredByStoreId,
+            s.Id, s.Slug, s.Name, s.OwnerPhone, s.City, s.Plan, s.Status, s.TrialEndsAt, s.CurrentPeriodEndsAt, s.CreatedAt, s.OnboardingCompleted, s.ReferralCode, s.ReferredByStoreId, s.ReferrerId, s.FirstPaidAt,
             orders = orderCounts.GetValueOrDefault(s.Id), products = productCounts.GetValueOrDefault(s.Id), lastLogin = lastLogins.GetValueOrDefault(s.Id)
         }));
     }
@@ -60,7 +60,7 @@ public class SuperAdminController(AppDbContext db, TenantContext tenant, JwtToke
     public async Task<IActionResult> Metrics()
     {
         var stores = db.Stores.IgnoreQueryFilters();
-        var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+        var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         return Ok(new
         {
             total = await stores.CountAsync(),

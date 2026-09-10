@@ -10,6 +10,39 @@ public enum PaymentStatus { Pending = 0, Paid = 1, Failed = 2, Refunded = 3 }
 public enum PaymentMethod { Cod = 0, Online = 1, WhatsApp = 2 }
 public enum DeliveryMode { Pickup = 0, LocalDelivery = 1, Courier = 2 }
 public enum Language { En = 0, Te = 1 }
+public enum ReferrerType { Retailer = 1, Wholesaler = 2, Agent = 3 }
+public enum ReferralCreditType { ReferredTrialExtension = 1, ReferrerFreeMonth = 2, ReferrerPayout = 3 }
+public enum ReferralCreditStatus { Pending = 0, Applied = 1, Paid = 2, Cancelled = 3 }
+
+/// <summary>BL-4: anyone who introduces stores. Every store gets a Retailer row for its own code; wholesalers and agents are created by BrightLoop.</summary>
+public class Referrer
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Code { get; set; } = "";
+    public string Name { get; set; } = "";
+    public ReferrerType Type { get; set; } = ReferrerType.Retailer;
+    public string? Phone { get; set; }
+    public string? City { get; set; }
+    public Guid? StoreId { get; set; }                  // the referrer's own store, when they run one
+    public string? Notes { get; set; }
+    public bool Active { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+
+/// <summary>Ledger of what a referral earned: extra trial days for the new store, a free month or a payout for the referrer.</summary>
+public class ReferralCredit
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid ReferrerId { get; set; }
+    public Guid ReferredStoreId { get; set; }
+    public ReferralCreditType Type { get; set; }
+    public ReferralCreditStatus Status { get; set; } = ReferralCreditStatus.Pending;
+    public decimal AmountInr { get; set; }
+    public string? Note { get; set; }
+    public string? RazorpayRefundId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? SettledAt { get; set; }
+}
 
 public class Store
 {
@@ -44,6 +77,9 @@ public class Store
     public string? RazorpayAccountId { get; set; }      // payouts to the store's bank
     public string? ReferralCode { get; set; }
     public Guid? ReferredByStoreId { get; set; }
+    public Guid? ReferrerId { get; set; }                // who introduced this store (Referrer row)
+    public int CreditMonths { get; set; }               // free months earned, refunded on the next charges
+    public DateTime? FirstPaidAt { get; set; }
     public bool OnboardingCompleted { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<User> Users { get; set; } = [];

@@ -13,7 +13,7 @@ namespace Yukktha.Api.Controllers;
 /// and the store opens. Razorpay webhooks (WebhooksController) keep the status current afterwards.
 /// </summary>
 [Route("api/admin/billing"), Authorize(Policy = "StoreOwner")]
-public class BillingController(AppDbContext db, TenantContext tenant, SubscriptionService subs, RazorpayService rzp, ILogger<BillingController> log) : TenantControllerBase(tenant)
+public class BillingController(AppDbContext db, TenantContext tenant, SubscriptionService subs, RazorpayService rzp, ReferralService referrals, ILogger<BillingController> log) : TenantControllerBase(tenant)
 {
     public record SubscribeRequest(PlanTier Plan);
     public record VerifyRequest(string RazorpayPaymentId, string RazorpaySubscriptionId, string RazorpaySignature);
@@ -43,6 +43,7 @@ public class BillingController(AppDbContext db, TenantContext tenant, Subscripti
             s.PaymentMethodAttached = true;
             s.SubscriptionStartedAt = DateTime.UtcNow;
             if (s.Status is StoreStatus.Suspended or StoreStatus.PastDue || (s.Status == StoreStatus.Trial && s.TrialEndsAt <= DateTime.UtcNow)) s.Status = StoreStatus.Active;
+            await referrals.OnFirstPaymentAsync(s);                        // dev stand-in for the subscription.activated webhook
             await db.SaveChangesAsync();
             log.LogWarning("Razorpay not configured; dev subscription {Id} for {Slug}", s.RazorpaySubscriptionId, s.Slug);
             return Ok(new { devMode = true, billing = Summary(s) });

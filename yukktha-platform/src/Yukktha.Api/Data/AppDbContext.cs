@@ -22,6 +22,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<MessageLog> MessageLogs => Set<MessageLog>();
+    public DbSet<Referrer> Referrers => Set<Referrer>();
+    public DbSet<ReferralCredit> ReferralCredits => Set<ReferralCredit>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -33,6 +35,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
         mb.Entity<Customer>().HasIndex(c => new { c.StoreId, c.Phone }).IsUnique();
         mb.Entity<Order>().HasIndex(o => new { o.StoreId, o.Number }).IsUnique();
         mb.Entity<OtpCode>().HasIndex(o => o.Phone);
+        mb.Entity<Referrer>().HasIndex(r => r.Code).IsUnique();
+        mb.Entity<Referrer>().HasIndex(r => r.StoreId);
+        mb.Entity<ReferralCredit>().HasIndex(c => c.ReferrerId);
+        mb.Entity<ReferralCredit>().HasIndex(c => c.ReferredStoreId);
+        mb.Entity<ReferralCredit>().Property(c => c.AmountInr).HasPrecision(12, 2);
+        mb.Entity<Store>().HasIndex(s => s.ReferrerId);
 
         foreach (var p in new[] { "Price", "CompareAtPrice" }) mb.Entity<Product>().Property(p).HasPrecision(12, 2);
         mb.Entity<ProductVariant>().Property(v => v.PriceOverride).HasPrecision(12, 2);

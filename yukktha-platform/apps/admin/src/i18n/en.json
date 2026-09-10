@@ -61,7 +61,7 @@
  "plan": "Plan",
  "upgrade": "Upgrade to Growth",
  "referralCode": "Your referral code",
- "referralHint": "Give this to another shop owner. When they pay, you both get a month free.",
+ "referralHint": "Share your link with another shop owner. They get {n} extra free days; when they pay, you get a month free.",
  "whatsappNumber": "WhatsApp number for orders",
  "address": "Shop address",
  "cod": "Cash on delivery",
@@ -126,5 +126,12 @@
  "feat_delivery": "Local delivery and courier options",
  "feat_broadcast": "WhatsApp broadcasts to past customers",
  "feat_analytics": "Weekly sales analytics",
- "feat_multi_branch": "Branch-level stock for multiple outlets"
+ "feat_multi_branch": "Branch-level stock for multiple outlets",
+ "referredBy": "Referred by",
+ "bonusDays": "{n} extra free-trial days",
+ "refSignups": "Shops you referred",
+ "refPaying": "Now paying",
+ "freeMonths": "{n} free month(s) earned",
+ "creditPending": "{n} will be refunded on your next payment.",
+ "referralShareText": "Sell your sarees on WhatsApp with Angadi. Sign up with my link and get 30 extra free days: {link}"
 }

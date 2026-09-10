@@ -27,6 +27,7 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 builder.Services.AddScoped<SubscriptionService>();
 builder.Services.AddScoped<RazorpayService>();
+builder.Services.AddScoped<ReferralService>();
 builder.Services.AddScoped<MediaService>();
 
 var jwt = builder.Configuration.GetSection("Jwt");

@@ -1,22 +1,32 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api, session } from '../api'
 import { useT } from '../i18n'
 
 // PL-2: phone → OTP → store created (or logged in) in under 2 minutes.
 export default function Login() {
   const { t, lang, setLang } = useT()
-  const nav = useNavigate()
+  const nav = useNavigate(); const [sp] = useSearchParams()
+  const refFromLink = (sp.get('ref') || localStorage.getItem('yk_ref') || '').toUpperCase()
   const [mode, setMode] = useState<'login' | 'signup'>('signup')
   const [step, setStep] = useState<1 | 2>(1)
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [storeName, setStoreName] = useState('')
-  const [referral, setReferral] = useState('')
+  const [referral, setReferral] = useState(refFromLink)
+  const [referrer, setReferrer] = useState<{ name: string; type: string; bonusDays: number } | null>(null)
   const [devCode, setDevCode] = useState<string | null>(null)
   const [stores, setStores] = useState<{ slug: string; name: string }[] | null>(null)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+
+  // A referral link (/join?ref=CODE) pre-fills the code and shows who is introducing the shop.
+  useEffect(() => {
+    if (sp.get('ref')) localStorage.setItem('yk_ref', sp.get('ref')!.toUpperCase())
+    const code = referral.trim()
+    if (code.length < 4) { setReferrer(null); return }
+    api(`/api/auth/referrer?code=${encodeURIComponent(code)}`).then(setReferrer).catch(() => setReferrer(null))
+  }, [referral])
 
   async function sendOtp() {
     setErr(''); setBusy(true)
@@ -30,6 +40,8 @@ export default function Login() {
         ? await api('/api/auth/signup', { body: { phone, code, storeName, referralCode: referral || null, language: lang === 'te' ? 1 : 0 } })
         : await api('/api/auth/login', { body: { phone, code, storeSlug: slug ?? null } })
       if (r.chooseStore) { setStores(r.chooseStore); return }
+      if (r.superAdmin) { session.set(r.token, ''); nav('/super', { replace: true }); return }
+      localStorage.removeItem('yk_ref')
       session.set(r.token, r.storeSlug)
       nav(r.onboardingCompleted ? '/' : '/onboarding', { replace: true })
     } catch (e: any) { setErr(e.message) } finally { setBusy(false) }
@@ -45,7 +57,8 @@ export default function Login() {
           {mode === 'signup' && <><label>{t('storeName')}</label><input value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Sri Lakshmi Sarees" /></>}
           <label>{t('phone')}</label>
           <input inputMode="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="98765 43210" />
-          {mode === 'signup' && <><label>{t('referral')}</label><input value={referral} onChange={e => setReferral(e.target.value.toUpperCase())} /></>}
+          {mode === 'signup' && <><label>{t('referral')}</label><input value={referral} onChange={e => setReferral(e.target.value.toUpperCase())} />
+            {referrer && <p className="muted" style={{ marginTop: 6 }}><span className="chip ok">{t('referredBy')} {referrer.name}</span> · {t('bonusDays').replace('{n}', String(referrer.bonusDays))}</p>}</>}
           <div style={{ height: 14 }} />
           <button className="btn" disabled={busy || phone.length < 10 || (mode === 'signup' && storeName.trim().length < 2)} onClick={sendOtp}>{t('sendOtp')}</button>
         </>}

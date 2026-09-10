@@ -11,6 +11,7 @@ import ProductEdit from './pages/ProductEdit'
 import Orders from './pages/Orders'
 import Settings from './pages/Settings'
 import Billing from './pages/Billing'
+import Super from './pages/Super'
 import './styles.css'
 
 function TabBar() {
@@ -32,6 +33,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Login />} />
+          <Route path="/super" element={session.token ? <Super /> : <Navigate to="/login" replace />} />
           <Route path="/onboarding" element={<Private><Onboarding /></Private>} />
           <Route path="/" element={<Private><Home /></Private>} />
           <Route path="/products" element={<Private><Products /></Private>} />

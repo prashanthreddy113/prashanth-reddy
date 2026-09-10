@@ -15,6 +15,7 @@ public abstract class TenantControllerBase(TenantContext tenant) : ControllerBas
 {
     public void OnActionExecuting(ActionExecutingContext context)
     {
+        if (User.StoreIdOrNull() is null) { context.Result = new ForbidResult(); return; }
         tenant.StoreId = User.StoreId();
         tenant.Slug = User.FindFirst("store_slug")?.Value;
     }

@@ -26,10 +26,29 @@ public class JwtTokenService(IConfiguration cfg)
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    /// <summary>PL-3: BrightLoop staff token. No store claim; only the super-admin endpoints accept it.</summary>
+    public string IssueSuperAdmin(string phone)
+    {
+        var jwt = cfg.GetSection("Jwt");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, Guid.Empty.ToString()),
+            new(ClaimTypes.Name, "BrightLoop"),
+            new(ClaimTypes.MobilePhone, phone),
+            new(ClaimTypes.Role, UserRole.SuperAdmin.ToString()),
+        };
+        var token = new JwtSecurityToken(jwt["Issuer"], jwt["Audience"], claims,
+            expires: DateTime.UtcNow.AddHours(jwt.GetValue<int>("SuperAdminExpiryHours", 12)),
+            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 }
 
 public static class ClaimsExt
 {
     public static Guid StoreId(this ClaimsPrincipal p) => Guid.Parse(p.FindFirstValue("store_id")!);
+    public static Guid? StoreIdOrNull(this ClaimsPrincipal p) => Guid.TryParse(p.FindFirstValue("store_id"), out var g) ? g : null;
     public static Guid UserId(this ClaimsPrincipal p) => Guid.Parse(p.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? p.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }

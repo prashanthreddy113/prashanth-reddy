@@ -10,7 +10,7 @@ using Yukktha.Api.Tenancy;
 namespace Yukktha.Api.Controllers;
 
 [Route("api/admin/store")]
-public class StoreController(AppDbContext db, TenantContext tenant, SubscriptionService subs, IConfiguration cfg) : TenantControllerBase(tenant)
+public class StoreController(AppDbContext db, TenantContext tenant, SubscriptionService subs, IConfiguration cfg, ReferralService referrals) : TenantControllerBase(tenant)
 {
     [HttpGet]
     public async Task<IActionResult> Get()
@@ -50,6 +50,25 @@ public class StoreController(AppDbContext db, TenantContext tenant, Subscription
         s.OnboardingCompleted = true;
         await db.SaveChangesAsync();
         return Ok();
+    }
+
+    /// <summary>BL-4: the owner's own referral code, link and results.</summary>
+    [HttpGet("/api/admin/referrals/mine")]
+    public async Task<IActionResult> MyReferrals()
+    {
+        var s = await db.Stores.AsNoTracking().FirstAsync(x => x.Id == StoreId);
+        var referrer = await db.Referrers.AsNoTracking().FirstOrDefaultAsync(r => r.StoreId == StoreId);
+        var code = referrer?.Code ?? s.ReferralCode ?? "";
+        var referred = referrer is null ? [] : await db.Stores.IgnoreQueryFilters().AsNoTracking().Where(x => x.ReferrerId == referrer.Id)
+            .OrderByDescending(x => x.CreatedAt).Select(x => new { x.Name, x.City, x.Status, x.CreatedAt, paid = x.FirstPaidAt != null }).ToListAsync();
+        var credits = referrer is null ? [] : await db.ReferralCredits.AsNoTracking().Where(c => c.ReferrerId == referrer.Id && c.Type == ReferralCreditType.ReferrerFreeMonth)
+            .OrderByDescending(c => c.CreatedAt).Select(c => new { c.Status, c.AmountInr, c.CreatedAt, c.SettledAt }).ToListAsync();
+        return Ok(new
+        {
+            code, joinLink = referrals.JoinLink(code), bonusDays = referrals.ReferredBonusDays,
+            signups = referred.Count, paying = referred.Count(r => r.paid), trial = referred.Count(r => r.Status == StoreStatus.Trial),
+            creditMonths = s.CreditMonths, freeMonthsEarned = credits.Count, referred, credits
+        });
     }
 
     [HttpGet("plans")]

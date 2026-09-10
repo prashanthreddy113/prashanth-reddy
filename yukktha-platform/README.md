@@ -79,6 +79,15 @@ Open the admin, tap **Create your store**, enter shop name + phone, enter the de
 | BL-1 plans, BL-2 trial, BL-3 grace/suspend | `SubscriptionService`, `WebhooksController.Razorpay` |
 | AD-1 mobile PWA, AD-2 te/en, AD-3 guided first run | `apps/admin` |
 
+## Referral programme (wholesalers, agents, shop owners)
+
+* Every store gets a referral code and a join link `{AdminUrl}/join?ref=CODE`. Opening the link pre-fills the code on the signup form and shows who referred them.
+* Partners without a shop (Begum Bazar wholesalers, field agents) are created from the BrightLoop console (`/super` → Referrals → Add) with type **Wholesaler** or **Agent**; they get their own code and link.
+* Rule: the referred store gets `Referral:ReferredBonusDays` extra trial days at signup. When that store makes its first payment, the referrer earns one free month (refunded on their next Razorpay charge, tracked in `Store.CreditMonths`) or, if the referrer has no shop, a `Referral:PayoutInr` cash payout you settle by hand and mark **Paid** in the console.
+* Report: `/super` → Referrals shows totals by referrer type (wholesaler vs retailer vs agent), per-referrer signups / trial / paying / MRR / credits, a store drill-down and a CSV download. Owners see their own code, link, WhatsApp share button and referral counts on Home.
+* Super-admin login: add your number to `Platform:SuperAdminPhones`; logging in with it issues a platform token (no store) and opens `/super`. Tenant endpoints reject that token.
+* Code: `ReferralService`, `ReferralsController` (`api/superadmin/referrals/*`), `StoreController.MyReferrals` (`api/admin/referrals/mine`), `AuthController.Referrer`, migration `Referrals`.
+
 ## Not built yet (next)
 
 1. **Razorpay subscription checkout** in Settings → Upgrade (webhook handling is done; the create-subscription call and the Razorpay Route onboarding for store payouts are not).
@@ -91,5 +100,5 @@ Open the admin, tap **Create your store**, enter shop name + phone, enter the de
 
 ## Config for production
 
-Set these as App Service settings (never commit them): `ConnectionStrings__Default`, `Jwt__Key`, `WhatsApp__PhoneNumberId`, `WhatsApp__AccessToken`, `WhatsApp__VerifyToken`, `Razorpay__KeyId`, `Razorpay__KeySecret`, `Razorpay__WebhookSecret`, `Storage__BlobConnectionString`, `Storage__CdnBaseUrl`, `Otp__DevMode=false`.
+Set these as App Service settings (never commit them): `ConnectionStrings__Default`, `Jwt__Key`, `WhatsApp__PhoneNumberId`, `WhatsApp__AccessToken`, `WhatsApp__VerifyToken`, `Razorpay__KeyId`, `Razorpay__KeySecret`, `Razorpay__WebhookSecret`, `Storage__BlobConnectionString`, `Storage__CdnBaseUrl`, `Otp__DevMode=false`, `Platform__AdminUrl`, `Platform__SuperAdminPhones__0`.
 Wildcard DNS `*.yukktha.in` → storefront Static Web App; `api.yukktha.in` → App Service.

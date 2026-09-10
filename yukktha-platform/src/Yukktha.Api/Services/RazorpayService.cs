@@ -45,6 +45,13 @@ public class RazorpayService(IHttpClientFactory http, IConfiguration cfg, ILogge
         using var _ = await PostAsync($"subscriptions/{subscriptionId}/cancel", new { cancel_at_cycle_end = 1 });
     }
 
+    /// <summary>Refunds a captured payment (used to grant referral free months). Returns the refund id.</summary>
+    public async Task<string> RefundAsync(string paymentId, long amountPaise)
+    {
+        using var doc = await PostAsync($"payments/{paymentId}/refund", new { amount = amountPaise, speed = "normal", notes = new { reason = "referral_free_month" } });
+        return doc.RootElement.GetProperty("id").GetString()!;
+    }
+
     /// <summary>Checkout returns payment_id, subscription_id and a signature = HMAC-SHA256(key_secret, payment_id|subscription_id).</summary>
     public bool VerifyCheckoutSignature(string paymentId, string subscriptionId, string signature)
     {
