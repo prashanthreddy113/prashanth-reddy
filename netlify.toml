@@ -6,6 +6,9 @@
   base    = "frontend"
   command = "npm ci && npm run build"
   publish = "dist"
+  # Netlify skips builds when nothing changed inside the base directory. Also build
+  # when the Srujan Reddy static site or this config changes (paths relative to base).
+  ignore  = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../srujan-reddy-site ../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
