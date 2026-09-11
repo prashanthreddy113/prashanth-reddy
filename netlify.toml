@@ -29,3 +29,10 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The Netlify project "srujan-reddy-congress" builds this branch. It is a plain static
+# site, so skip the React build and publish the srujan-reddy-site folder instead.
+# (Paths are relative to the base directory "frontend" above.)
+[context."claude/srujan-reddy-political-site-w7o5a1"]
+  command = "rm -rf dist && cp -r ../srujan-reddy-site dist"
+  publish = "dist"
