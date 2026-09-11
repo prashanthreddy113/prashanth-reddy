@@ -186,7 +186,7 @@ The **Assistant** page and the **AI message** button on a student's page use Ant
 
 How it works: every question is answered from a fresh snapshot of the room built at request time (settings, seat availability, this and last month's money, every active student with seat, plan, balance, due date and status, students who left, recent payments and expenses). The assistant only reads; it cannot change data. Student names and mobile numbers are part of that snapshot and are sent to Anthropic's API under their usage policies, so mention it in your privacy notice if you have one.
 
-Cost: a typical question on a 100-student room is a few thousand input tokens and a short answer, i.e. a fraction of a rupee per question on Claude Opus 5. Message drafts are cheaper still.
+Cost: there is no subscription; the Anthropic console works on prepaid credit (minimum top-up $5) and you can set a monthly spending limit there. Each question sends the room snapshot, so the price grows with the number of students: on Claude Opus 5 roughly ₹1 per question for 25 students, ₹2.50 for 100 and ₹4.50 for 200; on Claude Sonnet 5 (`Anthropic__Model=claude-sonnet-5`) about 2.5× cheaper. An AI message draft is about ₹0.40 on Opus 5. Five questions a day on a 100-student room is roughly ₹375 a month on Opus 5 or ₹150 on Sonnet 5.
 
 ## API overview
 
