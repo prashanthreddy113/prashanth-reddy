@@ -354,7 +354,7 @@
   /* ---------------- Rahul Gandhi corner ---------------- */
   $('#timeline').innerHTML = TIMELINE.map((t) => `<div class="tl-item"><div class="year">${t.year}</div><div>${t.text}</div></div>`).join('');
   function animateTimeline() {
-    $$('.tl-item').forEach((el, i) => { el.classList.remove('show'); setTimeout(() => el.classList.add('show'), 80 + i * 120); });
+    $$('.tl-item').forEach((el, i) => { el.classList.remove('show'); setTimeout(() => el.classList.add('show'), 40 + i * 70); });
   }
   const notes = $('#rg-notes');
   notes.value = state.rgNotes || '';

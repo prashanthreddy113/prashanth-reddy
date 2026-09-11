@@ -274,10 +274,64 @@ textarea#rg-notes { width: 100%; padding: .7rem; border: 1px solid var(--line); 
   .grid-2 { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .portrait .frame { width: 160px; height: 160px; }
-  .photo-btn { top: 118px; right: calc(50% - 80px); }
-  .tab { padding: .45rem .8rem; font-size: .9rem; }
+  /* Header: portraits side by side, everything a little smaller */
+  .hero { padding: 1.1rem .8rem 2.4rem; }
+  .hero-inner { grid-template-columns: 1fr 1fr; gap: .6rem 1rem; }
+  .hero-centre { grid-column: 1 / -1; }
+  .hand-emblem { width: 76px; height: 76px; margin-bottom: .2rem; }
+  .party-line { font-size: .72rem; }
+  .tagline { font-size: .88rem; }
+  .slogans { gap: .35rem; margin-top: .5rem; }
+  .slogan { font-size: .7rem; padding: .22rem .6rem; }
+  .portrait .frame { width: 124px; height: 124px; margin-bottom: .45rem; }
+  .portrait .frame::before { inset: -7px; }
+  .portrait .fallback .initials { font-size: 2.2rem; }
+  .portrait figcaption strong { font-size: .88rem; }
+  .portrait figcaption small { font-size: .7rem; }
+  .photo-btn { width: 30px; height: 30px; font-size: .85rem; top: 92px; right: calc(50% - 62px); }
+  .flag-wave { height: 32px; }
+  .ticker-track { font-size: .85rem; padding: .35rem 0; gap: 2rem; }
+
+  /* Tabs: compact, swipeable, no visible scrollbar */
+  .tabs { padding: .5rem .6rem; gap: .3rem; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: .5rem .8rem; font-size: .85rem; scroll-snap-align: start; }
+
+  /* Content */
+  .content { padding: 1rem .8rem 2.5rem; }
+  .card { padding: 1rem; }
+  .stats { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .stat { padding: .8rem .9rem; }
+  .stat .num { font-size: 1.6rem; }
+  .money-summary { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .money-summary .stat .num { font-size: 1.15rem; }
+  .section-head h2 { font-size: 1.3rem; }
+  .section-head .btn-add { width: 100%; text-align: center; }
+  .filters select { flex: 1 1 45%; }
+  .mini-list li { flex-wrap: wrap; }
+  .mini-list .when { margin-left: auto; }
+  .item .title { padding-right: 3rem; }
+  .account-form { grid-template-columns: 1fr; }
+  .tools .btn-row .btn { flex: 1 1 45%; text-align: center; }
+  .quote-card p { font-size: 1rem; }
+  .timeline { padding-left: 1.6rem; }
+  .tl-item { padding: .8rem .9rem; }
+  .tl-item::before { left: -1.6rem; }
+
+  /* Modal: full-width sheet */
+  .modal { padding: .5rem; align-items: flex-end; }
+  .modal-box { padding: 1.1rem 1rem; max-height: 94vh; border-radius: 16px 16px 10px 10px; }
+  .form-row { grid-template-columns: 1fr; gap: .4rem; }
+  .modal-box input, .modal-box select, .modal-box textarea, .login-box input, .filters input, .filters select { font-size: 16px; } /* stops iOS zoom on focus */
+  .btn-row.end .btn { flex: 1; text-align: center; }
+}
+/* Bigger touch targets on phones and tablets */
+@media (pointer: coarse) {
+  .icon-btn { padding: .5rem .8rem; font-size: .9rem; }
+  .tab, .btn { min-height: 42px; }
+  .photo-btn { width: 36px; height: 36px; }
+  .mini-list li { padding: .65rem 0; }
+}
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
