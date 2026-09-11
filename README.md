@@ -215,3 +215,7 @@ All endpoints except login and health require `Authorization: Bearer <token>`. F
 | POST | `/api/reminders/run-external` | Same as run, for external cron (header `X-Reminder-Key`) |
 
 Due date = joining date + subscribed months. Status uses "today" in the configured time zone (default `Asia/Kolkata`).
+
+## Other sites in this repo
+
+- `srujan-reddy-site/` – standalone static work organiser for Srujan Kumar Reddy Konda (Congress political work, work status, business dealings). Open its `index.html` directly; see `srujan-reddy-site/README.md`.
