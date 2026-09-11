@@ -20,19 +20,46 @@
 
   <!-- Login gate -->
   <div class="login" id="login" hidden>
+    <div class="login-confetti" aria-hidden="true"></div>
     <div class="login-box">
       <div class="login-flag" aria-hidden="true"><span></span><span></span><span></span></div>
-      <div class="login-hand" aria-hidden="true">✋</div>
+      <div class="login-people">
+        <figure class="login-portrait">
+          <div class="frame"><img src="assets/rahul-gandhi.jpg" alt="Rahul Gandhi" onerror="this.style.display='none'" /></div>
+          <figcaption>Rahul Gandhi</figcaption>
+        </figure>
+        <div class="login-hand" aria-hidden="true">
+          <svg viewBox="0 0 120 120" class="hand-svg">
+            <circle cx="60" cy="60" r="56" fill="#FF9933" opacity="0.18" class="halo"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#000080" stroke-width="2" stroke-dasharray="6 5" class="ring"/>
+            <g class="palm" fill="#1a3a8a">
+              <rect x="40" y="52" width="40" height="40" rx="12"/>
+              <rect x="40" y="26" width="8" height="34" rx="4"/>
+              <rect x="51" y="20" width="8" height="40" rx="4"/>
+              <rect x="62" y="22" width="8" height="38" rx="4"/>
+              <rect x="73" y="30" width="8" height="30" rx="4"/>
+              <rect x="26" y="56" width="10" height="26" rx="5" transform="rotate(-30 31 69)"/>
+            </g>
+          </svg>
+        </div>
+        <figure class="login-portrait">
+          <div class="frame"><img src="assets/srujan-kumar-reddy-konda.jpg" alt="Srujan Kumar Reddy Konda" onerror="this.style.display='none'" /></div>
+          <figcaption>Srujan Kumar Reddy Konda</figcaption>
+        </figure>
+      </div>
+      <p class="login-party">Indian National Congress · भारतीय राष्ट्रीय कांग्रेस</p>
       <h2>Srujan Kumar Reddy Konda</h2>
-      <p class="muted">Work organiser · Indian National Congress</p>
+      <p class="muted">Congress Karyakarta · Work organiser</p>
       <form id="login-form" autocomplete="on">
         <label>Username<input name="username" autocomplete="username" required autofocus /></label>
         <label>Password<input name="password" type="password" autocomplete="current-password" required /></label>
         <label class="check"><input type="checkbox" name="remember" /> Keep me signed in on this device</label>
         <p class="login-error" id="login-error" hidden></p>
-        <button type="submit" class="btn btn-add login-btn">Sign in →</button>
+        <button type="submit" class="btn btn-add login-btn">✋ Sign in</button>
       </form>
-      <p class="small muted">Jai Congress · Jai Hind 🇮🇳</p>
+      <div class="login-slogans">
+        <span>Jai Congress</span><span>Bharat Jodo</span><span>Jai Hind 🇮🇳</span>
+      </div>
     </div>
   </div>
 

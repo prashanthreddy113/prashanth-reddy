@@ -364,7 +364,8 @@
 
   /* ---------------- Confetti ---------------- */
   (function confetti() {
-    const box = $('#confetti'); if (!box) return;
+    const boxes = [$('#confetti'), $('.login-confetti')].filter(Boolean); if (!boxes.length) return;
+    for (const box of boxes) {
     const colours = ['#FF9933', '#ffffff', '#138808'];
     const frag = document.createDocumentFragment();
     for (let i = 0; i < 24; i++) {
@@ -378,6 +379,7 @@
       frag.appendChild(el);
     }
     box.appendChild(frag);
+    }
   })();
 
 

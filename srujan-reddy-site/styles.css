@@ -317,3 +317,27 @@ textarea#rg-notes { width: 100%; padding: .7rem; border: 1px solid var(--line); 
 .account-form input { display: block; width: 100%; margin-top: .25rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: 10px; font-weight: 400; color: var(--ink); }
 body.locked .hero, body.locked .ticker, body.locked .tabs, body.locked .content, body.locked .footer { visibility: hidden; }
 @media print { .login, .tab-logout { display: none !important; } }
+
+/* ---- Login: photos and branding ---- */
+.login-box { width: min(480px, 100%); padding-top: 1.6rem; }
+.login-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.login-confetti i { position: absolute; top: -20px; width: 10px; height: 16px; border-radius: 2px; opacity: .8; animation: fall linear infinite; }
+.login-people { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: .4rem 0 .6rem; }
+.login-portrait { margin: 0; text-align: center; }
+.login-portrait .frame {
+  width: 104px; height: 104px; border-radius: 50%; padding: 4px; margin: 0 auto .35rem; position: relative;
+  background: conic-gradient(var(--saffron), #fff, var(--green), var(--saffron));
+  animation: spin-border 12s linear infinite; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+.login-portrait .frame img {
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background: #0b1a4a;
+  animation: spin-border 12s linear infinite reverse;
+}
+.login-portrait figcaption { font-size: .75rem; font-weight: 700; color: var(--blue); }
+.login-hand { width: 72px; height: 72px; animation: float 4s ease-in-out infinite; font-size: 0; }
+.login-party { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--saffron); font-weight: 700; margin: 0 0 .2rem; }
+.login-slogans { display: flex; justify-content: center; gap: .4rem; flex-wrap: wrap; margin-top: .4rem; }
+.login-slogans span { font-size: .72rem; font-weight: 700; padding: .2rem .7rem; border-radius: 999px; color: #fff; background: var(--blue); animation: glow 3s ease-in-out infinite; }
+.login-slogans span:nth-child(1) { background: var(--saffron); }
+.login-slogans span:nth-child(3) { background: var(--green); animation-delay: 1.4s; }
+@media (max-width: 420px) { .login-portrait .frame { width: 84px; height: 84px; } .login-hand { width: 56px; height: 56px; } }
