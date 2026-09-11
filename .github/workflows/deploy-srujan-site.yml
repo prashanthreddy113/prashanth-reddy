@@ -1,0 +1,37 @@
+# Deploys the static site in srujan-reddy-site/ to the Netlify project
+# "srujan-reddy-congress" whenever that folder changes. No build step: the folder
+# is published as-is. Uses the same NETLIFY_AUTH_TOKEN repository secret as the
+# frontend workflow (see deploy-frontend.yml for how to create it).
+
+name: Deploy Srujan Reddy site to Netlify
+
+on:
+  push:
+    branches: [main, master, claude/srujan-reddy-political-site-w7o5a1]
+    paths: [srujan-reddy-site/**, .github/workflows/deploy-srujan-site.yml]
+  workflow_dispatch:
+
+env:
+  NETLIFY_SITE_ID: a989807c-6806-4b36-86a5-bd34b082d806
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Deploy to Netlify
+        if: ${{ env.NETLIFY_AUTH_TOKEN != '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: npx --yes netlify-cli@latest deploy --prod --dir=srujan-reddy-site --site "$NETLIFY_SITE_ID" --message "GitHub Actions ${{ github.sha }}"
+
+      - name: Skipped deploy
+        if: ${{ env.NETLIFY_AUTH_TOKEN == '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: echo "NETLIFY_AUTH_TOKEN secret not set - deploy skipped."
