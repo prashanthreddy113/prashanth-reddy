@@ -395,3 +395,8 @@ body.locked .hero, body.locked .ticker, body.locked .tabs, body.locked .content,
 .login-slogans span:nth-child(1) { background: var(--saffron); }
 .login-slogans span:nth-child(3) { background: var(--green); animation-delay: 1.4s; }
 @media (max-width: 420px) { .login-portrait .frame { width: 84px; height: 84px; } .login-hand { width: 56px; height: 56px; } }
+
+/* ---- Build info badge (footer) ---- */
+.build-badge { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: .4rem .9rem; margin-top: .6rem; padding: .5rem 1rem; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); font-size: .82rem; color: var(--muted); }
+.build-badge strong { color: var(--blue); }
+@media print { .build-badge { display: inline-flex !important; } }
