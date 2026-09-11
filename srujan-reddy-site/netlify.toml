@@ -13,3 +13,9 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"
+
+# Single-page site: every path serves index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

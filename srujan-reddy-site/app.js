@@ -501,6 +501,12 @@
   }
 
   /* ---------------- Boot ---------------- */
+  // Visiting /login (or /logout) always shows the sign-in screen.
+  const path = location.pathname.replace(/\/+$/, '').toLowerCase();
+  if (/\/(login|logout|signin|signout)$/.test(path)) {
+    try { sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+    try { history.replaceState(null, '', location.pathname.slice(0, path.lastIndexOf('/') + 1) || '/'); } catch (e) { /* ignore */ }
+  }
   setLocked(!hasSession());
   initPhotos();
   render();
