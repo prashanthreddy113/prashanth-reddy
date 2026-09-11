@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<LeadPhoto> LeadPhotos => Set<LeadPhoto>();
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<CompanySettings> Settings => Set<CompanySettings>();
+    public DbSet<AiUsage> AiUsages => Set<AiUsage>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -88,6 +89,15 @@ public class AppDbContext : DbContext
             e.Property(s => s.Currency).HasMaxLength(8);
             e.Property(s => s.DefaultCountryCode).HasMaxLength(6);
             e.Property(s => s.TimeZoneId).HasMaxLength(64);
+            e.Property(s => s.AnthropicApiKey).HasMaxLength(300);
+            e.Property(s => s.AiModel).HasMaxLength(60);
+        });
+
+        b.Entity<AiUsage>(e =>
+        {
+            e.Property(u => u.Feature).HasMaxLength(40);
+            e.Property(u => u.Model).HasMaxLength(60);
+            e.HasIndex(u => u.CreatedAt);
         });
     }
 }

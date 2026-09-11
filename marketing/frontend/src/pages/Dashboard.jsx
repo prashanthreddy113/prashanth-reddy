@@ -6,6 +6,7 @@ import { useToast } from '../lib/toast'
 import { money, STATUS, INTEREST, ACTIVITY, timeAgo, fmtDate } from '../lib/format'
 import { DailyBars, BarList } from '../components/Charts'
 import LeadCard from '../components/LeadCard'
+import AiBriefing from '../components/AiBriefing'
 import { IconPlus, IconBell, IconFlame, IconRefresh } from '../components/Icons'
 
 function greeting() {
@@ -98,6 +99,8 @@ export default function Dashboard() {
         <Link to="/leads?status=Converted" className="stat clickable green"><span className="label">Converted</span><span className="value">{t.converted}</span><span className="sub">{t.conversionRate}% of leads · {t.convertedThisMonth} this month</span></Link>
         <div className="stat purple"><span className="label">Pipeline value</span><span className="value">{money(t.pipelineValue, { compact: true })}</span><span className="sub">won {money(t.wonValue, { compact: true })}</span></div>
       </section>
+
+      <AiBriefing />
 
       <div className="grid-2">
         <div className="card">

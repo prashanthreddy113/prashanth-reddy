@@ -34,6 +34,7 @@ services:
       Company__DefaultCountryCode: "91"
       Company__TimeZone: "Asia/Kolkata"
       Cors__AllowedOrigins: ""   # empty = allow any origin; set to https://your-site.netlify.app in production
+      Anthropic__ApiKey: ""      # optional: enables the AI assistant (or paste the key in Settings → AI assistant)
     ports:
       - "8090:8080"
 

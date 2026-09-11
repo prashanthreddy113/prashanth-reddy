@@ -27,3 +27,5 @@ export const IconLogout = (p) => (<svg {...base} {...p}><path d="M9 21H5a2 2 0 0
 export const IconClock = (p) => (<svg {...base} {...p}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>)
 export const IconFlame = (p) => (<svg {...base} {...p}><path d="M12 22c4.4 0 8-3.1 8-7.5 0-3.6-2.5-6-4-8-.5 2-1.5 3-3 3.5C13 6 12 3 9 2c.5 3-1 5-2.5 7S4 12.3 4 14.5C4 18.9 7.6 22 12 22z"/></svg>)
 export const IconChart = (p) => (<svg {...base} {...p}><path d="M3 3v18h18"/><path d="m7 15 4-5 4 3 5-7"/></svg>)
+export const IconSparkle = (p) => (<svg {...base} {...p}><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><path d="m12 7 1.8 3.2L17 12l-3.2 1.8L12 17l-1.8-3.2L7 12l3.2-1.8z" fill="currentColor" stroke="none"/><path d="M5 5l1 1M18 18l1 1M18 6l1-1M5 19l1-1"/></svg>)
+export const IconMic = (p) => (<svg {...base} {...p}><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8"/></svg>)

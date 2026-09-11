@@ -371,3 +371,26 @@ svg { flex: none; }
 @media (max-width: 900px) { .toast-stack { bottom: calc(var(--bottom-nav-h) + var(--safe-b) + 12px); left: 16px; } }
 .toast { padding: 11px 16px; border-radius: 12px; color: #fff; box-shadow: var(--shadow-lg); font-weight: 500; cursor: pointer; animation: pop 0.15s ease; }
 .toast-success { background: var(--green); } .toast-error { background: var(--red); } .toast-info { background: var(--brand); }
+
+/* ---------- AI assistant ---------- */
+.ai-card { border-color: #c7d2fe; background: linear-gradient(180deg, #fbfbff 0%, #ffffff 60%); }
+.ai-card .card-head h2 svg { color: var(--brand); }
+.btn.ai { background: linear-gradient(135deg, var(--brand) 0%, #7c3aed 100%); border-color: transparent; color: #fff; }
+.btn.ai:hover { filter: brightness(1.08); }
+.btn.mic.on { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35); } 50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); } }
+.ai-input { position: relative; }
+.ai-input textarea { width: 100%; }
+.ai-input .interim { position: absolute; left: 12px; right: 12px; bottom: 8px; font-size: 12px; color: var(--muted); font-style: italic; pointer-events: none; }
+.lang-select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: #fff; font-size: 13px; }
+.ai-result { background: var(--brand-bg); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.ai-list { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.ai-next { background: #fff7ed; border: 1px solid var(--orange-border); border-radius: 10px; padding: 10px 14px; }
+.ai-next strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--orange); margin-bottom: 4px; }
+.ai-msg { display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.ai-msg textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; line-height: 1.45; resize: vertical; }
+.ai-headline { font-size: 16px; font-weight: 700; line-height: 1.4; }
+.ai-actions { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.ai-actions li a { color: var(--text); }
+.ai-actions li a:hover { color: var(--brand); }
+.field.ai-filled input, .field.ai-filled select, .field.ai-filled textarea { border-color: #a5b4fc; background: #fbfbff; }

@@ -6,6 +6,7 @@ import { useToast } from '../lib/toast'
 import { prepareLogo } from '../lib/image'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { CompanyLogo } from '../components/Layout'
+import { invalidateAiStatus } from '../lib/ai'
 
 export default function Settings() {
   const { isAdmin, user } = useAuth()
@@ -17,10 +18,12 @@ export default function Settings() {
   const [server, setServer] = useState(apiUrl.get())
   const [demo, setDemo] = useState(null)
   const [confirm, setConfirm] = useState(null)
+  const [ai, setAi] = useState({ key: '', model: '' })
+  const [aiStatus, setAiStatus] = useState(null)
 
   useEffect(() => {
     api.settings().then(setS).catch((e) => toast.error(e.message))
-    if (isAdmin) api.demoStatus().then(setDemo).catch(() => {})
+    if (isAdmin) { api.demoStatus().then(setDemo).catch(() => {}); api.aiStatus().then(setAiStatus).catch(() => {}) }
   }, [isAdmin, toast])
 
   const saveCompany = async (e) => {
@@ -35,6 +38,20 @@ export default function Settings() {
     if (!file) return
     setBusy(true)
     try { const img = await prepareLogo(file); setS(await api.uploadLogo({ contentType: img.contentType, dataBase64: img.dataBase64 })); await company.refresh(); toast.success('Logo updated') }
+    catch (err) { toast.error(err.message) } finally { setBusy(false) }
+  }
+
+
+  const saveAi = async (e) => {
+    e.preventDefault(); setBusy(true)
+    try {
+      setS(await api.updateSettings({ ...s, anthropicApiKey: ai.key || null, aiModel: ai.model || s.aiModel }))
+      setAi({ key: '', model: '' }); invalidateAiStatus(); setAiStatus(await api.aiStatus()); toast.success('AI settings saved')
+    } catch (err) { toast.error(err.message) } finally { setBusy(false) }
+  }
+  const clearAiKey = async () => {
+    setBusy(true)
+    try { setS(await api.updateSettings({ ...s, clearAnthropicApiKey: true })); invalidateAiStatus(); setAiStatus(await api.aiStatus()); toast.success('API key removed') }
     catch (err) { toast.error(err.message) } finally { setBusy(false) }
   }
 
@@ -75,6 +92,32 @@ export default function Settings() {
       )}
 
       <div className="stack">
+      {isAdmin && s && (
+        <form className="card ai-card" onSubmit={saveAi}>
+          <div className="card-head"><h2>✨ AI assistant</h2><span className={`badge ${s.aiConfigured ? 'green' : 'grey'}`}>{s.aiConfigured ? `On · key from ${s.aiKeySource}` : 'Off'}</span></div>
+          <div className="card-body stack">
+            <p className="muted small">Powers Smart fill on the capture form (dictation + photo reading), lead insights with WhatsApp drafts, and the daily briefing. Uses Claude from Anthropic; you pay Anthropic per use. Get a key at console.anthropic.com.</p>
+            <div className="form-grid">
+              <div className="field full"><label>Anthropic API key</label>
+                <input type="password" value={ai.key} onChange={(e) => setAi({ ...ai, key: e.target.value })} placeholder={s.aiConfigured ? '•••••••• (saved – enter a new key to replace)' : 'sk-ant-…'} autoComplete="off" disabled={s.aiKeySource === 'environment'} />
+                {s.aiKeySource === 'environment' && <span className="help">The key is set by the server's Anthropic__ApiKey environment variable and cannot be changed here.</span>}
+              </div>
+              <div className="field"><label>Model</label>
+                <select value={ai.model || s.aiModel} onChange={(e) => setAi({ ...ai, model: e.target.value })}>
+                  <option value="claude-opus-5">Claude Opus 5 – best quality</option>
+                  <option value="claude-sonnet-5">Claude Sonnet 5 – balanced</option>
+                  <option value="claude-haiku-4-5">Claude Haiku 4.5 – fastest, lowest cost</option>
+                </select>
+              </div>
+              <div className="field"><label>Usage this month</label><div className="pill">{aiStatus ? `${aiStatus.callsThisMonth} calls · ${Number(aiStatus.tokensThisMonth).toLocaleString('en-IN')} tokens` : '—'}</div></div>
+            </div>
+            <div className="form-actions">
+              {s.aiConfigured && s.aiKeySource === 'settings' && <button type="button" className="btn danger" onClick={clearAiKey} disabled={busy} style={{ marginRight: 'auto' }}>Remove key</button>}
+              <button className="btn primary" disabled={busy || (!ai.key && !ai.model)}>{busy ? 'Saving…' : 'Save AI settings'}</button>
+            </div>
+          </div>
+        </form>
+      )}
         <form className="card" onSubmit={changePw}>
           <div className="card-head"><h2>Your account</h2><span className="muted">@{user.username}</span></div>
           <div className="card-body stack">

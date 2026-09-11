@@ -13,11 +13,13 @@ public class SettingsController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly SettingsService _settings;
+    private readonly AiService _ai;
 
-    public SettingsController(AppDbContext db, SettingsService settings)
+    public SettingsController(AppDbContext db, SettingsService settings, AiService ai)
     {
         _db = db;
         _settings = settings;
+        _ai = ai;
     }
 
     [HttpGet]
@@ -25,7 +27,8 @@ public class SettingsController : ControllerBase
     {
         var s = await _settings.GetAsync();
         return new SettingsDto(s.CompanyName, s.Tagline, s.LogoData != null, s.LogoUpdatedAt?.Ticks.ToString(), s.Currency, s.DefaultCountryCode,
-            s.TimeZoneId, s.DefaultFollowUpDays, s.HotInterestThreshold);
+            s.TimeZoneId, s.DefaultFollowUpDays, s.HotInterestThreshold,
+            _ai.IsConfigured(s), _ai.KeySource(s), _ai.ModelFor(s));
     }
 
     [HttpPut]
@@ -44,6 +47,13 @@ public class SettingsController : ControllerBase
         }
         if (req.DefaultFollowUpDays is { } d) s.DefaultFollowUpDays = d;
         if (req.HotInterestThreshold is { } h) s.HotInterestThreshold = h;
+        if (req.ClearAnthropicApiKey == true) s.AnthropicApiKey = null;
+        else if (!string.IsNullOrWhiteSpace(req.AnthropicApiKey)) s.AnthropicApiKey = req.AnthropicApiKey.Trim();
+        if (!string.IsNullOrWhiteSpace(req.AiModel))
+        {
+            if (!AiService.AllowedModels.Contains(req.AiModel.Trim())) return BadRequest(new { message = $"Model must be one of: {string.Join(", ", AiService.AllowedModels)}." });
+            s.AiModel = req.AiModel.Trim();
+        }
         s.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
         return await Get();

@@ -8,6 +8,7 @@ import { getPosition } from '../lib/geo'
 import { STATUS_ORDER, STATUS, INTEREST, addDaysIso, todayIso, mapLink } from '../lib/format'
 import StarRating from '../components/StarRating'
 import Modal from '../components/Modal'
+import AiAssist from '../components/AiAssist'
 import { IconCamera, IconMap, IconX, IconCheck } from '../components/Icons'
 
 const EMPTY = {
@@ -34,6 +35,7 @@ export default function LeadForm() {
   const [processing, setProcessing] = useState(0)
   const [error, setError] = useState('')
   const fileRef = useRef(null)
+  const [aiFilled, setAiFilled] = useState([])
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -89,6 +91,30 @@ export default function LeadForm() {
       setDup(r.exists ? r.matches : null)
     } catch { /* ignore */ }
   }
+
+
+  // Merge AI suggestions: fill empty fields, update interest/status/follow-up, keep what the executive typed.
+  const applySuggestion = (sg) => {
+    const filled = []
+    setForm((f) => {
+      const next = { ...f }
+      const put = (key, val, label) => { if (val != null && String(val).trim() !== '' && !String(next[key] ?? '').trim()) { next[key] = String(val); filled.push(label) } }
+      put('shopName', sg.shopName, 'shop name'); put('contactName', sg.contactName, 'contact'); put('mobile', sg.mobile, 'mobile'); put('altMobile', sg.altMobile, 'alt mobile')
+      put('shopType', sg.shopType, 'shop type'); put('address', sg.address, 'address'); put('area', sg.area, 'area'); put('city', sg.city, 'city'); put('pincode', sg.pincode, 'pincode')
+      if (sg.interest >= 1 && sg.interest <= 5 && sg.interest !== next.interest) { next.interest = sg.interest; filled.push('interest') }
+      if (sg.status && sg.status !== next.status && (next.status === 'New' || !editing)) { next.status = sg.status; filled.push('status') }
+      if (sg.expectedValue != null && !String(next.expectedValue).trim()) { next.expectedValue = String(sg.expectedValue); filled.push('expected value') }
+      if (sg.nextFollowUpDays != null && !next.nextFollowUpAt) { next.nextFollowUpAt = addDaysIso(todayIso(), Math.max(0, sg.nextFollowUpDays)); filled.push('follow-up date') }
+      const extra = [sg.notes, sg.observations?.length ? `Observations: ${sg.observations.join('; ')}` : null].filter(Boolean).join('\n')
+      if (extra && !String(next.notes || '').trim()) { next.notes = extra; filled.push('notes') }
+      else if (sg.notes && !String(next.notes).includes(sg.notes)) { next.notes = `${next.notes}\n${sg.notes}`; filled.push('notes') }
+      return next
+    })
+    setAiFilled(filled)
+    setTimeout(() => setAiFilled([]), 6000)
+    return filled
+  }
+  const fc = (name) => (aiFilled.includes(name) ? 'field ai-filled' : 'field')
 
   const projectOptions = useMemo(() => projects.filter((p) => p.isActive || String(p.id) === form.projectId), [projects, form.projectId])
   const assignable = useMemo(() => users.filter((u) => u.role === 'Admin' || u.projects.some((p) => String(p.id) === form.projectId)), [users, form.projectId])
@@ -147,6 +173,10 @@ export default function LeadForm() {
         </section>
       )}
 
+      <AiAssist text={form.visitNote} onText={(v) => set('visitNote', v)} photos={photos} projectId={form.projectId}
+        current={{ shopName: form.shopName, contactName: form.contactName, mobile: form.mobile, shopType: form.shopType, area: form.area, city: form.city }}
+        onApply={applySuggestion} />
+
       <section className="card">
         <div className="card-head"><h2><IconMap /> Location</h2>
           <button type="button" className="btn sm" onClick={() => captureLocation(false)} disabled={geo.busy}>{geo.busy ? 'Locating…' : form.latitude ? 'Re-capture' : 'Capture GPS'}</button>
@@ -179,11 +209,11 @@ export default function LeadForm() {
               </div>
             )}
           </div>
-          <div className="field full"><label>Shop / business name<span className="req">*</span></label><input value={form.shopName} onChange={(e) => set('shopName', e.target.value)} required maxLength={160} placeholder="e.g. Sri Lakshmi General Stores" /></div>
-          <div className="field"><label>Owner / contact person</label><input value={form.contactName} onChange={(e) => set('contactName', e.target.value)} maxLength={120} autoComplete="off" /></div>
-          <div className="field"><label>Shop type</label><input list="shop-types" value={form.shopType} onChange={(e) => set('shopType', e.target.value)} maxLength={60} placeholder="Retail, Wholesale…" /><datalist id="shop-types">{suggest.shopTypes.map((s) => <option key={s} value={s} />)}</datalist></div>
-          <div className="field"><label>Mobile number<span className="req">*</span></label><input type="tel" inputMode="tel" value={form.mobile} onChange={(e) => set('mobile', e.target.value)} onBlur={checkDuplicate} required placeholder="10-digit mobile" autoComplete="off" /></div>
-          <div className="field"><label>Alternate mobile</label><input type="tel" inputMode="tel" value={form.altMobile} onChange={(e) => set('altMobile', e.target.value)} /></div>
+          <div className={`${fc('shop name')} full`}><label>Shop / business name<span className="req">*</span></label><input value={form.shopName} onChange={(e) => set('shopName', e.target.value)} required maxLength={160} placeholder="e.g. Sri Lakshmi General Stores" /></div>
+          <div className={fc('contact')}><label>Owner / contact person</label><input value={form.contactName} onChange={(e) => set('contactName', e.target.value)} maxLength={120} autoComplete="off" /></div>
+          <div className={fc('shop type')}><label>Shop type</label><input list="shop-types" value={form.shopType} onChange={(e) => set('shopType', e.target.value)} maxLength={60} placeholder="Retail, Wholesale…" /><datalist id="shop-types">{suggest.shopTypes.map((s) => <option key={s} value={s} />)}</datalist></div>
+          <div className={fc('mobile')}><label>Mobile number<span className="req">*</span></label><input type="tel" inputMode="tel" value={form.mobile} onChange={(e) => set('mobile', e.target.value)} onBlur={checkDuplicate} required placeholder="10-digit mobile" autoComplete="off" /></div>
+          <div className={fc('alt mobile')}><label>Alternate mobile</label><input type="tel" inputMode="tel" value={form.altMobile} onChange={(e) => set('altMobile', e.target.value)} /></div>
           {dup && (
             <div className="alert warn full">
               <strong>This number already exists:</strong>
@@ -191,10 +221,10 @@ export default function LeadForm() {
               <small>Saving in the same project is blocked; a different project is allowed.</small>
             </div>
           )}
-          <div className="field full"><label>Address</label><input value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Door no, street, landmark" /></div>
-          <div className="field"><label>Area / locality</label><input list="areas" value={form.area} onChange={(e) => set('area', e.target.value)} maxLength={120} /><datalist id="areas">{suggest.areas.map((s) => <option key={s} value={s} />)}</datalist></div>
-          <div className="field"><label>City</label><input list="cities" value={form.city} onChange={(e) => set('city', e.target.value)} maxLength={80} /><datalist id="cities">{suggest.cities.map((s) => <option key={s} value={s} />)}</datalist></div>
-          <div className="field"><label>Pincode</label><input inputMode="numeric" value={form.pincode} onChange={(e) => set('pincode', e.target.value)} maxLength={12} /></div>
+          <div className={`${fc('address')} full`}><label>Address</label><input value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Door no, street, landmark" /></div>
+          <div className={fc('area')}><label>Area / locality</label><input list="areas" value={form.area} onChange={(e) => set('area', e.target.value)} maxLength={120} /><datalist id="areas">{suggest.areas.map((s) => <option key={s} value={s} />)}</datalist></div>
+          <div className={fc('city')}><label>City</label><input list="cities" value={form.city} onChange={(e) => set('city', e.target.value)} maxLength={80} /><datalist id="cities">{suggest.cities.map((s) => <option key={s} value={s} />)}</datalist></div>
+          <div className={fc('pincode')}><label>Pincode</label><input inputMode="numeric" value={form.pincode} onChange={(e) => set('pincode', e.target.value)} maxLength={12} /></div>
           <div className="field"><label>Email <span className="opt">optional</span></label><input type="email" value={form.email} onChange={(e) => set('email', e.target.value)} /></div>
         </div>
       </section>
@@ -209,7 +239,7 @@ export default function LeadForm() {
           </div>
           <div className="field"><label>Status</label>
             <select value={form.status} onChange={(e) => set('status', e.target.value)}>{STATUS_ORDER.map((s) => <option key={s} value={s}>{STATUS[s].label}</option>)}</select></div>
-          <div className="field"><label>Expected order value <span className="opt">optional</span></label><input type="number" inputMode="decimal" min="0" step="1" value={form.expectedValue} onChange={(e) => set('expectedValue', e.target.value)} placeholder="e.g. 25000" /></div>
+          <div className={fc('expected value')}><label>Expected order value <span className="opt">optional</span></label><input type="number" inputMode="decimal" min="0" step="1" value={form.expectedValue} onChange={(e) => set('expectedValue', e.target.value)} placeholder="e.g. 25000" /></div>
           {form.status === 'Lost' && <div className="field full"><label>Why lost?</label><input value={form.lostReason || ''} onChange={(e) => set('lostReason', e.target.value)} placeholder="e.g. already using a competitor" /></div>}
           {isOpen && (
             <div className="field full">
@@ -223,7 +253,7 @@ export default function LeadForm() {
               </div>
             </div>
           )}
-          <div className="field full"><label>{editing ? 'Notes' : 'Notes from this visit'}</label><textarea rows={3} value={form.notes} onChange={(e) => set('notes', e.target.value)} placeholder="What did they say? Products they asked about, objections, best time to visit…" /></div>
+          <div className={`${fc('notes')} full`}><label>{editing ? 'Notes' : 'Notes from this visit'}</label><textarea rows={3} value={form.notes} onChange={(e) => set('notes', e.target.value)} placeholder="What did they say? Products they asked about, objections, best time to visit…" />{!editing && form.visitNote && <span className="help">Your dictated note is saved with the first visit in the lead history.</span>}</div>
           {isAdmin && (
             <div className="field full"><label>Assigned executive</label>
               <select value={form.assignedToUserId} onChange={(e) => set('assignedToUserId', e.target.value)}>

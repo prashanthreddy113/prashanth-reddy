@@ -10,6 +10,7 @@ import AuthImg from '../components/AuthImg'
 import StarRating from '../components/StarRating'
 import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
+import AiInsight from '../components/AiInsight'
 import { StatusBadge, FollowUpBadge, ProjectChip } from '../components/StatusBadge'
 import { IconPhone, IconWhatsapp, IconMap, IconEdit, IconTrash, IconCamera, IconPlus, IconX } from '../components/Icons'
 
@@ -157,6 +158,7 @@ export default function LeadDetail() {
         </div>
 
         <div className="stack">
+          <AiInsight lead={lead} />
           <section className="card">
             <div className="card-head"><h2>Details</h2></div>
             <div className="card-body kv">

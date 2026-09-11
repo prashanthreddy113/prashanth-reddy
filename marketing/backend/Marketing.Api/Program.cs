@@ -41,6 +41,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<SettingsService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<AiService>();
 
 // Photos arrive as base64 JSON (already compressed on the phone); allow a comfortable request size.
 builder.Services.Configure<KestrelServerOptions>(o => o.Limits.MaxRequestBodySize = 60 * 1024 * 1024);

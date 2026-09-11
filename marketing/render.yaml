@@ -30,6 +30,8 @@ services:
         value: "91"
       - key: Company__TimeZone
         value: Asia/Kolkata
+      - key: Anthropic__ApiKey
+        sync: false   # optional; or paste the key in Settings → AI assistant
 
 databases:
   - name: marketing-db

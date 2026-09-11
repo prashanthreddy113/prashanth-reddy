@@ -7,6 +7,7 @@ Executives capture each shop on their phone (photos, GPS location, owner's mobil
 | --- | --- |
 | Frontend | React 19 + Vite + React Router, mobile-first (hosted on **Netlify**) |
 | Backend | ASP.NET Core 8 Web API, EF Core, JWT auth (Docker; Render / Railway / Azure / any host) |
+| AI | Claude (Anthropic API, official C# SDK) – optional, switched on with an API key |
 | Database | PostgreSQL 16 (photos and the company logo are stored in the database, so no file storage is needed) |
 
 ## What it does
@@ -32,6 +33,16 @@ Executives capture each shop on their phone (photos, GPS location, owner's mobil
 - Leads untouched for 7 days are counted on the dashboard so nothing goes stale.
 - Autocomplete for city, area and shop type from what the team already typed.
 - Works as a home-screen web app on Android and iPhone (add to home screen from the browser).
+
+### AI assistant (Claude)
+Switch it on once: Settings → **AI assistant** → paste an Anthropic API key (or set the `Anthropic__ApiKey` environment variable on the API). Pick the model there too (Claude Opus 5 by default; Sonnet 5 or Haiku 4.5 for lower cost). Usage (calls and tokens per month) is shown on the same card.
+
+- **Smart fill** on the New lead form – the executive taps 🎤 and says what happened in English, Hindi, Telugu, Tamil, Kannada or Marathi (or types it). The AI reads the note **and the shop photos** (signboard → shop name, shop type, what is on display) and fills the form: shop, contact, mobile, area, interest score, status, expected value, next follow-up date and a clean note. Filled fields are highlighted so they can be checked before saving; the raw dictated note is kept in the lead history.
+- **AI insight** on every lead – where it stands, the next best action, talking points, risks, and a ready-to-send **WhatsApp message** in English, Hinglish, Hindi, Telugu, Tamil or Kannada, for a follow-up, thank-you, offer, reminder or reconnect. One tap opens WhatsApp with the text.
+- **Today's briefing** on the admin dashboard – how the team is doing, what needs attention and a prioritised action list with links to the leads.
+- **Plan my day** on the executive dashboard – which shops to visit or call today and why, from their overdue follow-ups and hot leads.
+
+Briefings are cached for an hour and insights until the lead changes, so repeat views cost nothing. Executives only ever get AI answers about their own leads. Photos sent to the AI are the same compressed images stored with the lead.
 
 ## Project layout
 
@@ -77,6 +88,7 @@ To try it with data first: Dashboard → **Load sample data** (executives `ravi.
 | `Admin__Username`, `Admin__Password` | First admin, created only when the users table is empty |
 | `Company__Name`, `Company__Tagline`, `Company__Currency`, `Company__DefaultCountryCode`, `Company__TimeZone` | Defaults for the company profile (editable in Settings later) |
 | `Cors__AllowedOrigins` | Comma-separated frontend origins, e.g. `https://your-site.netlify.app`. Empty = any origin |
+| `Anthropic__ApiKey`, `Anthropic__Model` | Optional. Anthropic key/model for the AI features; when unset the admin can enter them in Settings → AI assistant |
 | `PORT` | Set automatically by Render/Railway; the API binds to it |
 
 ## Deploy
@@ -113,6 +125,7 @@ All endpoints except `POST /api/auth/login`, `GET /api/company` and `GET /api/co
 | Leads | `GET /api/leads` (search & filters, paged), `GET /api/leads/{id}`, `POST /api/leads` (`?force=true` to override a duplicate), `PUT /api/leads/{id}`, `DELETE` (admin), `GET /api/leads/check-mobile`, `GET /api/leads/suggestions`, `GET /api/leads/export` (CSV, admin) |
 | Activities & photos | `POST /api/leads/{id}/activities`, `DELETE /api/leads/{id}/activities/{aid}`, `POST /api/leads/{id}/assign` (admin), `POST /api/leads/{id}/photos`, `GET /api/leads/{id}/photos/{pid}?thumb=true`, `DELETE /api/leads/{id}/photos/{pid}` |
 | Dashboard | `GET /api/dashboard?projectId&userId&days` |
+| AI | `GET /api/ai/status`, `POST /api/ai/capture-assist` (note + photos → form fields), `GET /api/ai/leads/{id}/insight?language=`, `POST /api/ai/leads/{id}/message`, `GET /api/ai/briefing` |
 | Sample data | `GET /api/demo`, `POST /api/demo/seed`, `DELETE /api/demo` (admin) |
 
 Swagger UI with every request/response schema is at `/swagger` on the API.

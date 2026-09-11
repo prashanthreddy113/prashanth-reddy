@@ -169,6 +169,12 @@ export const api = {
   photoPath: (id, photoId, thumb) => `/api/leads/${id}/photos/${photoId}${thumb ? '?thumb=true' : ''}`,
   exportLeads: (query) => downloadFile('/api/leads/export', query, `leads-${new Date().toISOString().slice(0, 10)}.csv`),
 
+  aiStatus: () => request('GET', '/api/ai/status'),
+  aiCaptureAssist: (data) => request('POST', '/api/ai/capture-assist', data),
+  aiInsight: (id, query) => request('GET', `/api/ai/leads/${id}/insight`, undefined, { query }),
+  aiMessage: (id, data) => request('POST', `/api/ai/leads/${id}/message`, data),
+  aiBriefing: (refresh) => request('GET', '/api/ai/briefing', undefined, { query: { refresh: refresh ? 'true' : '' } }),
+
   demoStatus: () => request('GET', '/api/demo'),
   demoSeed: () => request('POST', '/api/demo/seed', {}),
   demoRemove: () => request('DELETE', '/api/demo'),
