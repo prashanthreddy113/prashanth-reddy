@@ -380,6 +380,117 @@
     box.appendChild(frag);
   })();
 
+
+  /* ---------------- Login gate ----------------
+   * Front-end gate only (no server). Credentials are stored as SHA-256 hashes;
+   * the default login can be changed from the dashboard and is kept per device. */
+  const AUTH_KEY = 'srujan-organiser-auth-v1';
+  const SESSION_KEY = 'srujan-organiser-session-v1';
+  const DEFAULT_AUTH = {
+    user: '819293b9042aea231e2ed9942dee843815b81b8d3bea8b70f42f564958c19474', // "srujan"
+    pass: '67a73b8e51174a8865dbf2abc4be7643b1504b46dcc56d7a7c02048d2870a3ec', // default password (see README)
+    name: 'srujan',
+  };
+
+  // SHA-256 (pure JS fallback for browsers without crypto.subtle, e.g. plain http)
+  function sha256js(str) {
+    const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+    const bytes = new TextEncoder().encode(str);
+    const l = bytes.length, words = [];
+    for (let i = 0; i < l; i++) words[i >> 2] |= bytes[i] << (24 - (i % 4) * 8);
+    words[l >> 2] |= 0x80 << (24 - (l % 4) * 8);
+    words[((l + 8 >> 6) << 4) + 15] = l * 8;
+    const H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    const W = new Array(64), rotr = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let i = 0; i < words.length; i += 16) {
+      let [a, b, c, d, e, f, g, h] = H;
+      for (let t = 0; t < 64; t++) {
+        W[t] = t < 16 ? (words[i + t] | 0) : (rotr(W[t-2],17) ^ rotr(W[t-2],19) ^ (W[t-2] >>> 10)) + W[t-7] + (rotr(W[t-15],7) ^ rotr(W[t-15],18) ^ (W[t-15] >>> 3)) + W[t-16] | 0;
+        const T1 = h + (rotr(e,6) ^ rotr(e,11) ^ rotr(e,25)) + ((e & f) ^ (~e & g)) + K[t] + W[t] | 0;
+        const T2 = (rotr(a,2) ^ rotr(a,13) ^ rotr(a,22)) + ((a & b) ^ (a & c) ^ (b & c)) | 0;
+        h = g; g = f; f = e; e = d + T1 | 0; d = c; c = b; b = a; a = T1 + T2 | 0;
+      }
+      H[0] = H[0] + a | 0; H[1] = H[1] + b | 0; H[2] = H[2] + c | 0; H[3] = H[3] + d | 0;
+      H[4] = H[4] + e | 0; H[5] = H[5] + f | 0; H[6] = H[6] + g | 0; H[7] = H[7] + h | 0;
+    }
+    return H.map((x) => (x >>> 0).toString(16).padStart(8, '0')).join('');
+  }
+  async function sha256(str) {
+    if (window.crypto && crypto.subtle) {
+      try {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) { /* fall through */ }
+    }
+    return sha256js(str);
+  }
+
+  function getAuth() {
+    try { const a = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); if (a && a.user && a.pass) return a; } catch (e) { /* ignore */ }
+    return DEFAULT_AUTH;
+  }
+  function hasSession() {
+    try { return sessionStorage.getItem(SESSION_KEY) === '1' || localStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setLocked(locked) {
+    $('#login').hidden = !locked;
+    document.body.classList.toggle('locked', locked);
+    if (locked) setTimeout(() => { const u = $('#login-form input[name=username]'); if (u) u.focus(); }, 50);
+    const who = $('#who'); if (who) who.textContent = getAuth().name || 'user';
+  }
+  function logout() {
+    try { sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+    $('#login-form').reset();
+    setLocked(true);
+  }
+
+  let failures = 0, lockedUntil = 0;
+  $('#login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target, err = $('#login-error');
+    const now = Date.now();
+    if (now < lockedUntil) { err.textContent = `Too many attempts. Try again in ${Math.ceil((lockedUntil - now) / 1000)}s.`; err.hidden = false; return; }
+    const [u, p] = await Promise.all([sha256(f.username.value.trim().toLowerCase()), sha256(f.password.value)]);
+    const a = getAuth();
+    if (u === a.user && p === a.pass) {
+      failures = 0;
+      try { (f.remember.checked ? localStorage : sessionStorage).setItem(SESSION_KEY, '1'); } catch (e2) { /* ignore */ }
+      err.hidden = true; f.reset();
+      setLocked(false);
+      toast(`✋ Welcome, ${a.name || 'karyakarta'}! Jai Congress`);
+    } else {
+      failures++;
+      if (failures >= 5) { lockedUntil = Date.now() + 30000; failures = 0; err.textContent = 'Too many wrong attempts. Wait 30 seconds.'; }
+      else err.textContent = 'Wrong username or password.';
+      err.hidden = false;
+      f.password.value = ''; f.password.focus();
+    }
+  });
+  $('#btn-logout').addEventListener('click', logout);
+
+  $('#account-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target, a = getAuth();
+    if (await sha256(f.current.value) !== a.pass) { toast('⚠️ Current password is wrong.'); f.current.focus(); return; }
+    const newUser = f.username.value.trim().toLowerCase(), newPass = f.password.value;
+    if (!newUser && !newPass) { toast('Enter a new username or password.'); return; }
+    if (newPass && newPass.length < 6) { toast('⚠️ Password must be at least 6 characters.'); return; }
+    const next = {
+      user: newUser ? await sha256(newUser) : a.user,
+      pass: newPass ? await sha256(newPass) : a.pass,
+      name: newUser || a.name,
+    };
+    try { localStorage.setItem(AUTH_KEY, JSON.stringify(next)); } catch (e2) { toast('⚠️ Could not save login.'); return; }
+    f.reset(); $('#who').textContent = next.name; toast('🔐 Login updated for this device');
+  });
+  $('#btn-reset-login').addEventListener('click', async () => {
+    const cur = $('#account-form input[name=current]').value;
+    if (await sha256(cur) !== getAuth().pass) { toast('⚠️ Enter your current password first.'); return; }
+    if (!confirm('Reset to the default username and password?')) return;
+    try { localStorage.removeItem(AUTH_KEY); } catch (e) { /* ignore */ }
+    $('#account-form').reset(); $('#who').textContent = DEFAULT_AUTH.name; toast('🔐 Login reset to default');
+  });
+
   /* ---------------- Toast ---------------- */
   let toastTimer;
   function toast(msg) {
@@ -388,6 +499,7 @@
   }
 
   /* ---------------- Boot ---------------- */
+  setLocked(!hasSession());
   initPhotos();
   render();
   let startTab = 'dashboard';

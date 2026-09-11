@@ -17,6 +17,25 @@
   <!-- Floating tricolour confetti -->
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 
+
+  <!-- Login gate -->
+  <div class="login" id="login" hidden>
+    <div class="login-box">
+      <div class="login-flag" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="login-hand" aria-hidden="true">✋</div>
+      <h2>Srujan Kumar Reddy Konda</h2>
+      <p class="muted">Work organiser · Indian National Congress</p>
+      <form id="login-form" autocomplete="on">
+        <label>Username<input name="username" autocomplete="username" required autofocus /></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required /></label>
+        <label class="check"><input type="checkbox" name="remember" /> Keep me signed in on this device</label>
+        <p class="login-error" id="login-error" hidden></p>
+        <button type="submit" class="btn btn-add login-btn">Sign in →</button>
+      </form>
+      <p class="small muted">Jai Congress · Jai Hind 🇮🇳</p>
+    </div>
+  </div>
+
   <header class="hero">
     <div class="hero-inner">
       <!-- Rahul Gandhi photo frame -->
@@ -112,6 +131,7 @@
     <button class="tab" data-tab="work" role="tab">📋 Work Status</button>
     <button class="tab" data-tab="business" role="tab">💼 Business Dealings</button>
     <button class="tab" data-tab="rahul" role="tab">💙 Rahul Gandhi Corner</button>
+    <button class="tab tab-logout" id="btn-logout" type="button" title="Sign out">🔒 Sign out</button>
   </nav>
 
   <main class="content">
@@ -134,6 +154,19 @@
         <div class="quote-mark">“</div>
         <p id="quote-text"></p>
         <p class="quote-by">— Rahul Gandhi</p>
+      </div>
+
+
+      <div class="card">
+        <h2>🔐 Account</h2>
+        <p>Signed in as <strong id="who"></strong>. Change the login used on this device.</p>
+        <form id="account-form" class="account-form">
+          <label>New username<input name="username" minlength="3" maxlength="40" placeholder="leave blank to keep" autocomplete="off" /></label>
+          <label>New password<input name="password" type="password" minlength="6" maxlength="80" placeholder="at least 6 characters" autocomplete="new-password" /></label>
+          <label>Current password<input name="current" type="password" required autocomplete="current-password" /></label>
+          <button type="submit" class="btn">Update login</button>
+          <button type="button" class="btn btn-ghost" id="btn-reset-login">Reset to default login</button>
+        </form>
       </div>
 
       <div class="card tools">
