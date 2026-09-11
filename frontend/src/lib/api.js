@@ -148,4 +148,8 @@ export const api = {
   demoStatus: () => request('GET', '/api/demo'),
   demoSeed: (mobile) => request('POST', '/api/demo/seed', {}, { query: { mobile } }),
   demoRemove: () => request('DELETE', '/api/demo'),
+
+  aiStatus: () => request('GET', '/api/ai/status'),
+  aiChat: (messages) => request('POST', '/api/ai/chat', { messages }),
+  aiDraft: (studentId, data) => request('POST', `/api/ai/draft/${studentId}`, data),
 }

@@ -26,6 +26,7 @@ A complete admin console for the BrightLoop reading room. Admins register studen
   - ⚪ **Left** – deactivated (seat released, history kept)
 - **Payments & renewals** – record payments (with history), extend the subscription by months, print list.
 - **WhatsApp reminders** – automatic due-date messages through the WhatsApp Business API (N days before, on the day, and while overdue), a Reminders page with today's list and history, one-click manual sends, and a one-tap "Open WhatsApp" fallback.
+- **AI assistant** (Claude) – an *Assistant* page that answers questions from the live data ("who is overdue?", "what did we collect this month?", "which AC seats are free?") and an *AI message* button on every student that drafts a personalised WhatsApp message in English, Telugu, Hindi or a mix.
 - Stats: active students, overdue, due soon, seat occupancy, collected this month, outstanding balance.
 
 ## Project layout
@@ -83,6 +84,7 @@ Netlify serves static sites and JavaScript functions only, so the React frontend
 | `WhatsApp__PhoneNumberId`, `WhatsApp__AccessToken` | WhatsApp Business (Cloud) API credentials for automatic reminders (see below) |
 | `WhatsApp__DefaultCountryCode` | Prefix for 10-digit mobiles (default `91`) |
 | `Reminders__TriggerKey` | Secret for the external daily trigger `POST /api/reminders/run-external` |
+| `Anthropic__ApiKey`, optional `Anthropic__Model` (default `claude-opus-5`) | Claude API key for the AI assistant (see below) |
 | `PORT` | Injected by most hosts; the app binds to it automatically |
 
 Migrations run automatically on startup. Verify with `https://<api-host>/api/health`.
@@ -173,6 +175,18 @@ Common problems:
 | `(#131030) Recipient phone number not in allowed list` | The real number is not fully set up or has no payment method; only the 5 test recipients can be messaged. Finish steps 5 and 8. |
 | `(#132001) Template name does not exist in the translation` | The template is not approved yet, has a different name, or a different language than set in Settings. |
 | `(#131047) Re-engagement message` | Free-form messages are only allowed within 24 h of the student writing to you; the app only sends templates, so this indicates a template that lost its approval. |
+
+## AI assistant (Claude)
+
+The **Assistant** page and the **AI message** button on a student's page use Anthropic's Claude API. Setup:
+
+1. Create an API key at [console.anthropic.com](https://console.anthropic.com/) (API keys → Create key) and add a small prepaid balance.
+2. Set `Anthropic__ApiKey` on the API host (Render → brightloop-api → Environment) and let it restart. Optionally set `Anthropic__Model` (default `claude-opus-5`).
+3. Open **Assistant** in the admin site. The page shows a warning until the key is picked up.
+
+How it works: every question is answered from a fresh snapshot of the room built at request time (settings, seat availability, this and last month's money, every active student with seat, plan, balance, due date and status, students who left, recent payments and expenses). The assistant only reads; it cannot change data. Student names and mobile numbers are part of that snapshot and are sent to Anthropic's API under their usage policies, so mention it in your privacy notice if you have one.
+
+Cost: a typical question on a 100-student room is a few thousand input tokens and a short answer, i.e. a fraction of a rupee per question on Claude Opus 5. Message drafts are cheaper still.
 
 ## API overview
 

@@ -31,6 +31,8 @@ services:
         value: "91"
       - key: Reminders__TriggerKey
         generateValue: true
+      - key: Anthropic__ApiKey
+        sync: false   # Claude API key for the AI assistant (console.anthropic.com)
 
 databases:
   - name: brightloop-db

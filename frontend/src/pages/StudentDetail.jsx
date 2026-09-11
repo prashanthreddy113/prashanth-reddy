@@ -10,8 +10,9 @@ import RenewModal from '../components/RenewModal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import TransferSeatModal from '../components/TransferSeatModal'
 import DueDateModal from '../components/DueDateModal'
+import AiMessageModal from '../components/AiMessageModal'
 import { paymentToast } from './Dashboard'
-import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp, IconTransfer } from '../components/Icons'
+import { IconBack, IconEdit, IconMoney, IconRefresh, IconTrash, IconWhatsapp, IconTransfer, IconSparkle } from '../components/Icons'
 
 export default function StudentDetail() {
   const { id } = useParams()
@@ -64,6 +65,7 @@ export default function StudentDetail() {
         <div className="row">
           <a className="btn" href={waLink} target="_blank" rel="noreferrer" title="Open WhatsApp with a pre-filled message"><IconWhatsapp width={16} height={16} /> Open WhatsApp</a>
           <button className="btn" disabled={sending} title="Send an automatic WhatsApp reminder now" onClick={sendReminder}><IconWhatsapp width={16} height={16} /> {sending ? 'Sending…' : 'Send reminder'}</button>
+          <button className="btn" title="Let the assistant write a personalised WhatsApp message" onClick={() => setModal('ai')}><IconSparkle width={16} height={16} /> AI message</button>
           <button className="btn" onClick={() => setModal('pay')}><IconMoney /> Record payment</button>
           <button className="btn" onClick={() => setModal('renew')}><IconRefresh /> Renew</button>
           {s.isActive && <button className="btn" onClick={() => setModal('transfer')}><IconTransfer /> Transfer seat</button>}
@@ -169,6 +171,7 @@ export default function StudentDetail() {
       {modal === 'pay' && <PaymentModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u) }} />}
       {modal === 'renew' && <RenewModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); setStudent(u); paymentToast(toast, u, `Renewed until ${fmtDate(u.dueDate)}`) }} />}
       {modal === 'dueDate' && <DueDateModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); toast.success(u.dueDateOverridden ? `Due date set to ${fmtDate(u.dueDate)}` : `Due date reset to ${fmtDate(u.dueDate)}`); load() }} />}
+      {modal === 'ai' && <AiMessageModal student={s} onClose={() => setModal(null)} />}
       {modal === 'transfer' && <TransferSeatModal student={s} onClose={() => setModal(null)} onSaved={(u) => { setModal(null); toast.success(`Moved to seat ${u.seatNumber}`); load() }} />}
       {modal === 'vacate' && (
         <ConfirmDialog title={`Vacate seat ${s.seatNumber}?`} message={`${s.name} stays an active member without a seat. The seat becomes free immediately.`} confirmLabel="Vacate seat"

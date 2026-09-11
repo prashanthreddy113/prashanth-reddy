@@ -4,7 +4,7 @@ import { useAuth } from '../lib/auth'
 import { api } from '../lib/api'
 import { setCurrency } from '../lib/format'
 import { useBranch } from '../lib/branch'
-import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu, IconWhatsapp, IconMoney } from './Icons'
+import { IconDashboard, IconUsers, IconSeat, IconSettings, IconMenu, IconWhatsapp, IconMoney, IconSparkle } from './Icons'
 
 const NAV = [
   { to: '/', label: 'Dashboard', icon: IconDashboard, end: true },
@@ -12,6 +12,7 @@ const NAV = [
   { to: '/seats', label: 'Seats', icon: IconSeat },
   { to: '/reminders', label: 'Reminders', icon: IconWhatsapp },
   { to: '/expenses', label: 'Expenses', icon: IconMoney },
+  { to: '/assistant', label: 'Assistant', icon: IconSparkle },
   { to: '/settings', label: 'Settings', icon: IconSettings },
 ]
 
@@ -21,6 +22,7 @@ const TITLES = {
   '/seats': ['Seats', 'Configure capacity and see who sits where'],
   '/reminders': ['WhatsApp reminders', 'Automatic due-date messages and history'],
   '/expenses': ['Expenses & revenue', 'Rent, bills and salaries against collections'],
+  '/assistant': ['Assistant', 'Ask anything about your students, seats and money'],
   '/settings': ['Settings', 'Room preferences and your account'],
 }
 

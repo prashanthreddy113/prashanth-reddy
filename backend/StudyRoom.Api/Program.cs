@@ -40,6 +40,7 @@ builder.Services.AddScoped<SettingsService>();
 builder.Services.AddScoped<SeatAllocationService>();
 builder.Services.AddHttpClient<WhatsAppService>(c => c.Timeout = TimeSpan.FromSeconds(20));
 builder.Services.AddScoped<ReminderService>();
+builder.Services.AddScoped<AiService>();
 builder.Services.AddHostedService<ReminderScheduler>();
 
 // ----- API -----

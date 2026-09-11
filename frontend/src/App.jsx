@@ -11,6 +11,7 @@ import Seats from './pages/Seats'
 import Settings from './pages/Settings'
 import Reminders from './pages/Reminders'
 import Expenses from './pages/Expenses'
+import Assistant from './pages/Assistant'
 
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuth()
@@ -33,6 +34,7 @@ export default function App() {
               <Route path="seats" element={<Seats />} />
               <Route path="reminders" element={<Reminders />} />
               <Route path="expenses" element={<Expenses />} />
+              <Route path="assistant" element={<Assistant />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
