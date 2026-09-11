@@ -1,0 +1,41 @@
+# Local development / self-hosting of the marketing tool: PostgreSQL + the .NET API.
+# Run:  cd marketing && docker compose up --build
+# API:  http://localhost:8090  (Swagger at /swagger)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: marketing
+      POSTGRES_USER: marketing
+      POSTGRES_PASSWORD: marketing
+    ports:
+      - "5433:5432"
+    volumes:
+      - marketing-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketing -d marketing"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=marketing;Username=marketing;Password=marketing"
+      Jwt__Key: "change-this-to-a-long-random-secret-at-least-32-chars"
+      Admin__Username: "admin"
+      Admin__Password: "admin123"
+      Company__Name: "My Company"
+      Company__Tagline: "Field marketing"
+      Company__Currency: "INR"
+      Company__DefaultCountryCode: "91"
+      Company__TimeZone: "Asia/Kolkata"
+      Cors__AllowedOrigins: ""   # empty = allow any origin; set to https://your-site.netlify.app in production
+    ports:
+      - "8090:8080"
+
+volumes:
+  marketing-pgdata:

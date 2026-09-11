@@ -1,0 +1,51 @@
+# Builds the marketing React frontend on every push and deploys it to Netlify when the
+# NETLIFY_AUTH_TOKEN secret and the MARKETING_NETLIFY_SITE_ID variable are set.
+#
+# Setup (once): create a Netlify site for the marketing app, then in GitHub → repo Settings →
+# Secrets and variables → Actions add secret NETLIFY_AUTH_TOKEN (Netlify personal access token),
+# variable MARKETING_NETLIFY_SITE_ID (the site's API ID) and optionally variable
+# MARKETING_VITE_API_URL (public URL of the deployed marketing API).
+
+name: Marketing – Deploy frontend to Netlify
+
+on:
+  push:
+    paths: [marketing/frontend/**, marketing/netlify.toml, .github/workflows/marketing-deploy-frontend.yml]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: marketing/frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: marketing/frontend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.MARKETING_VITE_API_URL }}
+
+      - name: Deploy to Netlify
+        if: ${{ env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.MARKETING_NETLIFY_SITE_ID }}
+        run: npx --yes netlify-cli@latest deploy --prod --dir=dist --site "$NETLIFY_SITE_ID" --message "GitHub Actions ${{ github.sha }}"
+
+      - name: Skipped deploy
+        if: ${{ env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.MARKETING_NETLIFY_SITE_ID }}
+        run: echo "NETLIFY_AUTH_TOKEN secret or MARKETING_NETLIFY_SITE_ID variable not set - build succeeded but deploy skipped."

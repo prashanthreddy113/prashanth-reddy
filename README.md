@@ -8,6 +8,9 @@ A complete admin console for the BrightLoop reading room. Admins register studen
 | Backend | ASP.NET Core 8 Web API, EF Core, JWT auth (Docker; Render / Railway / Azure / any host) |
 | Database | PostgreSQL 16 |
 
+
+> **Also in this repository:** [`marketing/`](marketing/README.md) – a separate **Field Marketing Tool** (mobile-first lead capture with photos, GPS, interest scoring, follow-ups, projects/products and executive assignment). It has its own API, frontend and deployment files; see its README.
+
 ## Features
 
 - **Admin login** (JWT). A default admin is seeded on first run; change the password from Settings.
