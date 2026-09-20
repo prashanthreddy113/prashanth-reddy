@@ -142,4 +142,17 @@
     <string name="how2">ఒప్పుకోండి, రైడర్ చెప్పే OTP పెట్టండి</string>
     <string name="how3">దింపండి, క్యాష్ తీసుకోండి</string>
     <string name="whatsapp_msg">నమస్తే, నేను మన బండి కెప్టెన్. నాకు సాయం కావాలి.</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">నియమాలు</string>
+    <string name="terms_speech">ఈ నియమాలు వినండి. ఒప్పుకుంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి.</string>
+    <string name="terms_accept">ఒప్పుకుంటున్నాను</string>
+    <string name="terms_full">పూర్తి నియమాలు చదవండి</string>
+    <string name="terms_version_note">వెర్షన్ %1$s</string>
+    <string name="terms_1">ఆధార్, లైసెన్స్, RC, ఇన్సూరెన్స్ చెల్లుబాటులో ఉండాలి. వేరే వాళ్ళ బండి అయితే యజమాని లేఖ కావాలి.</string>
+    <string name="terms_2">డిజిలాకర్ ద్వారా పత్రాలు చూసేందుకు, సెల్ఫీ పోల్చేందుకు ఒప్పుకుంటున్నారు.</string>
+    <string name="terms_3">యాప్‌లో చూపిన రూపాయలే తీసుకోవాలి. కమీషన్ 3 నెలలు 0%, తర్వాత 10%.</string>
+    <string name="terms_4">హెల్మెట్, జాకెట్ తప్పనిసరి. మద్యం తాగి నడపకూడదు.</string>
+    <string name="terms_5">OTP లేకుండా రైడ్ మొదలు పెట్టకూడదు. యాప్ బయట రైడ్లు తీసుకోకూడదు.</string>
+    <string name="terms_6">ఆన్‌లైన్ ఉన్నప్పుడు లొకేషన్ ట్రాక్ అవుతుంది. దూషణ జరిగితే ఖాతా మూసేస్తాం.</string>
 </resources>

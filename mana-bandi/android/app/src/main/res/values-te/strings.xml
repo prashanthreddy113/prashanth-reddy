@@ -116,4 +116,20 @@
     <string name="how2">ఎక్కడికి పోవాలో చెప్పండి</string>
     <string name="how3">కెప్టెన్ వస్తారు, క్యాష్ ఇవ్వండి</string>
     <string name="whatsapp_msg">నమస్తే, నాకు మన బండిలో సాయం కావాలి.</string>
+
+    <!-- Terms & conditions and trip sharing -->
+    <string name="terms_title">నియమాలు</string>
+    <string name="terms_speech">ఈ నియమాలు వినండి. ఒప్పుకుంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి.</string>
+    <string name="terms_accept">ఒప్పుకుంటున్నాను</string>
+    <string name="terms_full">పూర్తి నియమాలు చదవండి</string>
+    <string name="terms_version_note">వెర్షన్ %1$s</string>
+    <string name="terms_1">బుక్ చేసే ముందు కనిపించే రూపాయలే ఇవ్వాలి. క్యాష్ లేదా UPI.</string>
+    <string name="terms_2">కెప్టెన్లు స్వతంత్ర డ్రైవర్లు, మా ఉద్యోగులు కాదు.</string>
+    <string name="terms_3">హెల్మెట్ పెట్టుకోండి. బైక్‌లో ఒక్కరే. ప్రమాదంలో 🆘 నొక్కండి.</string>
+    <string name="terms_4">పార్సెల్‌లో చట్టవిరుద్ధ వస్తువులు పంపకూడదు. విలువ ₹2,000 లోపే.</string>
+    <string name="terms_5">మీ ఫోన్ నంబర్, లొకేషన్ సేవ కోసం, భద్రత కోసం మాత్రమే వాడతాం.</string>
+    <string name="terms_6">కెప్టెన్‌ని దూషిస్తే ఖాతా మూసేస్తాం. ఫిర్యాదులకి సాయం నొక్కండి.</string>
+    <string name="share_trip">కుటుంబానికి ట్రిప్ పంపండి</string>
+    <string name="share_chooser">ఎవరికి పంపాలి?</string>
+    <string name="share_trip_text">నేను మన బండిలో వెళ్తున్నాను 🛺\nకెప్టెన్: %1$s\nబండి నంబర్: %2$s\nఎక్కడికి: %3$s\nలైవ్ ట్రాకింగ్: %4$s</string>
 </resources>

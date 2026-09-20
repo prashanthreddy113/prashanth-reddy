@@ -132,6 +132,10 @@ class CaptainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun acceptTerms() {
+        viewModelScope.launch { prefs.acceptTerms() }
+    }
+
     fun login(phoneNumber: String) {
         phone = phoneNumber
         viewModelScope.launch { prefs.setLoggedIn(phoneNumber) }

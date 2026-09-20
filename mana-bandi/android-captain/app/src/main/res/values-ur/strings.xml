@@ -142,4 +142,17 @@
     <string name="how2">منظور کریں، سواری کا بتایا OTP ڈالیں</string>
     <string name="how3">سواری اتاریں، نقد لیں</string>
     <string name="whatsapp_msg">السلام علیکم، میں منا بنڈی کیپٹن ہوں۔ مجھے مدد چاہیے۔</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">شرائط و ضوابط</string>
+    <string name="terms_speech">یہ اصول سنیں۔ منظور ہوں تو بڑا سبز بٹن دبائیں۔</string>
+    <string name="terms_accept">مجھے منظور ہے</string>
+    <string name="terms_full">مکمل شرائط پڑھیں</string>
+    <string name="terms_version_note">ورژن %1$s</string>
+    <string name="terms_1">آدھار، لائسنس، RC اور انشورنس درست ہونے چاہئیں۔ کسی اور کی گاڑی ہو تو مالک کا خط ضروری۔</string>
+    <string name="terms_2">ڈیجی لاکر سے دستاویز جانچ اور سیلفی ملان کی آپ اجازت دیتے ہیں۔</string>
+    <string name="terms_3">ایپ میں دکھایا کرایہ ہی لیں۔ کمیشن 3 ماہ 0%، پھر 10%۔</string>
+    <string name="terms_4">ہیلمٹ اور جیکٹ لازمی۔ شراب پی کر نہ چلائیں۔</string>
+    <string name="terms_5">OTP کے بغیر رائیڈ شروع نہ کریں۔ ایپ سے باہر رائیڈ نہیں۔</string>
+    <string name="terms_6">آن لائن رہتے ہوئے لوکیشن ٹریک ہوتی ہے۔ بدسلوکی پر اکاؤنٹ بند۔</string>
 </resources>

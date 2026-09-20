@@ -41,6 +41,7 @@ import com.manabandi.rider.ui.components.CallButton
 import com.manabandi.rider.ui.components.SecondaryButton
 import com.manabandi.rider.ui.components.SpeakTopBar
 import com.manabandi.rider.ui.components.dialNumber
+import com.manabandi.rider.ui.components.shareTripText
 import com.manabandi.rider.ui.theme.GreenLight
 import com.manabandi.rider.ui.theme.TextDark
 import com.manabandi.rider.ui.theme.Turmeric
@@ -62,6 +63,18 @@ fun RideScreen(vm: RideViewModel, onDone: () -> Unit) {
         }
     )
     val emergency = stringResource(R.string.emergency_number)
+
+    // "Share trip with family": captain name, vehicle number, drop and a tracking link.
+    // The link is a placeholder until the backend issues real per-trip tracking pages.
+    val trackingLink = stringResource(R.string.track_url_base) + vm.otp
+    val shareMessage = stringResource(
+        R.string.share_trip_text,
+        captain.name,
+        captain.vehicleNumber,
+        vm.drop.ifBlank { "—" },
+        trackingLink
+    )
+    val shareChooser = stringResource(R.string.share_chooser)
 
     Scaffold(
         topBar = {
@@ -168,6 +181,12 @@ fun RideScreen(vm: RideViewModel, onDone: () -> Unit) {
             CallButton(
                 label = stringResource(R.string.call_captain),
                 phoneNumber = captain.phone
+            )
+
+            SecondaryButton(
+                text = stringResource(R.string.share_trip),
+                emoji = "👨‍👩‍👧",
+                onClick = { shareTripText(context, shareMessage, shareChooser) }
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

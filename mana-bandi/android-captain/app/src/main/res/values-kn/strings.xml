@@ -142,4 +142,17 @@
     <string name="how2">ಒಪ್ಪಿಕೊಳ್ಳಿ, ರೈಡರ್ ಹೇಳುವ OTP ಹಾಕಿ</string>
     <string name="how3">ಇಳಿಸಿ, ಕ್ಯಾಶ್ ತೆಗೆದುಕೊಳ್ಳಿ</string>
     <string name="whatsapp_msg">ನಮಸ್ಕಾರ, ನಾನು ಮನ ಬಂಡಿ ಕ್ಯಾಪ್ಟನ್. ನನಗೆ ಸಹಾಯ ಬೇಕು.</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">ನಿಯಮಗಳು</string>
+    <string name="terms_speech">ಈ ನಿಯಮಗಳನ್ನು ಕೇಳಿ. ಒಪ್ಪಿದರೆ ದೊಡ್ಡ ಹಸಿರು ಬಟನ್ ಒತ್ತಿ.</string>
+    <string name="terms_accept">ನಾನು ಒಪ್ಪುತ್ತೇನೆ</string>
+    <string name="terms_full">ಪೂರ್ಣ ನಿಯಮಗಳನ್ನು ಓದಿ</string>
+    <string name="terms_version_note">ಆವೃತ್ತಿ %1$s</string>
+    <string name="terms_1">ಆಧಾರ್, ಲೈಸೆನ್ಸ್, RC ಮತ್ತು ವಿಮೆ ಮಾನ್ಯವಾಗಿರಬೇಕು. ಬೇರೆಯವರ ವಾಹನವಾದರೆ ಮಾಲೀಕರ ಪತ್ರ ಬೇಕು.</string>
+    <string name="terms_2">ಡಿಜಿಲಾಕರ್ ಮೂಲಕ ದಾಖಲೆ ಪರಿಶೀಲನೆ ಮತ್ತು ಸೆಲ್ಫಿ ಹೋಲಿಕೆಗೆ ನೀವು ಒಪ್ಪುತ್ತೀರಿ.</string>
+    <string name="terms_3">ಆ್ಯಪ್‌ನಲ್ಲಿ ತೋರಿಸಿದ ದರವನ್ನೇ ಪಡೆಯಿರಿ. ಕಮಿಷನ್ 3 ತಿಂಗಳು 0%, ನಂತರ 10%.</string>
+    <string name="terms_4">ಹೆಲ್ಮೆಟ್ ಮತ್ತು ಜಾಕೆಟ್ ಕಡ್ಡಾಯ. ಕುಡಿದು ಚಾಲನೆ ಬೇಡ.</string>
+    <string name="terms_5">OTP ಇಲ್ಲದೆ ರೈಡ್ ಆರಂಭಿಸಬೇಡಿ. ಆ್ಯಪ್ ಹೊರಗೆ ರೈಡ್ ಬೇಡ.</string>
+    <string name="terms_6">ಆನ್‌ಲೈನ್ ಇರುವಾಗ ಸ್ಥಳ ಟ್ರ್ಯಾಕ್ ಆಗುತ್ತದೆ. ನಿಂದನೆ ಮಾಡಿದರೆ ಖಾತೆ ಮುಚ್ಚುತ್ತೇವೆ.</string>
 </resources>

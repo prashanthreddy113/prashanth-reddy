@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             when {
                 !app.prefs.languageChosen.first() -> Routes.LANGUAGE
                 !app.prefs.loggedIn.first() -> Routes.PHONE
+                !app.prefs.termsAccepted.first() -> Routes.TERMS
                 !app.prefs.kycDone.first() -> Routes.KYC
                 else -> Routes.HOME
             }

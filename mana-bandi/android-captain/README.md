@@ -69,6 +69,7 @@ only) → home.
 | `language` | `LanguageScreen` | 6 tiles in native script; tapping speaks a greeting in that language and continues |
 | `phone` | `PhoneScreen` | 10-digit number, 32sp |
 | `otp` | `OtpScreen` | 4 boxes, "📞 Call me with OTP" stub, any code works |
+| `terms` | `TermsScreen` | six captain rules (documents, DigiLocker consent, fare, safety, OTP, location) read aloud, "✅ I agree"; re‑asked when `LocalePrefs.TERMS_VERSION` changes |
 | `kyc` | `KycScreen` | "Register at the office": 🪪 Aadhaar, 🚗 licence, 📄 RC, 📷 photo, 🏦 bank/UPI rows, each with 📷 Take photo (✅ when taken); 🏍️/🛺 vehicle type; vehicle number (uppercase, 32sp); 📞 Call office; ✅ Done marks KYC as submitted in DataStore |
 | `home` | `HomeScreen` | giant 🔴 OFFLINE / 🟢 ONLINE toggle card (pulsing ring when online), today's earnings in 48sp, trips, 💰 Earnings / 📞 Office, bottom bar. **Demo:** 4 s after going online a fake request arrives (8 s after each finished trip): the phone buzzes, the request is spoken ("కొత్త రైడ్: బస్టాండ్ నుంచి 2 కి.మీ, 45 రూపాయలు") and the request screen opens |
 | `request` | `RequestScreen` | full screen tinted by service (yellow bike / green auto / orange parcel): pickup + distance in 34sp, drop, ₹ fare in 56sp, 💵/📱; giant **✅ ఒప్పుకోండి** (120dp) with a 15 s countdown bar; small ❌. Timeout → home |

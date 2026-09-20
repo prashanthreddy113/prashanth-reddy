@@ -20,12 +20,14 @@ import com.manabandi.captain.ui.screens.OnTripScreen
 import com.manabandi.captain.ui.screens.OtpScreen
 import com.manabandi.captain.ui.screens.PhoneScreen
 import com.manabandi.captain.ui.screens.RequestScreen
+import com.manabandi.captain.ui.screens.TermsScreen
 import com.manabandi.captain.ui.screens.ToPickupScreen
 
 object Routes {
     const val LANGUAGE = "language"
     const val PHONE = "phone"
     const val OTP = "otp"
+    const val TERMS = "terms"
     const val KYC = "kyc"
     const val HOME = "home"
     const val REQUEST = "request"
@@ -43,6 +45,7 @@ fun ManaBandiCaptainApp(startDestination: String, prefs: LocalePrefs) {
     val vm: CaptainViewModel = viewModel()
     val loggedIn by prefs.loggedIn.collectAsState(initial = false)
     val kycDone by prefs.kycDone.collectAsState(initial = false)
+    val termsAccepted by prefs.termsAccepted.collectAsState(initial = false)
 
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -53,6 +56,7 @@ fun ManaBandiCaptainApp(startDestination: String, prefs: LocalePrefs) {
                     // locale-change recreation, then persist + apply the language.
                     val next = when {
                         !loggedIn -> Routes.PHONE
+                        !termsAccepted -> Routes.TERMS
                         !kycDone -> Routes.KYC
                         else -> Routes.HOME
                     }
@@ -80,9 +84,24 @@ fun ManaBandiCaptainApp(startDestination: String, prefs: LocalePrefs) {
                 onBack = { navController.popBackStack() },
                 onVerified = {
                     vm.login(vm.phone)
-                    // First login goes through the KYC checklist once.
-                    val next = if (kycDone) Routes.HOME else Routes.KYC
+                    // First login: terms, then the KYC checklist once.
+                    val next = when {
+                        !termsAccepted -> Routes.TERMS
+                        !kycDone -> Routes.KYC
+                        else -> Routes.HOME
+                    }
                     navController.navigate(next) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.TERMS) {
+            TermsScreen(
+                onAccept = {
+                    vm.acceptTerms()
+                    navController.navigate(if (kycDone) Routes.HOME else Routes.KYC) {
                         popUpTo(0) { inclusive = true }
                     }
                 }

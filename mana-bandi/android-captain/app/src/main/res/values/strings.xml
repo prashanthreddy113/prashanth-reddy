@@ -7,6 +7,7 @@
     <string name="support_number_display" translatable="false">98765 43210</string>
     <string name="whatsapp_number" translatable="false">919876543210</string>
     <string name="emergency_number" translatable="false">112</string>
+    <string name="terms_url" translatable="false">https://manabandi.in/terms/captain</string>
 
     <!-- Common -->
     <string name="speak_cd">Read aloud</string>
@@ -148,4 +149,17 @@
     <string name="how2">Accept, enter the OTP the rider says</string>
     <string name="how3">Drop the rider, take the cash</string>
     <string name="whatsapp_msg">Hello, I am a Mana Bandi captain. I need help.</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">Terms &amp; conditions</string>
+    <string name="terms_speech">Listen to these rules. If you agree, tap the big green button.</string>
+    <string name="terms_accept">I agree</string>
+    <string name="terms_full">Read full terms</string>
+    <string name="terms_version_note">Version %1$s</string>
+    <string name="terms_1">Aadhaar, licence, RC and insurance must be valid. Someone else\'s vehicle needs the owner\'s letter.</string>
+    <string name="terms_2">You consent to document checks via DigiLocker and selfie matching.</string>
+    <string name="terms_3">Collect only the fare shown. Commission 0% for 3 months, then 10%.</string>
+    <string name="terms_4">Helmet and jacket are mandatory. No drinking and driving.</string>
+    <string name="terms_5">Never start a ride without the OTP. No off‑app rides.</string>
+    <string name="terms_6">Location is tracked while online. Abuse closes the account.</string>
 </resources>

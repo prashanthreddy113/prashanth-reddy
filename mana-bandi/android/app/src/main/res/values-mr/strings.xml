@@ -116,4 +116,20 @@
     <string name="how2">कुठे जायचं ते सांगा</string>
     <string name="how3">कॅप्टन येईल, रोख द्या</string>
     <string name="whatsapp_msg">नमस्कार, मला मन बंडी मध्ये मदत हवी आहे.</string>
+
+    <!-- Terms & conditions and trip sharing -->
+    <string name="terms_title">नियम व अटी</string>
+    <string name="terms_speech">हे नियम ऐका. मान्य असेल तर मोठे हिरवे बटण दाबा.</string>
+    <string name="terms_accept">मला मान्य आहे</string>
+    <string name="terms_full">पूर्ण नियम वाचा</string>
+    <string name="terms_version_note">आवृत्ती %1$s</string>
+    <string name="terms_1">बुकिंगपूर्वी दाखवलेले भाडेच द्या. रोख किंवा UPI.</string>
+    <string name="terms_2">कॅप्टन स्वतंत्र चालक आहेत, आमचे कर्मचारी नाहीत.</string>
+    <string name="terms_3">हेल्मेट घाला. बाईकवर एकच प्रवासी. आणीबाणीत 🆘 दाबा.</string>
+    <string name="terms_4">पार्सलमध्ये बेकायदेशीर वस्तू नको. किंमत ₹2,000 पर्यंत.</string>
+    <string name="terms_5">तुमचा फोन नंबर आणि लोकेशन फक्त सेवा व सुरक्षेसाठी.</string>
+    <string name="terms_6">कॅप्टनशी गैरवर्तन केल्यास खाते बंद. तक्रारीसाठी मदत दाबा.</string>
+    <string name="share_trip">कुटुंबाला ट्रिप पाठवा</string>
+    <string name="share_chooser">कोणाला पाठवायचे?</string>
+    <string name="share_trip_text">मी मन बंडीने जात आहे 🛺\nकॅप्टन: %1$s\nगाडी: %2$s\nकुठे: %3$s\nलाइव्ह ट्रॅकिंग: %4$s</string>
 </resources>

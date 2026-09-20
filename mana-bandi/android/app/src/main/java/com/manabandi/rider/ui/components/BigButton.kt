@@ -125,3 +125,16 @@ fun openWhatsApp(context: Context, phoneDigits: String, message: String) {
         Toast.makeText(context, "+$phoneDigits", Toast.LENGTH_LONG).show()
     }
 }
+
+/** Share plain text (trip details) through the system share sheet — WhatsApp, SMS, anything. */
+fun shareTripText(context: Context, text: String, chooserTitle: String) {
+    try {
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        context.startActivity(Intent.createChooser(send, chooserTitle))
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+    }
+}

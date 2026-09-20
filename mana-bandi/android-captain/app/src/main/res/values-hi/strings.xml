@@ -142,4 +142,17 @@
     <string name="how2">मंज़ूर करें, सवारी का बताया OTP डालें</string>
     <string name="how3">सवारी उतारें, नकद लें</string>
     <string name="whatsapp_msg">नमस्ते, मैं मन बंडी कैप्टन हूँ। मुझे मदद चाहिए।</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">नियम और शर्तें</string>
+    <string name="terms_speech">ये नियम सुनिए। मंज़ूर हों तो बड़ा हरा बटन दबाइए।</string>
+    <string name="terms_accept">मुझे मंज़ूर है</string>
+    <string name="terms_full">पूरे नियम पढ़ें</string>
+    <string name="terms_version_note">संस्करण %1$s</string>
+    <string name="terms_1">आधार, लाइसेंस, RC और बीमा वैध होने चाहिए। दूसरे की गाड़ी हो तो मालिक का पत्र ज़रूरी।</string>
+    <string name="terms_2">डिजिलॉकर से दस्तावेज़ जाँच और सेल्फ़ी मिलान की आप सहमति देते हैं।</string>
+    <string name="terms_3">ऐप में दिखाया किराया ही लें। कमीशन 3 महीने 0%, फिर 10%।</string>
+    <string name="terms_4">हेलमेट और जैकेट ज़रूरी। शराब पीकर न चलाएँ।</string>
+    <string name="terms_5">OTP के बिना राइड शुरू न करें। ऐप के बाहर राइड नहीं।</string>
+    <string name="terms_6">ऑनलाइन रहते लोकेशन ट्रैक होती है। बदसलूकी पर खाता बंद।</string>
 </resources>

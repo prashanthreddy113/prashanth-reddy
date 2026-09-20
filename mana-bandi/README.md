@@ -18,6 +18,8 @@ mana-bandi/
   docs/02-UX-SCREENS.md     screen‑by‑screen spec with Telugu copy and what the app speaks on each screen
   docs/03-LAUNCH-PLAN.md    Narayanakhed pilot → Zaheerabad → Sangareddy district → Telangana & Andhra towns; team, cost, risks
   docs/04-ARCHITECTURE.md   apps, backend services, data model, dispatch / voice‑OTP / missed‑call / parcel COD flows
+  docs/05-CAPTAIN-VERIFICATION.md  Aadhaar / DL / RC / selfie automation: legal position, APIs, rules, costs, owner‑portal flow
+  docs/06-TERMS.md          terms & conditions for customers and captains (Telugu + English short versions, full outline)
   prototype/index.html      clickable phone prototype of BOTH apps (rider + captain), Telugu / English, with design notes
   android/                  Kotlin + Jetpack Compose starter for the rider app (te, en, hi, kn, mr, ur)
   android-captain/          Kotlin + Jetpack Compose starter for the captain (driver) app, same six languages

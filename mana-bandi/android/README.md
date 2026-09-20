@@ -60,11 +60,12 @@ Android 12 and below) hosting a Navigation Compose graph in `ManaBandiApp.kt`:
 | `language` | `LanguageScreen` | 6 tiles in native script; tapping speaks a greeting in that language and continues |
 | `phone` | `PhoneScreen` | 10-digit number, 32sp |
 | `otp` | `OtpScreen` | 4 boxes, "📞 Call me with OTP" stub, any code works |
+| `terms` | `TermsScreen` | six pictograph rules read aloud, "✅ I agree"; shown once per `LocalePrefs.TERMS_VERSION` (bump it to re‑ask everyone) |
 | `home` | `HomeScreen` | 🏍️ Bike (yellow) / 🛺 Auto (green) / 📦 Parcel (orange) + saved-place chips + bottom bar |
 | `book/{service}` | `BookRideScreen` | pickup auto-filled, drop with 🎤 mic, fare card, 💵 Cash / 📱 UPI |
 | `parcel` | `ParcelScreen` | 3-step wizard: where → what (size + 📷 photo) → who pays |
 | `finding` | `FindingCaptainScreen` | pulsing circle, 3 s, then ride |
-| `ride` | `RideScreen` | captain, huge vehicle number, 4-digit OTP, 📞 Call / ❌ Cancel / 🆘 SOS (dials 112) |
+| `ride` | `RideScreen` | captain, huge vehicle number, 4-digit OTP, 📞 Call, 👨‍👩‍👧 Share trip with family (system share sheet → WhatsApp/SMS with captain, vehicle, drop, tracking link), ❌ Cancel / 🆘 SOS (dials 112) |
 | `rides` | `MyRidesScreen` | 3 fake past rides |
 | `help` | `HelpScreen` | 📞 call, 💬 WhatsApp (`wa.me`), 🌐 change language, 3 pictograph "how to" rows |
 

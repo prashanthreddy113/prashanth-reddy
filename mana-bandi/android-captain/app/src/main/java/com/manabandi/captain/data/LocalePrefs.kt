@@ -25,12 +25,16 @@ class LocalePrefs(private val context: Context) {
     companion object {
         /** Telugu is the default language of the app. */
         const val DEFAULT_LANGUAGE = "te"
+
+        /** Bump when the terms change; the app then asks every user to accept again. */
+        const val TERMS_VERSION = "1.0"
         val SUPPORTED = listOf("te", "en", "hi", "kn", "mr", "ur")
 
         private val KEY_LANGUAGE = stringPreferencesKey("language")
         private val KEY_LANGUAGE_CHOSEN = booleanPreferencesKey("language_chosen")
         private val KEY_PHONE = stringPreferencesKey("phone")
         private val KEY_LOGGED_IN = booleanPreferencesKey("logged_in")
+        private val KEY_TERMS_VERSION = stringPreferencesKey("terms_version_accepted")
         private val KEY_KYC_DONE = booleanPreferencesKey("kyc_done")
         private val KEY_VEHICLE_TYPE = stringPreferencesKey("vehicle_type")
         private val KEY_VEHICLE_NUMBER = stringPreferencesKey("vehicle_number")
@@ -65,6 +69,8 @@ class LocalePrefs(private val context: Context) {
     val languageChosen: Flow<Boolean> = context.dataStore.data.map { it[KEY_LANGUAGE_CHOSEN] ?: false }
     val phone: Flow<String> = context.dataStore.data.map { it[KEY_PHONE] ?: "" }
     val loggedIn: Flow<Boolean> = context.dataStore.data.map { it[KEY_LOGGED_IN] ?: false }
+    /** True only when the CURRENT terms version has been accepted. */
+    val termsAccepted: Flow<Boolean> = context.dataStore.data.map { it[KEY_TERMS_VERSION] == TERMS_VERSION }
     val kycDone: Flow<Boolean> = context.dataStore.data.map { it[KEY_KYC_DONE] ?: false }
     val vehicleType: Flow<String> = context.dataStore.data.map { it[KEY_VEHICLE_TYPE] ?: "" }
     val vehicleNumber: Flow<String> = context.dataStore.data.map { it[KEY_VEHICLE_NUMBER] ?: "" }

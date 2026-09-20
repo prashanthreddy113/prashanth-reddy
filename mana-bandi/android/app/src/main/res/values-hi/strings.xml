@@ -116,4 +116,20 @@
     <string name="how2">बताएँ कहाँ जाना है</string>
     <string name="how3">कैप्टन आएगा, नकद दें</string>
     <string name="whatsapp_msg">नमस्ते, मुझे मन बंडी में मदद चाहिए।</string>
+
+    <!-- Terms & conditions and trip sharing -->
+    <string name="terms_title">नियम और शर्तें</string>
+    <string name="terms_speech">ये नियम सुनिए। मंज़ूर हों तो बड़ा हरा बटन दबाइए।</string>
+    <string name="terms_accept">मुझे मंज़ूर है</string>
+    <string name="terms_full">पूरे नियम पढ़ें</string>
+    <string name="terms_version_note">संस्करण %1$s</string>
+    <string name="terms_1">बुकिंग से पहले दिखाया गया किराया ही दें। कैश या UPI।</string>
+    <string name="terms_2">कैप्टन स्वतंत्र ड्राइवर हैं, हमारे कर्मचारी नहीं।</string>
+    <string name="terms_3">हेलमेट पहनें। बाइक पर एक ही सवारी। आपात में 🆘 दबाएँ।</string>
+    <string name="terms_4">पार्सल में गैर‑कानूनी सामान नहीं। कीमत ₹2,000 तक।</string>
+    <string name="terms_5">आपका फ़ोन नंबर और लोकेशन सिर्फ़ सेवा और सुरक्षा के लिए।</string>
+    <string name="terms_6">कैप्टन से बदसलूकी पर खाता बंद। शिकायत के लिए सहायता दबाएँ।</string>
+    <string name="share_trip">परिवार को ट्रिप भेजें</string>
+    <string name="share_chooser">किसे भेजें?</string>
+    <string name="share_trip_text">मैं मन बंडी से जा रहा/रही हूँ 🛺\nकैप्टन: %1$s\nगाड़ी: %2$s\nकहाँ: %3$s\nलाइव ट्रैकिंग: %4$s</string>
 </resources>

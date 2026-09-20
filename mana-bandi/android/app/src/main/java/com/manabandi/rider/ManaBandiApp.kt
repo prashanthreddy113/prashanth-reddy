@@ -22,11 +22,13 @@ import com.manabandi.rider.ui.screens.OtpScreen
 import com.manabandi.rider.ui.screens.ParcelScreen
 import com.manabandi.rider.ui.screens.PhoneScreen
 import com.manabandi.rider.ui.screens.RideScreen
+import com.manabandi.rider.ui.screens.TermsScreen
 
 object Routes {
     const val LANGUAGE = "language"
     const val PHONE = "phone"
     const val OTP = "otp"
+    const val TERMS = "terms"
     const val HOME = "home"
     const val BOOK = "book/{service}"
     const val FINDING = "finding"
@@ -43,6 +45,7 @@ fun ManaBandiApp(startDestination: String, prefs: LocalePrefs) {
     val navController = rememberNavController()
     val vm: RideViewModel = viewModel()
     val loggedIn by prefs.loggedIn.collectAsState(initial = false)
+    val termsAccepted by prefs.termsAccepted.collectAsState(initial = false)
 
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -51,7 +54,11 @@ fun ManaBandiApp(startDestination: String, prefs: LocalePrefs) {
                 onLanguageChosen = { tag ->
                     // Navigate first so the restored back stack is right after the
                     // locale-change recreation, then persist + apply the language.
-                    val next = if (loggedIn) Routes.HOME else Routes.PHONE
+                    val next = when {
+                        !loggedIn -> Routes.PHONE
+                        !termsAccepted -> Routes.TERMS
+                        else -> Routes.HOME
+                    }
                     navController.navigate(next) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
@@ -76,6 +83,17 @@ fun ManaBandiApp(startDestination: String, prefs: LocalePrefs) {
                 onBack = { navController.popBackStack() },
                 onVerified = {
                     vm.login(vm.phone)
+                    navController.navigate(if (termsAccepted) Routes.HOME else Routes.TERMS) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.TERMS) {
+            TermsScreen(
+                onAccept = {
+                    vm.acceptTerms()
                     navController.navigate(Routes.HOME) {
                         popUpTo(0) { inclusive = true }
                     }

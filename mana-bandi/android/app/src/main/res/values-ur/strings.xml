@@ -116,4 +116,20 @@
     <string name="how2">بتائیں کہاں جانا ہے</string>
     <string name="how3">کیپٹن آئے گا، نقد دیں</string>
     <string name="whatsapp_msg">السلام علیکم، مجھے منا بنڈی میں مدد چاہیے۔</string>
+
+    <!-- Terms & conditions and trip sharing -->
+    <string name="terms_title">شرائط و ضوابط</string>
+    <string name="terms_speech">یہ اصول سنیں۔ منظور ہوں تو بڑا سبز بٹن دبائیں۔</string>
+    <string name="terms_accept">مجھے منظور ہے</string>
+    <string name="terms_full">مکمل شرائط پڑھیں</string>
+    <string name="terms_version_note">ورژن %1$s</string>
+    <string name="terms_1">بکنگ سے پہلے دکھایا گیا کرایہ ہی دیں۔ نقد یا UPI۔</string>
+    <string name="terms_2">کیپٹن آزاد ڈرائیور ہیں، ہمارے ملازم نہیں۔</string>
+    <string name="terms_3">ہیلمٹ پہنیں۔ بائیک پر ایک ہی سواری۔ ایمرجنسی میں 🆘 دبائیں۔</string>
+    <string name="terms_4">پارسل میں غیر قانونی سامان نہیں۔ قیمت ₹2,000 تک۔</string>
+    <string name="terms_5">آپ کا فون نمبر اور لوکیشن صرف سروس اور حفاظت کے لیے۔</string>
+    <string name="terms_6">کیپٹن سے بدسلوکی پر اکاؤنٹ بند۔ شکایت کے لیے مدد دبائیں۔</string>
+    <string name="share_trip">خاندان کو ٹرپ بھیجیں</string>
+    <string name="share_chooser">کسے بھیجیں؟</string>
+    <string name="share_trip_text">میں منا بنڈی سے جا رہا/رہی ہوں 🛺\nکیپٹن: %1$s\nگاڑی: %2$s\nکہاں: %3$s\nلائیو ٹریکنگ: %4$s</string>
 </resources>

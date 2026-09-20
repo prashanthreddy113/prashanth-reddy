@@ -116,4 +116,20 @@
     <string name="how2">ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕು ಹೇಳಿ</string>
     <string name="how3">ಕ್ಯಾಪ್ಟನ್ ಬರುತ್ತಾರೆ, ಕ್ಯಾಶ್ ಕೊಡಿ</string>
     <string name="whatsapp_msg">ನಮಸ್ಕಾರ, ಮನ ಬಂಡಿಯಲ್ಲಿ ನನಗೆ ಸಹಾಯ ಬೇಕು.</string>
+
+    <!-- Terms & conditions and trip sharing -->
+    <string name="terms_title">ನಿಯಮಗಳು</string>
+    <string name="terms_speech">ಈ ನಿಯಮಗಳನ್ನು ಕೇಳಿ. ಒಪ್ಪಿದರೆ ದೊಡ್ಡ ಹಸಿರು ಬಟನ್ ಒತ್ತಿ.</string>
+    <string name="terms_accept">ನಾನು ಒಪ್ಪುತ್ತೇನೆ</string>
+    <string name="terms_full">ಪೂರ್ಣ ನಿಯಮಗಳನ್ನು ಓದಿ</string>
+    <string name="terms_version_note">ಆವೃತ್ತಿ %1$s</string>
+    <string name="terms_1">ಬುಕ್ ಮಾಡುವ ಮೊದಲು ತೋರಿಸಿದ ದರವನ್ನೇ ಕೊಡಿ. ನಗದು ಅಥವಾ UPI.</string>
+    <string name="terms_2">ಕ್ಯಾಪ್ಟನ್‌ಗಳು ಸ್ವತಂತ್ರ ಚಾಲಕರು, ನಮ್ಮ ನೌಕರರಲ್ಲ.</string>
+    <string name="terms_3">ಹೆಲ್ಮೆಟ್ ಧರಿಸಿ. ಬೈಕ್‌ನಲ್ಲಿ ಒಬ್ಬರೇ. ತುರ್ತಿನಲ್ಲಿ 🆘 ಒತ್ತಿ.</string>
+    <string name="terms_4">ಪಾರ್ಸೆಲ್‌ನಲ್ಲಿ ಕಾನೂನುಬಾಹಿರ ವಸ್ತುಗಳು ಬೇಡ. ಮೌಲ್ಯ ₹2,000 ವರೆಗೆ.</string>
+    <string name="terms_5">ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆ ಮತ್ತು ಸ್ಥಳ ಸೇವೆ ಮತ್ತು ಸುರಕ್ಷತೆಗೆ ಮಾತ್ರ.</string>
+    <string name="terms_6">ಕ್ಯಾಪ್ಟನ್‌ಗೆ ನಿಂದನೆ ಮಾಡಿದರೆ ಖಾತೆ ಮುಚ್ಚುತ್ತೇವೆ. ದೂರಿಗೆ ಸಹಾಯ ಒತ್ತಿ.</string>
+    <string name="share_trip">ಕುಟುಂಬಕ್ಕೆ ಟ್ರಿಪ್ ಕಳುಹಿಸಿ</string>
+    <string name="share_chooser">ಯಾರಿಗೆ ಕಳುಹಿಸಬೇಕು?</string>
+    <string name="share_trip_text">ನಾನು ಮನ ಬಂಡಿಯಲ್ಲಿ ಹೋಗುತ್ತಿದ್ದೇನೆ 🛺\nಕ್ಯಾಪ್ಟನ್: %1$s\nವಾಹನ: %2$s\nಎಲ್ಲಿಗೆ: %3$s\nಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್: %4$s</string>
 </resources>

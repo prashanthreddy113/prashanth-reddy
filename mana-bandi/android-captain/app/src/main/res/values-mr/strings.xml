@@ -142,4 +142,17 @@
     <string name="how2">स्वीकारा, रायडर सांगेल तो OTP टाका</string>
     <string name="how3">रायडरला उतरवा, रोख घ्या</string>
     <string name="whatsapp_msg">नमस्कार, मी मन बंडी कॅप्टन आहे. मला मदत हवी आहे.</string>
+
+    <!-- Terms & conditions -->
+    <string name="terms_title">नियम व अटी</string>
+    <string name="terms_speech">हे नियम ऐका. मान्य असेल तर मोठे हिरवे बटण दाबा.</string>
+    <string name="terms_accept">मला मान्य आहे</string>
+    <string name="terms_full">पूर्ण नियम वाचा</string>
+    <string name="terms_version_note">आवृत्ती %1$s</string>
+    <string name="terms_1">आधार, लायसन्स, RC आणि विमा वैध हवा. दुसऱ्याची गाडी असेल तर मालकाचे पत्र हवे.</string>
+    <string name="terms_2">डिजिलॉकरद्वारे कागदपत्र तपासणी व सेल्फी जुळवणीस तुमची संमती आहे.</string>
+    <string name="terms_3">ॲपमध्ये दाखवलेले भाडेच घ्या. कमिशन 3 महिने 0%, नंतर 10%.</string>
+    <string name="terms_4">हेल्मेट व जॅकेट बंधनकारक. दारू पिऊन गाडी चालवू नका.</string>
+    <string name="terms_5">OTP शिवाय राइड सुरू करू नका. ॲपबाहेर राइड नाही.</string>
+    <string name="terms_6">ऑनलाइन असताना लोकेशन ट्रॅक होते. गैरवर्तन केल्यास खाते बंद.</string>
 </resources>

@@ -25,6 +25,9 @@ class LocalePrefs(private val context: Context) {
     companion object {
         /** Telugu is the default language of the app. */
         const val DEFAULT_LANGUAGE = "te"
+
+        /** Bump when the terms change; the app then asks every user to accept again. */
+        const val TERMS_VERSION = "1.0"
         val SUPPORTED = listOf("te", "en", "hi", "kn", "mr", "ur")
 
         private val KEY_LANGUAGE = stringPreferencesKey("language")
@@ -32,6 +35,7 @@ class LocalePrefs(private val context: Context) {
         private val KEY_PHONE = stringPreferencesKey("phone")
         private val KEY_NAME = stringPreferencesKey("name")
         private val KEY_LOGGED_IN = booleanPreferencesKey("logged_in")
+        private val KEY_TERMS_VERSION = stringPreferencesKey("terms_version_accepted")
 
         /** Applies a BCP-47 tag app-wide. Recreates activities on API < 33. */
         fun applyLocale(tag: String) {
@@ -64,6 +68,8 @@ class LocalePrefs(private val context: Context) {
     val phone: Flow<String> = context.dataStore.data.map { it[KEY_PHONE] ?: "" }
     val name: Flow<String> = context.dataStore.data.map { it[KEY_NAME] ?: "" }
     val loggedIn: Flow<Boolean> = context.dataStore.data.map { it[KEY_LOGGED_IN] ?: false }
+    /** True only when the CURRENT terms version has been accepted. */
+    val termsAccepted: Flow<Boolean> = context.dataStore.data.map { it[KEY_TERMS_VERSION] == TERMS_VERSION }
 
     suspend fun setLanguage(tag: String) {
         val safe = if (tag in SUPPORTED) tag else DEFAULT_LANGUAGE
@@ -78,6 +84,10 @@ class LocalePrefs(private val context: Context) {
             it[KEY_PHONE] = phone
             it[KEY_LOGGED_IN] = true
         }
+    }
+
+    suspend fun acceptTerms() {
+        context.dataStore.edit { it[KEY_TERMS_VERSION] = TERMS_VERSION }
     }
 
     suspend fun setName(name: String) {
