@@ -1,0 +1,488 @@
+<title>Mana Bandi Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@600;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --ground: #EFEAE0;
+    --panel: #FFFFFF;
+    --ink: #1F241F;
+    --muted: #5E665C;
+    --line: #DCD6C8;
+    --green: #128A46;
+    --green-deep: #0B6432;
+    --yellow: #FFC72C;
+    --orange: #E8641B;
+    --red: #D32F2F;
+    --cream: #FFFDF7;
+    --app-ink: #1B1B1B;
+    --app-muted: #5C5C5C;
+    --app-line: #E6E0D2;
+    --app-soft: #F3EFE4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #151A16; --panel: #1F2620; --ink: #ECEBE4; --muted: #A9B0A6; --line: #34403A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #151A16; --panel: #1F2620; --ink: #ECEBE4; --muted: #A9B0A6; --line: #34403A;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Noto Sans Telugu", "Noto Sans", system-ui, sans-serif;
+    padding-inline: 16px; padding-block: 20px 40px;
+  }
+  h1, h2, h3 { font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; margin: 0; text-wrap: balance; line-height: 1.1; }
+  .top { max-width: 1080px; margin: 0 auto 20px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .mono { width: 52px; height: 52px; border-radius: 14px; background: var(--green); color: var(--yellow); display: grid; place-items: center; font-family: "Baloo Tammudu 2", sans-serif; font-size: 34px; font-weight: 800; line-height: 1; padding-top: 6px; }
+  .brand h1 { font-size: 30px; }
+  .brand p { margin: 0; color: var(--muted); font-size: 14px; }
+  .switch { display: flex; gap: 6px; }
+  .switch button { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 14px; cursor: pointer; }
+  .switch button[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+  .wrap { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }
+
+  /* Phone */
+  .phone { width: 100%; max-width: 400px; margin: 0 auto; background: #111; border-radius: 44px; padding: 12px; box-shadow: 0 30px 60px rgba(0,0,0,.28); }
+  .screen { background: var(--cream); color: var(--app-ink); border-radius: 34px; height: 780px; overflow: hidden; display: flex; flex-direction: column; position: relative; font-family: "Noto Sans Telugu", "Noto Sans", sans-serif; }
+  .status { height: 30px; display: flex; justify-content: space-between; align-items: center; padding: 0 22px; font-size: 12px; font-weight: 600; color: var(--app-muted); }
+  .bar { display: flex; align-items: center; gap: 10px; padding: 8px 14px 10px; }
+  .bar h2 { flex: 1; font-size: 24px; color: var(--app-ink); }
+  .bar.tint { color: #fff; }
+  .bar.tint h2 { color: #fff; }
+  .icon-btn { width: 48px; height: 48px; border-radius: 14px; border: 0; background: rgba(0,0,0,.06); font-size: 22px; cursor: pointer; display: grid; place-items: center; }
+  .bar.tint .icon-btn { background: rgba(255,255,255,.22); color: #fff; }
+  .body { flex: 1; overflow-y: auto; padding: 8px 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .voice { font-size: 14px; color: var(--app-muted); padding: 0 4px; }
+  .big { min-height: 72px; width: 100%; border: 0; border-radius: 18px; font: inherit; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: #fff; background: var(--green); }
+  .big.yellow { background: var(--yellow); color: var(--app-ink); }
+  .big.orange { background: var(--orange); }
+  .big.ghost { background: var(--app-soft); color: var(--app-ink); font-weight: 600; font-size: 19px; }
+  .big.danger { background: #FBE4E4; color: var(--red); }
+  .big:focus-visible, .tile:focus-visible, .chip:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--green-deep); outline-offset: 2px; }
+  .service { min-height: 120px; border: 0; border-radius: 22px; display: grid; grid-template-columns: 96px 1fr; align-items: center; text-align: left; padding: 10px 16px 10px 8px; cursor: pointer; font: inherit; }
+  .service .em { font-size: 64px; text-align: center; line-height: 1; }
+  .service b { display: block; font-size: 30px; font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; line-height: 1.1; padding-top: 6px; }
+  .service span { font-size: 16px; opacity: .85; }
+  .service.bike { background: var(--yellow); color: var(--app-ink); }
+  .service.auto { background: var(--green); color: #fff; }
+  .service.parcel { background: var(--orange); color: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 2px solid var(--app-line); background: #fff; border-radius: 999px; padding: 10px 14px; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; min-height: 48px; }
+  .chip.on { border-color: var(--green); background: #E4F3EA; }
+  .field { background: #fff; border: 2px solid var(--app-line); border-radius: 18px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; min-height: 64px; }
+  .field .lbl { font-size: 13px; color: var(--app-muted); display: block; }
+  .field input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 20px; min-width: 0; color: var(--app-ink); }
+  .field input:focus { outline: none; }
+  .field.big-digits input { font-size: 32px; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
+  .mic { width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--green); color: #fff; font-size: 24px; cursor: pointer; flex: none; }
+  .fare { background: #fff; border-radius: 22px; padding: 14px 18px; display: grid; grid-template-columns: 1fr auto; align-items: center; border: 2px solid var(--app-line); }
+  .fare .amt { font-family: "Baloo Tammudu 2", sans-serif; font-size: 48px; font-weight: 800; line-height: 1; padding-top: 8px; font-variant-numeric: tabular-nums; }
+  .fare .meta { color: var(--app-muted); font-size: 16px; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tiles.three { grid-template-columns: 1fr 1fr 1fr; }
+  .tile { border: 3px solid var(--app-line); background: #fff; border-radius: 20px; min-height: 96px; font: inherit; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; color: var(--app-ink); }
+  .tile .em { font-size: 34px; line-height: 1; }
+  .tile small { font-weight: 400; font-size: 13px; color: var(--app-muted); }
+  .tile.on { border-color: var(--green); background: #E4F3EA; }
+  .tile.on.o { border-color: var(--orange); background: #FDEBDF; }
+  .lang { min-height: 108px; font-size: 26px; }
+  .nav { display: flex; border-top: 2px solid var(--app-line); background: #fff; }
+  .nav button { flex: 1; min-height: 68px; border: 0; background: transparent; font: inherit; font-size: 15px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; color: var(--app-muted); }
+  .nav button .em { font-size: 24px; }
+  .nav button.on { color: var(--green-deep); }
+  .card { background: #fff; border: 2px solid var(--app-line); border-radius: 22px; padding: 14px 16px; }
+  .plate { font-family: "Baloo Tammudu 2", sans-serif; font-size: 40px; font-weight: 800; letter-spacing: 2px; line-height: 1; padding-top: 8px; font-variant-numeric: tabular-nums; }
+  .otp { display: flex; gap: 10px; justify-content: center; }
+  .otp b { width: 60px; height: 76px; display: grid; place-items: center; background: #fff; border: 3px solid var(--app-line); border-radius: 16px; font-size: 40px; font-family: "Baloo Tammudu 2", sans-serif; font-variant-numeric: tabular-nums; padding-top: 6px; }
+  .otp.green b { border-color: var(--green); background: #E4F3EA; }
+  .otp.orange b { border-color: var(--orange); background: #FDEBDF; }
+  .map { height: 170px; border-radius: 22px; background:
+      linear-gradient(90deg, transparent 48%, #d8e3d3 48%, #d8e3d3 52%, transparent 52%),
+      linear-gradient(0deg, transparent 58%, #d8e3d3 58%, #d8e3d3 62%, transparent 62%),
+      #E7EEDF; position: relative; overflow: hidden; }
+  .map .pin { position: absolute; font-size: 30px; }
+  .map .cap { position: absolute; left: 20%; top: 40%; font-size: 30px; animation: drive 6s linear infinite; }
+  @keyframes drive { from { left: 18%; } to { left: 62%; } }
+  .pulse { width: 200px; height: 200px; margin: 30px auto 10px; border-radius: 50%; background: #E4F3EA; display: grid; place-items: center; font-size: 84px; position: relative; }
+  .pulse::before, .pulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 4px solid var(--green); opacity: 0; animation: ring 2s ease-out infinite; }
+  .pulse::after { animation-delay: 1s; }
+  .pulse.orange { background: #FDEBDF; } .pulse.orange::before, .pulse.orange::after { border-color: var(--orange); }
+  @keyframes ring { from { transform: scale(.7); opacity: .9; } to { transform: scale(1.35); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pulse::before, .pulse::after, .map .cap { animation: none; } .pulse::before { opacity: .6; } }
+  .steps { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 0; }
+  .steps span { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--app-soft); font-size: 20px; }
+  .steps span.on { background: var(--orange); }
+  .steps i { width: 24px; height: 4px; background: var(--app-line); border-radius: 2px; }
+  .row { display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid var(--app-line); border-radius: 18px; padding: 12px 14px; min-height: 68px; }
+  .row .em { font-size: 30px; }
+  .row b { font-size: 18px; display: block; } .row small { color: var(--app-muted); font-size: 14px; }
+  .row .amt { margin-left: auto; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .faces { display: flex; gap: 10px; justify-content: center; }
+  .faces button { width: 90px; height: 90px; border-radius: 24px; border: 3px solid var(--app-line); background: #fff; font-size: 44px; cursor: pointer; }
+  .faces button.on { border-color: var(--green); background: #E4F3EA; }
+  .greet { font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; font-size: 30px; font-weight: 800; padding: 6px 4px 0; line-height: 1.1; }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 90px; background: #1B1B1B; color: #fff; border-radius: 16px; padding: 12px 16px; font-size: 16px; opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .photo { height: 120px; border-radius: 18px; background: var(--app-soft); display: grid; place-items: center; color: var(--app-muted); font-size: 15px; border: 2px dashed var(--app-line); }
+  .photo.taken { background: #FDEBDF; color: var(--orange); font-size: 48px; border-style: solid; border-color: var(--orange); }
+  .splash { flex: 1; background: var(--green); color: #fff; display: grid; place-items: center; text-align: center; padding: 20px; cursor: pointer; }
+  .splash .mono { width: 120px; height: 120px; border-radius: 32px; font-size: 80px; padding-top: 12px; margin: 0 auto 16px; }
+  .splash h2 { color: #fff; font-size: 40px; }
+  .splash p { font-size: 18px; opacity: .9; margin: 6px 0 0; }
+  .splash small { display: block; margin-top: 40px; opacity: .7; }
+
+  /* Notes panel */
+  .notes { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); }
+  .notes .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .notes h2 { font-size: 26px; }
+  .notes p { margin: 0; line-height: 1.55; font-size: 15px; max-width: 62ch; }
+  .notes ul { margin: 0; padding-left: 20px; line-height: 1.55; font-size: 15px; max-width: 62ch; }
+  .says { border-left: 4px solid var(--yellow); padding: 8px 14px; background: color-mix(in srgb, var(--yellow) 14%, var(--panel)); border-radius: 0 12px 12px 0; font-size: 15px; }
+  .says b { display: block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; }
+  .jump button { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .jump button.on { background: var(--green); border-color: var(--green); color: #fff; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+</style>
+
+<header class="top">
+  <div class="brand">
+    <div class="mono">మ</div>
+    <div>
+      <h1>మన బండి · Mana Bandi</h1>
+      <p>Clickable prototype of the rider app · Narayanakhed / Zaheerabad launch</p>
+    </div>
+  </div>
+  <div class="switch" role="group" aria-label="Prototype language">
+    <button type="button" id="lang-te" aria-pressed="true">తెలుగు</button>
+    <button type="button" id="lang-en" aria-pressed="false">English</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="phone"><div class="screen" id="screen"></div></div>
+
+  <aside class="notes">
+    <div>
+      <div class="eyebrow" id="n-eyebrow">Screen</div>
+      <h2 id="n-title">Splash</h2>
+    </div>
+    <div class="says"><b>🔊 The app says</b><span id="n-voice"></span></div>
+    <p id="n-why"></p>
+    <ul id="n-rules"></ul>
+    <div>
+      <div class="eyebrow" style="margin-bottom:8px">Jump to a screen</div>
+      <div class="jump" id="jump"></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#FFC72C"></i>Bike</span>
+      <span><i style="background:#128A46"></i>Auto</span>
+      <span><i style="background:#E8641B"></i>Parcel</span>
+      <span><i style="background:#D32F2F"></i>Cancel / SOS only</span>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function () {
+  const $ = (s, r) => (r || document).querySelector(s);
+  const screen = $('#screen');
+  const state = { lang: 'te', screen: 'splash', service: 'bike', drop: '', pay: 'cash', parcelStep: 1, size: 'm', payer: 'me', photo: false, face: null, name: 'లక్ష్మి' };
+
+  const T = {
+    te: {
+      tag: 'పిలిస్తే చాలు, బండి వస్తుంది', tap: 'నొక్కండి →',
+      chooseLang: 'మీ భాష ఎంచుకోండి', phoneTitle: 'ఫోన్ నంబర్', phoneVoice: 'మీ ఫోన్ నంబర్ నొక్కండి', sendOtp: 'OTP పంపు',
+      otpTitle: 'OTP', otpVoice: 'మెసేజ్‌లో వచ్చిన 4 అంకెలు నొక్కండి', callOtp: '📞 కాల్ చేసి OTP చెప్పండి', next: 'సరే',
+      hello: 'నమస్తే', homeVoice: 'బైక్, ఆటో లేదా పార్సెల్ — ఒకటి నొక్కండి',
+      bike: 'బైక్', bikeSub: 'ఒక్కరికి · ₹20 నుంచి', auto: 'ఆటో', autoSub: 'కుటుంబం · సామాను · ₹30 నుంచి', parcel: 'పార్సెల్', parcelSub: 'వస్తువులు పంపండి · ₹30 నుంచి',
+      where: 'ఎక్కడికి?', family: '👨‍👩‍👧 కుటుంబం కోసం బుక్ చెయ్యి',
+      navHome: 'హోమ్', navRides: 'నా రైడ్లు', navHelp: 'సహాయం',
+      places: ['🏠 ఇల్లు', '🚌 బస్టాండ్', '🏥 ఆసుపత్రి', '🛒 సంత', '🏫 కాలేజీ', '🛕 గుడి'],
+      bookTitle: 'బండి బుక్ చెయ్యి', bookVoice: 'ఎక్కడికి పోవాలో చెప్పండి లేదా మైక్ నొక్కి మాట్లాడండి',
+      from: 'ఎక్కడ నుంచి', here: 'ప్రస్తుత స్థలం · బస్టాండ్ దగ్గర', to: 'ఎక్కడికి', toPh: 'చెప్పండి లేదా టైప్ చెయ్యండి', tellCaptain: '📞 కెప్టెన్‌కి ఫోన్‌లో చెప్తా',
+      cash: '💵 క్యాష్', upi: '📱 UPI', book: 'బండి పిలువు', km: 'కి.మీ', min: 'నిమిషాలు', night: 'రాత్రి ఛార్జి +20%',
+      finding: 'కెప్టెన్ వెతుకుతున్నాం', findingVoice: 'దగ్గర్లో బండి వెతుకుతున్నాం, కొంచెం ఆగండి', nearby: 'దగ్గర్లో 4 బండ్లు ఉన్నాయి', cancel: '❌ రద్దు',
+      rideTitle: 'కెప్టెన్ వస్తున్నారు · 3 నిమిషాలు', rideVoice: 'శ్రీనివాస్ వస్తున్నారు. బండి నంబర్ TS 32 A 1234. ఈ నాలుగు అంకెలు కెప్టెన్‌కి చెప్పండి',
+      tellOtp: 'కెప్టెన్‌కి ఈ నంబర్ చెప్పండి', call: '📞 కాల్ చెయ్యండి', sos: '🆘', arrived: 'వచ్చారు ✔',
+      doneTitle: 'పూర్తయింది', doneVoice: 'ప్రయాణం పూర్తయింది. క్యాష్ నలభై ఐదు రూపాయలు ఇవ్వండి', giveCash: 'క్యాష్ ఇవ్వండి', showQr: 'UPI QR చూపించండి', how: 'ప్రయాణం ఎలా ఉంది?', tip: 'టిప్', ok: 'సరే',
+      pTitle: 'పార్సెల్', p1Voice: 'ఎవరికి పంపాలి? వాళ్ళ ఫోన్ నంబర్, ఊరు చెప్పండి', p2Voice: 'ఏమి పంపుతున్నారు? చిన్నది, మధ్యస్థం, పెద్దది — ఒకటి నొక్కండి', p3Voice: 'డబ్బులు ఎవరు ఇస్తారు? మీరా, అందుకునేవారా?',
+      p1: 'ఎక్కడికి పంపాలి?', rphone: 'అందుకునేవారి ఫోన్', p2: 'ఏమి పంపుతున్నారు?', small: 'చిన్నది', smallS: 'బ్యాగ్ · 5 కిలోల లోపు', medium: 'మధ్యస్థం', mediumS: 'బాక్స్ · 15 కిలోల లోపు', bigp: 'పెద్దది', bigS: 'బస్తా · ఆటో', takePhoto: '📷 ఫోటో తియ్యండి', photoTaken: 'ఫోటో తీశారు ✔',
+      p3: 'డబ్బులు ఎవరు ఇస్తారు?', me: '🙋 నేను', receiver: '🙍 అందుకునేవారు', sendParcel: 'పార్సెల్ పంపు',
+      pFinding: 'పార్సెల్‌కి బండి వెతుకుతున్నాం', pRideTitle: 'పార్సెల్ తీసుకెళ్తున్నారు', pRideVoice: 'కెప్టెన్ వస్తున్నారు. ఈ పికప్ నంబర్ కెప్టెన్‌కి చెప్పండి. డెలివరీ నంబర్ అందుకునేవారికి మెసేజ్ వెళ్ళింది', pickupOtp: 'పికప్ OTP', deliveryOtp: 'డెలివరీ OTP · అందుకునేవారికి పంపాం', share: '💬 WhatsApp‌లో ట్రాకింగ్ పంపు',
+      ridesTitle: 'నా రైడ్లు', ridesVoice: 'మీ పాత రైడ్లు', today: 'ఈరోజు', yday: 'నిన్న',
+      helpTitle: 'సహాయం', helpVoice: 'సహాయం కావాలంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి, మేము మాట్లాడతాం', callSupport: '📞 సహాయానికి కాల్ (08455 …)', wa: '💬 WhatsApp‌లో మాట్లాడు', changeLang: '🌐 భాష మార్చు', howTo: '▶️ ఎలా బుక్ చెయ్యాలి? (వీడియో)',
+      missed: 'యాప్ లేకపోతే: మిస్డ్ కాల్ ఇవ్వండి, మేమే బుక్ చేస్తాం',
+      listening: '🎤 వింటున్నాం…', heard: 'బస్టాండ్', noSpeech: 'ఈ బ్రౌజర్‌లో మైక్ లేదు — నమూనా పెట్టాం', spoken: '🔊 చదువుతున్నాం', fam: 'కుటుంబం కోసం బుక్ చెయ్యడం (S11) — యాప్‌లో', callDemo: '📞 ఫోన్ డయలర్ తెరుస్తుంది', sosDemo: '🆘 112కి కాల్ + లొకేషన్ SMS',
+    },
+    en: {
+      tag: 'Just call, the bandi comes', tap: 'Tap →',
+      chooseLang: 'Choose your language', phoneTitle: 'Phone number', phoneVoice: 'Type your phone number', sendOtp: 'Send OTP',
+      otpTitle: 'OTP', otpVoice: 'Type the 4 digits from the message', callOtp: '📞 Call me with the OTP', next: 'OK',
+      hello: 'Namaste', homeVoice: 'Bike, auto or parcel — tap one',
+      bike: 'Bike', bikeSub: 'One person · from ₹20', auto: 'Auto', autoSub: 'Family · luggage · from ₹30', parcel: 'Parcel', parcelSub: 'Send things · from ₹30',
+      where: 'Where to?', family: '👨‍👩‍👧 Book for family',
+      navHome: 'Home', navRides: 'My rides', navHelp: 'Help',
+      places: ['🏠 Home', '🚌 Bus stand', '🏥 Hospital', '🛒 Market', '🏫 College', '🛕 Temple'],
+      bookTitle: 'Book a bandi', bookVoice: 'Say where you want to go, or tap the mic and speak',
+      from: 'From', here: 'Current place · near bus stand', to: 'To', toPh: 'Speak or type', tellCaptain: "📞 I'll tell the captain on the phone",
+      cash: '💵 Cash', upi: '📱 UPI', book: 'Call the bandi', km: 'km', min: 'min', night: 'Night charge +20%',
+      finding: 'Finding a captain', findingVoice: 'Looking for a bandi nearby, please wait', nearby: '4 bandis nearby', cancel: '❌ Cancel',
+      rideTitle: 'Captain coming · 3 min', rideVoice: 'Srinivas is coming. Vehicle TS 32 A 1234. Tell the captain these four digits',
+      tellOtp: 'Tell the captain this number', call: '📞 Call', sos: '🆘', arrived: 'Arrived ✔',
+      doneTitle: 'Done', doneVoice: 'Trip finished. Please pay forty-five rupees cash', giveCash: 'Give cash', showQr: 'Show UPI QR', how: 'How was the ride?', tip: 'Tip', ok: 'OK',
+      pTitle: 'Parcel', p1Voice: 'Who is it for? Say their phone number and village', p2Voice: 'What are you sending? Small, medium or big — tap one', p3Voice: 'Who pays? You, or the receiver?',
+      p1: 'Where to send?', rphone: "Receiver's phone", p2: 'What are you sending?', small: 'Small', smallS: 'bag · under 5 kg', medium: 'Medium', mediumS: 'box · under 15 kg', bigp: 'Big', bigS: 'sack · auto', takePhoto: '📷 Take a photo', photoTaken: 'Photo taken ✔',
+      p3: 'Who pays?', me: '🙋 Me', receiver: '🙍 Receiver', sendParcel: 'Send parcel',
+      pFinding: 'Finding a bandi for the parcel', pRideTitle: 'Parcel on the way', pRideVoice: 'Captain is coming. Tell the captain this pickup number. The delivery number was sent to the receiver', pickupOtp: 'Pickup OTP', deliveryOtp: 'Delivery OTP · sent to receiver', share: '💬 Share tracking on WhatsApp',
+      ridesTitle: 'My rides', ridesVoice: 'Your past rides', today: 'Today', yday: 'Yesterday',
+      helpTitle: 'Help', helpVoice: 'Need help? Tap the big green button and we will talk', callSupport: '📞 Call support (08455 …)', wa: '💬 Chat on WhatsApp', changeLang: '🌐 Change language', howTo: '▶️ How to book? (video)',
+      missed: 'No app? Give a missed call, we book for you',
+      listening: '🎤 Listening…', heard: 'Bus stand', noSpeech: 'No mic in this browser — filled a sample', spoken: '🔊 Reading aloud', fam: 'Book-for-family (S11) is in the app', callDemo: '📞 Opens the phone dialer', sosDemo: '🆘 Calls 112 + sends location SMS',
+    }
+  };
+  const t = k => T[state.lang][k];
+
+  const NOTES = {
+    splash: { en: 'S0 · Splash', why: 'Green ground, the మ monogram and the tagline. 1.5 seconds, then the language screen on first run.', rules: ['Same green as the auto-rickshaw body colour seen on every road in Telangana', 'No text a person must read to continue: tapping anywhere moves on'] },
+    lang: { en: 'S1 · Language', why: 'Six tiles, each written in its own script so a person finds their language by shape, not by reading a label. Tapping speaks a greeting in that language.', rules: ['Telugu is the default and comes first', 'Kannada, Marathi and Urdu matter in Zaheerabad and the Bidar border villages', 'Prototype switches between Telugu and English; the Android app carries all six'] },
+    phone: { en: 'S2 · Phone', why: 'One field, 32 sp digits. Digits are the one kind of text non-readers are confident with.', rules: ['+91 fixed so nobody types it twice', 'Name is optional and asked later'] },
+    otp: { en: 'S2 · OTP', why: 'Four boxes, auto-read from SMS. The secondary button asks for a voice call that reads the code aloud, for people who cannot read SMS.', rules: ['Any code works in this prototype'] },
+    home: { en: 'S3 · Home', why: 'Three giant service cards in the three brand colours. Saved places sit under them so "Bus stand" is one tap even before choosing a vehicle.', rules: ['Bottom bar: Home, My rides, Help with a phone icon', 'Saved places are seeded per town by the ops team so they work on day one', 'Book-for-family lets a son in Hyderabad book for his father'] },
+    book: { en: 'S4 · Book', why: 'Pickup is filled from GPS and named after the nearest landmark. Drop can be spoken with the mic, picked from a chip, typed, or left to a phone call with the captain. The fare is one big number before booking.', rules: ['Bike: ₹20 + ₹8/km · Auto: ₹30 + ₹12/km · no surge', 'Cash is selected by default; UPI is offered, never forced', 'The mic uses the browser Speech API here and Android SpeechRecognizer in the app'] },
+    finding: { en: 'S5 · Finding', why: 'A pulsing ring with the vehicle icon and a spoken line. Nearest online captain gets a 15-second offer; three rounds, then the support person is offered.', rules: ['Auto-advances after 3 seconds in this prototype'] },
+    ride: { en: 'S6 · Ride', why: 'Captain name, vehicle number in 40 sp and the ride OTP in 56 sp. The rider tells the OTP to the captain, which prevents wrong pickups. Call is the biggest button on the screen.', rules: ['Red is used only for Cancel and SOS', 'SOS dials 112 and texts the live location to a trusted contact', 'The app speaks "captain arrived" and vibrates'] },
+    done: { en: 'S7 · Done', why: 'Fare in 56 sp and one instruction: give cash or show the QR. Rating is three faces, one tap, optional.', rules: ['Receipt goes to WhatsApp', 'Tip in ₹10 steps'] },
+    parcel: { en: 'S8 · Parcel', why: 'Three steps with an icon progress row: Where, What, Who pays. Sizes are pictures of a bag, a box and a sack. A photo of the parcel is shown to the captain and the receiver.', rules: ['Receiver-pays is the common case for shops sending to villages', 'Pickup OTP for the sender, delivery OTP sent to the receiver by SMS/WhatsApp with a tracking link'] },
+    pride: { en: 'S8 · Parcel on the way', why: 'Same captain card as a ride, with two OTPs: pickup and delivery. The receiver gets a link to watch the bandi and the captain phone number.', rules: ['Photo proof at delivery', 'Cash on delivery is reconciled in the captain settlement'] },
+    rides: { en: 'S9 · My rides', why: 'Rows with the service icon, a relative date and the fare. Tapping opens the receipt with the captain name and vehicle number.', rules: [] },
+    help: { en: 'S10 · Help', why: 'Support is a real person in the town who speaks Telugu, 6 am to 11 pm. The missed-call line is the product for people without the app.', rules: ['WhatsApp support for shops', 'A 60-second Telugu video on how to book'] },
+  };
+
+  const JUMPS = [['splash','S0'],['lang','S1'],['phone','S2'],['home','S3'],['book','S4'],['finding','S5'],['ride','S6'],['done','S7'],['parcel','S8'],['rides','S9'],['help','S10']];
+
+  function speak(text) {
+    toast(t('spoken') + ': ' + text);
+    try {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = state.lang === 'te' ? 'te-IN' : 'en-IN';
+      const v = window.speechSynthesis.getVoices().find(x => x.lang && x.lang.toLowerCase().startsWith(state.lang === 'te' ? 'te' : 'en'));
+      if (v) u.voice = v;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+  let toastTimer;
+  function toast(msg) {
+    let el = $('.toast', screen);
+    if (!el) { el = document.createElement('div'); el.className = 'toast'; screen.appendChild(el); }
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+  function listen(cb) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { toast(t('noSpeech')); cb(t('heard')); return; }
+    try {
+      const r = new SR(); r.lang = state.lang === 'te' ? 'te-IN' : 'en-IN'; r.interimResults = false;
+      toast(t('listening'));
+      r.onresult = e => cb(e.results[0][0].transcript);
+      r.onerror = () => { toast(t('noSpeech')); cb(t('heard')); };
+      r.start();
+    } catch (e) { toast(t('noSpeech')); cb(t('heard')); }
+  }
+
+  const fare = () => {
+    const km = 6;
+    if (state.service === 'parcel') return { km, amt: { s: 30, m: 50, l: 80 }[state.size] + Math.max(0, km - 5) * 8 };
+    return { km, amt: state.service === 'bike' ? 20 + 8 * km : 30 + 12 * km };
+  };
+  const svcColor = () => ({ bike: 'var(--yellow)', auto: 'var(--green)', parcel: 'var(--orange)' })[state.service];
+  const svcInk = () => state.service === 'bike' ? 'var(--app-ink)' : '#fff';
+  const svcEm = () => ({ bike: '🏍️', auto: '🛺', parcel: '📦' })[state.service];
+
+  function bar(title, voice, back, tint) {
+    const style = tint ? `style="background:${svcColor()};color:${svcInk()}"` : '';
+    return `<div class="bar ${tint ? 'tint' : ''}" ${style}>
+      ${back ? `<button class="icon-btn" data-go="${back}" aria-label="Back" ${tint && state.service === 'bike' ? 'style="color:#1B1B1B;background:rgba(0,0,0,.08)"' : ''}>←</button>` : ''}
+      <h2 ${tint && state.service === 'bike' ? 'style="color:#1B1B1B"' : ''}>${title}</h2>
+      <button class="icon-btn" data-say="${voice.replace(/"/g, '&quot;')}" aria-label="Read aloud" ${tint && state.service === 'bike' ? 'style="color:#1B1B1B;background:rgba(0,0,0,.08)"' : ''}>🔊</button>
+    </div>`;
+  }
+  const status = () => `<div class="status"><span>9:41</span><span>📶 🔋</span></div>`;
+  function nav(on) {
+    return `<div class="nav">
+      <button class="${on === 'home' ? 'on' : ''}" data-go="home"><span class="em">🏠</span>${t('navHome')}</button>
+      <button class="${on === 'rides' ? 'on' : ''}" data-go="rides"><span class="em">🕒</span>${t('navRides')}</button>
+      <button class="${on === 'help' ? 'on' : ''}" data-go="help"><span class="em">📞</span>${t('navHelp')}</button>
+    </div>`;
+  }
+  const chips = (sel) => `<div class="chips">${t('places').map(p => `<button class="chip ${state.drop === p ? 'on' : ''}" data-chip="${p}" ${sel ? '' : ''}>${p}</button>`).join('')}</div>`;
+
+  const S = {
+    splash: () => `${status()}<div class="splash" data-go="lang"><div><div class="mono">మ</div><h2>మన బండి</h2><p>${t('tag')}</p><small>${t('tap')}</small></div></div>`,
+    lang: () => `${status()}${bar(t('chooseLang'), t('chooseLang'))}<div class="body">
+      <div class="tiles">
+        <button class="tile lang ${state.lang === 'te' ? 'on' : ''}" data-lang="te">తెలుగు</button>
+        <button class="tile lang ${state.lang === 'en' ? 'on' : ''}" data-lang="en">English</button>
+        <button class="tile lang" data-lang="hi">हिंदी</button>
+        <button class="tile lang" data-lang="kn">ಕನ್ನಡ</button>
+        <button class="tile lang" data-lang="mr">मराठी</button>
+        <button class="tile lang" data-lang="ur">اردو</button>
+      </div></div>`,
+    phone: () => `${status()}${bar(t('phoneTitle'), t('phoneVoice'), 'lang')}<div class="body">
+      <div class="voice">${t('phoneVoice')}</div>
+      <div class="field big-digits"><span style="font-size:24px;font-weight:700">+91</span><input id="phone" inputmode="numeric" maxlength="10" placeholder="98765 43210" aria-label="Phone"></div>
+      <button class="big" data-go="otp">${t('sendOtp')}</button></div>`,
+    otp: () => `${status()}${bar(t('otpTitle'), t('otpVoice'), 'phone')}<div class="body">
+      <div class="voice">${t('otpVoice')}</div>
+      <div class="otp"><b>4</b><b>7</b><b>2</b><b>·</b></div>
+      <button class="big" data-go="home">${t('next')}</button>
+      <button class="big ghost" data-toast="${t('callDemo')}">${t('callOtp')}</button></div>`,
+    home: () => `${status()}<div class="bar"><h2 class="greet">${t('hello')}, ${state.name} 🙏</h2><button class="icon-btn" data-say="${t('homeVoice')}" aria-label="Read aloud">🔊</button></div>
+      <div class="body">
+        <button class="service bike" data-svc="bike"><span class="em">🏍️</span><span><b>${t('bike')}</b><span>${t('bikeSub')}</span></span></button>
+        <button class="service auto" data-svc="auto"><span class="em">🛺</span><span><b>${t('auto')}</b><span>${t('autoSub')}</span></span></button>
+        <button class="service parcel" data-svc="parcel"><span class="em">📦</span><span><b>${t('parcel')}</b><span>${t('parcelSub')}</span></span></button>
+        <div class="voice" style="font-size:18px;font-weight:700;color:var(--app-ink)">${t('where')}</div>
+        ${chips()}
+        <button class="big ghost" data-toast="${t('fam')}">${t('family')}</button>
+      </div>${nav('home')}`,
+    book: () => { const f = fare(); return `${status()}${bar(t('bookTitle'), t('bookVoice'), 'home', true)}<div class="body">
+      <div class="field"><span style="font-size:26px">📍</span><div style="flex:1"><span class="lbl">${t('from')}</span><span style="font-size:18px;font-weight:600">${t('here')}</span></div></div>
+      <div class="field"><span style="font-size:26px">🎯</span><div style="flex:1"><span class="lbl">${t('to')}</span><input id="drop" value="${state.drop.replace(/"/g,'&quot;')}" placeholder="${t('toPh')}" aria-label="Drop"></div><button class="mic" data-mic="drop" aria-label="Speak">🎤</button></div>
+      ${chips(true)}
+      <button class="chip" data-chip="📞">${t('tellCaptain')}</button>
+      <div class="fare"><div><div class="amt">₹${f.amt}</div><div class="meta">${f.km} ${t('km')} · 12 ${t('min')}</div></div><div style="font-size:52px">${svcEm()}</div></div>
+      <div class="tiles">
+        <button class="tile ${state.pay === 'cash' ? 'on' : ''}" data-pay="cash">${t('cash')}</button>
+        <button class="tile ${state.pay === 'upi' ? 'on' : ''}" data-pay="upi">${t('upi')}</button>
+      </div>
+      <button class="big ${state.service === 'bike' ? 'yellow' : ''}" data-go="finding">${t('book')}</button>
+    </div>`; },
+    finding: () => `${status()}${bar(state.service === 'parcel' ? t('pFinding') : t('finding'), t('findingVoice'), 'book')}<div class="body" style="align-items:center;text-align:center">
+      <div class="pulse ${state.service === 'parcel' ? 'orange' : ''}">${svcEm()}</div>
+      <div style="font-size:22px;font-weight:700">${t('findingVoice')}</div>
+      <div class="voice">${t('nearby')}</div>
+      <div style="flex:1"></div>
+      <button class="big ghost" data-go="${state.service === 'parcel' ? 'parcel' : 'book'}" style="max-width:220px">${t('cancel')}</button></div>`,
+    ride: () => { const p = state.service === 'parcel'; return `${status()}${bar(p ? t('pRideTitle') : t('rideTitle'), p ? t('pRideVoice') : t('rideVoice'), 'home', true)}<div class="body">
+      <div class="map"><span class="pin" style="left:62%;top:36%">📍</span><span class="pin" style="left:80%;top:62%">🎯</span><span class="cap">${svcEm()}</span></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span style="font-size:44px">👤</span><div><b style="font-size:22px">శ్రీనివాస్ · Srinivas</b><div style="color:var(--app-muted)">⭐ 4.8 · 1,240</div></div></div>
+        <div class="plate">TS 32 A 1234</div>
+      </div>
+      <div class="voice" style="text-align:center;font-weight:600;color:var(--app-ink)">${p ? t('pickupOtp') : t('tellOtp')}</div>
+      <div class="otp ${p ? 'orange' : 'green'}"><b>4</b><b>7</b><b>2</b><b>9</b></div>
+      ${p ? `<div class="voice" style="text-align:center">${t('deliveryOtp')}: <b>8 1 5 3</b></div>` : ''}
+      <button class="big" data-toast="${t('callDemo')}">${t('call')}</button>
+      ${p ? `<button class="big ghost" data-toast="wa.me link">${t('share')}</button>` : ''}
+      <div style="display:grid;grid-template-columns:1fr 84px;gap:10px">
+        <button class="big ghost" data-go="done">${t('arrived')}</button>
+        <button class="big danger" data-toast="${t('sosDemo')}" aria-label="SOS">${t('sos')}</button>
+      </div></div>`; },
+    done: () => { const f = fare(); return `${status()}${bar(t('doneTitle'), t('doneVoice'), 'home')}<div class="body" style="text-align:center">
+      <div style="font-family:'Baloo Tammudu 2',sans-serif;font-size:72px;font-weight:800;line-height:1;padding-top:14px;font-variant-numeric:tabular-nums">₹${f.amt}</div>
+      <div style="font-size:22px;font-weight:700">${state.pay === 'cash' ? t('giveCash') : t('showQr')} ${state.pay === 'cash' ? '💵' : '📱'}</div>
+      <div class="voice" style="margin-top:8px">${t('how')}</div>
+      <div class="faces">${['😊','😐','😞'].map(f => `<button class="${state.face === f ? 'on' : ''}" data-face="${f}">${f}</button>`).join('')}</div>
+      <div class="chips" style="justify-content:center"><button class="chip">${t('tip')} +₹10</button><button class="chip">+₹20</button></div>
+      <div style="flex:1"></div>
+      <button class="big" data-go="home">${t('ok')}</button></div>`; },
+    parcel: () => {
+      const st = state.parcelStep;
+      const steps = `<div class="steps"><span class="${st >= 1 ? 'on' : ''}">📍</span><i></i><span class="${st >= 2 ? 'on' : ''}">📦</span><i></i><span class="${st >= 3 ? 'on' : ''}">💵</span></div>`;
+      let body = '';
+      if (st === 1) body = `<div class="voice" style="font-size:20px;font-weight:700;color:var(--app-ink)">${t('p1')}</div>
+        <div class="field big-digits"><span style="font-size:26px">📱</span><div style="flex:1"><span class="lbl">${t('rphone')}</span><input id="rphone" inputmode="numeric" maxlength="10" placeholder="98765 43210" aria-label="Receiver phone"></div></div>
+        <div class="field"><span style="font-size:26px">🎯</span><div style="flex:1"><span class="lbl">${t('to')}</span><input id="drop" value="${state.drop.replace(/"/g,'&quot;')}" placeholder="${t('toPh')}" aria-label="Drop"></div><button class="mic" data-mic="drop" style="background:var(--orange)" aria-label="Speak">🎤</button></div>
+        ${chips(true)}<div style="flex:1"></div>
+        <button class="big orange" data-pstep="2">${t('next')} →</button>`;
+      if (st === 2) body = `<div class="voice" style="font-size:20px;font-weight:700;color:var(--app-ink)">${t('p2')}</div>
+        <div class="tiles three">
+          <button class="tile o ${state.size === 's' ? 'on' : ''}" data-size="s"><span class="em">🍱</span>${t('small')}<small>${t('smallS')}</small></button>
+          <button class="tile o ${state.size === 'm' ? 'on' : ''}" data-size="m"><span class="em">📦</span>${t('medium')}<small>${t('mediumS')}</small></button>
+          <button class="tile o ${state.size === 'l' ? 'on' : ''}" data-size="l"><span class="em">🧳</span>${t('bigp')}<small>${t('bigS')}</small></button>
+        </div>
+        <div class="photo ${state.photo ? 'taken' : ''}">${state.photo ? '🖼️' : t('takePhoto')}</div>
+        <button class="big ghost" data-photo="1">${state.photo ? t('photoTaken') : t('takePhoto')}</button>
+        <div style="flex:1"></div>
+        <button class="big orange" data-pstep="3">${t('next')} →</button>`;
+      if (st === 3) { const f = fare(); body = `<div class="voice" style="font-size:20px;font-weight:700;color:var(--app-ink)">${t('p3')}</div>
+        <div class="tiles">
+          <button class="tile o ${state.payer === 'me' ? 'on' : ''}" data-payer="me">${t('me')}</button>
+          <button class="tile o ${state.payer === 'rx' ? 'on' : ''}" data-payer="rx">${t('receiver')}</button>
+        </div>
+        <div class="fare"><div><div class="amt">₹${f.amt}</div><div class="meta">${f.km} ${t('km')} · ${({s:t('small'),m:t('medium'),l:t('bigp')})[state.size]}</div></div><div style="font-size:52px">📦</div></div>
+        <div style="flex:1"></div>
+        <button class="big orange" data-go="finding">${t('sendParcel')}</button>`; }
+      return `${status()}${bar(t('pTitle'), t(['p1Voice','p2Voice','p3Voice'][st - 1]), st === 1 ? 'home' : 'pback', true)}<div class="body">${steps}${body}</div>`;
+    },
+    rides: () => `${status()}${bar(t('ridesTitle'), t('ridesVoice'))}<div class="body">
+      <div class="row"><span class="em">🏍️</span><div><b>🚌 ${t('places')[1].slice(2)}</b><small>${t('today')} · 9:10</small></div><span class="amt">₹45</span></div>
+      <div class="row"><span class="em">📦</span><div><b>గంగాపూర్ · Gangapur</b><small>${t('yday')} · 16:30</small></div><span class="amt">₹50</span></div>
+      <div class="row"><span class="em">🛺</span><div><b>🏥 ${t('places')[2].slice(2)}</b><small>12 ${state.lang === 'te' ? 'ఆగస్టు' : 'Aug'} · 11:05</small></div><span class="amt">₹78</span></div>
+      </div>${nav('rides')}`,
+    help: () => `${status()}${bar(t('helpTitle'), t('helpVoice'))}<div class="body">
+      <button class="big" data-toast="${t('callDemo')}">${t('callSupport')}</button>
+      <button class="big ghost" data-toast="wa.me link">${t('wa')}</button>
+      <button class="big ghost" data-go="lang">${t('changeLang')}</button>
+      <button class="big ghost" data-toast="YouTube">${t('howTo')}</button>
+      <div class="card" style="display:flex;gap:12px;align-items:center"><span style="font-size:34px">📵</span><div style="font-size:16px">${t('missed')}</div></div>
+      </div>${nav('help')}`,
+  };
+
+  function render() {
+    const key = state.screen === 'pride' ? 'ride' : state.screen;
+    screen.innerHTML = S[key]();
+    const n = NOTES[state.screen === 'ride' && state.service === 'parcel' ? 'pride' : state.screen] || NOTES.home;
+    $('#n-eyebrow').textContent = n.en;
+    const titles = { splash: 'మన బండి', lang: t('chooseLang'), phone: t('phoneTitle'), otp: t('otpTitle'), home: t('navHome'), book: t('bookTitle'), finding: t('finding'), ride: state.service === 'parcel' ? t('pRideTitle') : t('rideTitle'), done: t('doneTitle'), parcel: t('pTitle'), rides: t('ridesTitle'), help: t('helpTitle') };
+    $('#n-title').textContent = titles[state.screen];
+    const voices = { splash: t('tag'), lang: t('chooseLang'), phone: t('phoneVoice'), otp: t('otpVoice'), home: t('homeVoice'), book: t('bookVoice'), finding: t('findingVoice'), ride: state.service === 'parcel' ? t('pRideVoice') : t('rideVoice'), done: t('doneVoice'), parcel: t(['p1Voice','p2Voice','p3Voice'][state.parcelStep - 1]), rides: t('ridesVoice'), help: t('helpVoice') };
+    $('#n-voice').textContent = voices[state.screen];
+    $('#n-why').textContent = n.why;
+    $('#n-rules').innerHTML = n.rules.map(r => `<li>${r}</li>`).join('');
+    $('#jump').innerHTML = JUMPS.map(([k, l]) => `<button class="${state.screen === k ? 'on' : ''}" data-jump="${k}">${l}</button>`).join('');
+    $('#lang-te').setAttribute('aria-pressed', state.lang === 'te');
+    $('#lang-en').setAttribute('aria-pressed', state.lang === 'en');
+  }
+  function go(s) {
+    if (s === 'pback') { state.parcelStep = Math.max(1, state.parcelStep - 1); state.screen = 'parcel'; render(); return; }
+    if (s === 'parcel' && state.screen !== 'parcel') state.parcelStep = 1;
+    if (s === 'home') { state.drop = ''; }
+    state.screen = s; render();
+    if (s === 'finding') setTimeout(() => { if (state.screen === 'finding') { go('ride'); speak(state.service === 'parcel' ? t('pRideVoice') : t('rideVoice')); } }, 3000);
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-go],[data-say],[data-svc],[data-chip],[data-pay],[data-mic],[data-pstep],[data-size],[data-payer],[data-photo],[data-face],[data-toast],[data-lang],[data-jump]');
+    if (!b) return;
+    const d = b.dataset;
+    if (d.toast) toast(d.toast);
+    if (d.say) { speak(d.say); return; }
+    if (d.lang) { if (d.lang === 'te' || d.lang === 'en') { state.lang = d.lang; } else { state.lang = 'en'; toast('Prototype: ' + b.textContent + ' → English strings; the Android app has this language'); } speak(state.lang === 'te' ? 'నమస్తే! మన బండికి స్వాగతం' : 'Namaste! Welcome to Mana Bandi'); go('phone'); return; }
+    if (d.jump) { go(d.jump); return; }
+    if (d.svc) { state.service = d.svc; state.drop = ''; go(d.svc === 'parcel' ? 'parcel' : 'book'); return; }
+    if (d.chip) { if (d.chip === '📞') { state.drop = t('tellCaptain'); } else { state.drop = d.chip; } if (state.screen === 'home') { state.service = 'bike'; go('book'); } else render(); return; }
+    if (d.pay) { state.pay = d.pay; render(); return; }
+    if (d.mic) { listen(txt => { state.drop = txt; render(); }); return; }
+    if (d.pstep) { state.parcelStep = +d.pstep; render(); speak(t(['p1Voice','p2Voice','p3Voice'][state.parcelStep - 1])); return; }
+    if (d.size) { state.size = d.size; render(); return; }
+    if (d.payer) { state.payer = d.payer; render(); return; }
+    if (d.photo) { state.photo = true; render(); return; }
+    if (d.face) { state.face = d.face; render(); return; }
+    if (d.go) go(d.go);
+  });
+  document.addEventListener('input', e => { if (e.target.id === 'drop') state.drop = e.target.value; });
+  $('#lang-te').addEventListener('click', () => { state.lang = 'te'; state.name = 'లక్ష్మి'; render(); });
+  $('#lang-en').addEventListener('click', () => { state.lang = 'en'; state.name = 'Lakshmi'; render(); });
+  if ('speechSynthesis' in window) { try { window.speechSynthesis.onvoiceschanged = () => {}; window.speechSynthesis.getVoices(); } catch (e) {} }
+  render();
+})();
+</script>

@@ -8,6 +8,9 @@ A complete admin console for the BrightLoop reading room. Admins register studen
 | Backend | ASP.NET Core 8 Web API, EF Core, JWT auth (Docker; Render / Railway / Azure / any host) |
 | Database | PostgreSQL 16 |
 
+> **Also in this repository:** [`mana-bandi/`](mana-bandi/README.md) — **మన బండి · Mana Bandi**, a Telugu‑first bike / auto / parcel app designed for Narayanakhed and Zaheerabad (product spec, screen‑by‑screen UX, launch plan, architecture, clickable prototype and an Android Compose starter).
+
+
 ## Features
 
 - **Admin login** (JWT). A default admin is seeded on first run; change the password from Settings.
