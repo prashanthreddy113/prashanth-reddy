@@ -23,6 +23,9 @@ mana-bandi/
   prototype/index.html      clickable phone prototype of BOTH apps (rider + captain), Telugu / English, with design notes
   android/                  Kotlin + Jetpack Compose starter for the rider app (te, en, hi, kn, mr, ur)
   android-captain/          Kotlin + Jetpack Compose starter for the captain (driver) app, same six languages
+  owner-web/                product‑owner web portal (React + Vite): login & roles, dashboard, live map, service areas with radius,
+                            captain verification (Aadhaar / DL / RC / selfie checks), rides, parcels, analytics, settlements,
+                            commission rules, settings (terms, templates, users, audit). Mock data; `npm install && npm run dev`
 ```
 
 ## The five rules the whole product follows
@@ -40,6 +43,10 @@ Open `prototype/index.html` in a browser (Chrome on Android gives Telugu speech 
 ## Run the Android starters
 
 See `android/README.md` (rider) and `android-captain/README.md` (captain). Both open in Android Studio, default to Telugu, and contain every screen with fake data so the flows can be tested on a phone before the backend exists. The captain app has a dark‑green header and icon so drivers can tell the two apart.
+
+## Owner portal
+
+`cd mana-bandi/owner-web && npm install && npm run dev`, sign in as `owner@manabandi.in` (any password; `nkd@manabandi.in` is a town manager). No mobile app needed for the owner: everything is on the web with login. Commission, service radius per town, fares, landmarks, terms and users are all configured there.
 
 ## Where the backend goes
 
