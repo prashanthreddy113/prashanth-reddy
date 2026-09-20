@@ -38,13 +38,15 @@ mana-bandi/
 
 ## Try the prototype
 
-Open `prototype/index.html` in a browser (Chrome on Android gives Telugu speech and mic). Switch between **Rider app** and **Captain app** at the top; use the S0–S10 / C0–C8 buttons to jump between screens. In the captain app, tap the big toggle to go online and a ride request arrives a few seconds later.
+Open `prototype/index.html` in a browser (Chrome on Android gives Telugu speech and mic). Switch between **Rider app** and **Captain app** at the top; use the S0–S10 / V0–V5 / C1–C8 buttons to jump between screens. V0–V5 is the captain verification flow: DigiLocker consent → OTP → documents fetched (Aadhaar, DL, RC with an RC‑owner mismatch) → selfie with liveness → automatic checks → owner letter → approved. In the captain app, tap the big toggle to go online and a ride request arrives a few seconds later.
 
 ## Run the Android starters
 
 See `android/README.md` (rider) and `android-captain/README.md` (captain). Both open in Android Studio, default to Telugu, and contain every screen with fake data so the flows can be tested on a phone before the backend exists. The captain app has a dark‑green header and icon so drivers can tell the two apart.
 
 ## Owner portal
+
+A static prototype build (`VITE_BASE=./ VITE_ROUTER=hash VITE_OFFLINE_MAP=1 npx vite build --outDir dist-artifact`) runs from any folder or sandboxed host without map tiles; it is what the shared prototype link uses.
 
 `cd mana-bandi/owner-web && npm install && npm run dev`, sign in as `owner@manabandi.in` (any password; `nkd@manabandi.in` is a town manager). No mobile app needed for the owner: everything is on the web with login. Commission, service radius per town, fares, landmarks, terms and users are all configured there.
 

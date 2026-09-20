@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Circle, MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from 'react-leaflet'
+import { Circle, MapContainer, Marker, Polyline, Popup, useMap } from 'react-leaflet'
+import MapTiles, { OFFLINE_MAP } from '../components/MapTiles'
 import { api } from '../lib/api'
 import { useTown } from '../lib/town'
 import { SERVICE, fmtTime, inr } from '../lib/format'
@@ -45,9 +46,9 @@ export default function Live() {
             <label className="check-inline"><input type="checkbox" checked={showLines} onChange={(e) => setShowLines(e.target.checked)} /> trip lines</label>
           </div>
         </div>
-        <MapContainer center={NKD} zoom={13} className="map map-live" scrollWheelZoom>
+        <MapContainer center={NKD} zoom={13} className={`map map-live ${OFFLINE_MAP ? 'offline' : ''}`} scrollWheelZoom>
           <Recenter center={center} zoom={zoom} />
-          <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <MapTiles />
           {towns.filter((t) => t.enabled && (townId === 'all' || t.id === townId)).map((t) => (
             <Circle key={t.id} center={[t.center.lat, t.center.lng]} radius={t.radiusKm * 1000} pathOptions={{ color: '#128A46', weight: 1, fillOpacity: 0.04, dashArray: '4 6' }} />
           ))}

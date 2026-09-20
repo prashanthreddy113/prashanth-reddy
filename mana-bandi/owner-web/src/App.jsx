@@ -1,5 +1,8 @@
 import { Suspense, lazy } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+
+// Hash routing is used for the static prototype build (no server-side rewrites available there).
+const Router = import.meta.env.VITE_ROUTER === 'hash' ? HashRouter : BrowserRouter
 import { AuthProvider, useAuth } from './lib/auth'
 import { ToastProvider } from './lib/toast'
 import { TownProvider } from './lib/town'
@@ -33,7 +36,7 @@ function OwnerOnly({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
         <ToastProvider>
           <Suspense fallback={<div className="loading">Loading…</div>}>
@@ -58,6 +61,6 @@ export default function App() {
           </Suspense>
         </ToastProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   )
 }

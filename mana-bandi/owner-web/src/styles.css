@@ -403,3 +403,7 @@ table input, table select { padding: 5px 8px; border-radius: 6px; border: 1px so
   .tabs { overflow-x: auto; }
   .kpi-value { font-size: 26px; }
 }
+
+/* Prototype build without map tiles: a paper-map grid so circles and markers still read as a map. */
+.leaflet-container.offline { background: #EEF3E6 !important; background-image: linear-gradient(#DCE4D2 1px, transparent 1px), linear-gradient(90deg, #DCE4D2 1px, transparent 1px); background-size: 40px 40px; }
+.leaflet-container.offline::after { content: "Map tiles are hidden in this preview · OpenStreetMap tiles load in the real deployment"; position: absolute; left: 8px; bottom: 8px; z-index: 400; font-size: 11px; color: #5E665C; background: rgba(255,253,247,.9); padding: 3px 8px; border-radius: 6px; }

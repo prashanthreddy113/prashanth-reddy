@@ -233,7 +233,7 @@
 (function () {
   const $ = (s, r) => (r || document).querySelector(s);
   const screen = $('#screen');
-  const state = { mode: 'rider', lang: 'te', screen: 'splash', c: { online: false, earn: 480, trips: 7, req: 0, otpOk: false, photo: false },  service: 'bike', drop: '', pay: 'cash', parcelStep: 1, size: 'm', payer: 'me', photo: false, face: null, name: 'లక్ష్మి' };
+  const state = { mode: 'rider', lang: 'te', screen: 'splash', c: { online: false, earn: 480, trips: 7, req: 0, otpOk: false, photo: false, docs: false, selfie: false, letter: false, digiOtp: false, selfieStep: 0, checkStep: 0 },  service: 'bike', drop: '', pay: 'cash', parcelStep: 1, size: 'm', payer: 'me', photo: false, face: null, name: 'లక్ష్మి' };
 
   const T = {
     te: {
@@ -270,6 +270,13 @@
       c_earnTitle: 'నా సంపాదన', c_earnVoice: 'ఈరోజు, ఈ వారం సంపాదన. సెటిల్‌మెంట్ ఆఫీస్‌లో అడగండి', c_week: 'ఈ వారం', c_settle: 'ఆఫీస్ ఇవ్వాల్సింది', c_commission: 'కమీషన్ 0% (మొదటి 3 నెలలు)', c_callOffice: 'ఆఫీస్‌కి కాల్ చెయ్యండి',
       c_helpTitle: 'సాయం', c_helpVoice: 'సాయం కావాలంటే ఆఫీస్‌కి కాల్ చెయ్యండి', c_how1: 'ఆన్ అవ్వండి', c_how2: 'రైడ్ ఒప్పుకోండి', c_how3: 'OTP పెట్టండి', c_how4: 'క్యాష్ తీసుకోండి',
       c_kycTitle: 'ఆఫీస్‌లో నమోదు', c_kycVoice: 'ఆధార్, లైసెన్స్, ఆర్‌సీ ఫోటోలు తియ్యండి. ఆఫీస్ వాళ్ళు మిగతాది చేస్తారు', c_aadhaar: 'ఆధార్', c_dl: 'లైసెన్స్', c_rc: 'ఆర్‌సీ', c_selfie: 'మీ ఫోటో', c_bank: 'బ్యాంక్ / UPI', c_takePhoto: '📷 ఫోటో', c_done: 'పూర్తయింది', c_plate: 'బండి నంబర్',
+
+      v_digiTitle: 'డిజిలాకర్ ఒప్పుకోలు', v_digiVoice: 'మీ ఆధార్, లైసెన్స్, ఆర్‌సీ డిజిలాకర్ నుంచి చూసేందుకు ఒప్పుకుంటున్నారా? ఒప్పుకుంటే ఆకుపచ్చ బటన్ నొక్కండి', v_digiWhy: 'ఒక్కసారి ఒప్పుకుంటే చాలు — ఆఫీసులో కాగితాలు ఇవ్వక్కర్లేదు', v_digiAgree: 'ఒప్పుకుంటున్నాను, డిజిలాకర్ తెరవండి', v_digiNo: 'డిజిలాకర్ లేదు — ఆఫీసులో సాయం', v_digiNoToast: 'ఆఫీసులో 5 నిమిషాల్లో డిజిలాకర్ ఖాతా తెరుస్తారు',
+      v_otpTitle: 'డిజిలాకర్ OTP', v_otpVoice: 'ఆధార్‌కి లింక్ అయిన మీ ఫోన్‌కి వచ్చిన 6 అంకెలు పెట్టండి', v_otpSub: 'ఆధార్ లింక్ ఫోన్ 98765 ***10కి పంపాం', v_fetching: 'పత్రాలు తెస్తున్నాం…',
+      v_docsTitle: 'పత్రాలు వచ్చాయి', v_docsVoice: 'మీ ఆధార్, లైసెన్స్, ఆర్‌సీ వచ్చాయి. ఆర్‌సీ వేరే వాళ్ళ పేరున ఉంది, యజమాని లేఖ కావాలి', v_name: 'పేరు', v_dob: 'పుట్టిన తేదీ', v_validTill: 'చెల్లుబాటు', v_class: 'తరగతి', v_owner: 'యజమాని', v_ownerDiff: 'బండి వేరే వాళ్ళది — యజమాని లేఖ కావాలి', v_ownerLetter: 'యజమాని లేఖ ఫోటో తియ్యండి', v_letterDone: 'యజమాని లేఖ వచ్చింది', v_nextSelfie: 'తర్వాత: సెల్ఫీ',
+      v_selfieTitle: 'సెల్ఫీ', v_selfieVoice: 'మీ ముఖం గుండ్రంలో పెట్టండి. కళ్ళు ఆర్పండి, తల కొంచెం తిప్పండి', v_s0: 'ముఖం గుండ్రంలో పెట్టండి', v_s1: '👁️ కళ్ళు ఆర్పండి', v_s2: '↔️ తల కొంచెం తిప్పండి', v_s3: '✅ ఫోటో వచ్చింది', v_selfieWhy: 'ఇది మీ ఆధార్ ఫోటోతో పోలుస్తాం — ఫోటో ఫోటో కాదని చూస్తాం',
+      v_checksTitle: 'ఆటోమేటిక్ చెక్', v_checksVoice: 'మీ పత్రాలు చెక్ అవుతున్నాయి. ఒక నిమిషం ఆగండి', v_ch1: 'ఆధార్ నిజమైనది (డిజిలాకర్)', v_ch2: 'లైసెన్స్ చెల్లుతుంది · 2031 వరకు · MCWG', v_ch3: 'లైసెన్స్ పేరు = ఆధార్ పేరు · 94/100', v_ch4: 'ఆర్‌సీ చెల్లుతుంది · ఇన్సూరెన్స్ 2027 వరకు', v_ch5: 'ఆర్‌సీ యజమాని = మీరు', v_ch5no: 'ఆర్‌సీ యజమాని వేరు · యజమాని లేఖ కావాలి', v_ch5ok: 'ఆర్‌సీ యజమాని వేరు · లేఖ ఉంది', v_ch6: 'సెల్ఫీ = ఆధార్ ఫోటో · 91/100', v_ch7: 'నిజమైన మనిషి (లైవ్‌నెస్)', v_ch8: 'పోలీస్ వెరిఫికేషన్ · 30 రోజుల్లో ఇవ్వండి',
+      v_review: 'ఇంకా ఒకటి కావాలి', v_reviewSub: 'యజమాని లేఖ ఫోటో తీస్తే వెంటనే అవుతుంది', v_approved: 'ఆమోదం అయింది!', v_approvedSub: 'ఇప్పుడు ఆన్‌లైన్ అవ్వచ్చు. పోలీస్ వెరిఫికేషన్ 30 రోజుల్లో ఇవ్వండి', v_goOnline: 'ఆన్‌లైన్ అవ్వండి', v_rerun: 'మళ్ళీ చెక్ చెయ్యండి',
       c_newReq: '🔔 కొత్త రైడ్ వచ్చింది', c_navDemo: '🧭 Google Maps తెరుస్తుంది', c_riderName: 'లక్ష్మి', c_p1: 'బస్టాండ్', c_p2: 'దవాఖానా', c_p3: 'బజారు (శంకర్ కిరాణా)', c_d1: 'పాత పోలీస్ స్టేషన్', c_d2: 'ఆర్‌టీసీ డిపో', c_d3: 'గంగాపూర్',
       listening: '🎤 వింటున్నాం…', heard: 'బస్టాండ్', noSpeech: 'ఈ బ్రౌజర్‌లో మైక్ లేదు — ఉదాహరణ పెట్టాం', spoken: '🔊 చదివి వినిపిస్తున్నాం', fam: 'ఇంట్లో వాళ్ళ కోసం బుక్ చెయ్యడం (S11) యాప్‌లో ఉంది', callDemo: '📞 ఫోన్ డయలర్ తెరుస్తుంది', sosDemo: '🆘 112కి కాల్ + లొకేషన్ SMS',
     },
@@ -307,6 +314,13 @@
       c_earnTitle: 'My earnings', c_earnVoice: 'Earnings today and this week. Ask the office about settlement', c_week: 'This week', c_settle: 'Office owes you', c_commission: 'Commission 0% (first 3 months)', c_callOffice: 'Call office',
       c_helpTitle: 'Help', c_helpVoice: 'Need help? Call the office', c_how1: 'Go online', c_how2: 'Accept ride', c_how3: 'Enter OTP', c_how4: 'Collect cash',
       c_kycTitle: 'Register at office', c_kycVoice: 'Take photos of Aadhaar, licence and RC. The office does the rest', c_aadhaar: 'Aadhaar', c_dl: 'Licence', c_rc: 'RC', c_selfie: 'Your photo', c_bank: 'Bank / UPI', c_takePhoto: '📷 Photo', c_done: 'Done', c_plate: 'Vehicle number',
+
+      v_digiTitle: 'DigiLocker consent', v_digiVoice: 'Do you agree to let us read your Aadhaar, licence and RC from DigiLocker? Tap the green button to agree', v_digiWhy: 'Agree once — no paper documents needed at the office', v_digiAgree: 'I agree, open DigiLocker', v_digiNo: 'No DigiLocker — help at the office', v_digiNoToast: 'The office opens a DigiLocker account for you in 5 minutes',
+      v_otpTitle: 'DigiLocker OTP', v_otpVoice: 'Type the 6 digits sent to your Aadhaar-linked phone', v_otpSub: 'Sent to Aadhaar-linked phone 98765 ***10', v_fetching: 'Fetching documents…',
+      v_docsTitle: 'Documents received', v_docsVoice: 'Your Aadhaar, licence and RC arrived. The RC is in someone else\'s name, so an owner letter is needed', v_name: 'Name', v_dob: 'Date of birth', v_validTill: 'Valid till', v_class: 'Class', v_owner: 'Owner', v_ownerDiff: 'Vehicle belongs to someone else — owner letter needed', v_ownerLetter: 'Photo of owner letter', v_letterDone: 'Owner letter received', v_nextSelfie: 'Next: selfie',
+      v_selfieTitle: 'Selfie', v_selfieVoice: 'Put your face in the circle. Blink, then turn your head a little', v_s0: 'Put your face in the circle', v_s1: '👁️ Blink', v_s2: '↔️ Turn your head a little', v_s3: '✅ Photo taken', v_selfieWhy: 'Matched with your Aadhaar photo — and checked that it is a live person, not a photo of a photo',
+      v_checksTitle: 'Automatic checks', v_checksVoice: 'Your documents are being checked. Wait a minute', v_ch1: 'Aadhaar genuine (DigiLocker)', v_ch2: 'Licence valid · till 2031 · MCWG', v_ch3: 'Licence name = Aadhaar name · 94/100', v_ch4: 'RC valid · insurance till 2027', v_ch5: 'RC owner = you', v_ch5no: 'RC owner is different · owner letter needed', v_ch5ok: 'RC owner is different · letter on file', v_ch6: 'Selfie = Aadhaar photo · 91/100', v_ch7: 'Live person (liveness)', v_ch8: 'Police verification · submit within 30 days',
+      v_review: 'One more thing needed', v_reviewSub: 'Take a photo of the owner letter and it clears immediately', v_approved: 'Approved!', v_approvedSub: 'You can go online now. Submit police verification within 30 days', v_goOnline: 'Go online', v_rerun: 'Check again',
       c_newReq: '🔔 New ride request', c_navDemo: '🧭 Opens Google Maps', c_riderName: 'Lakshmi', c_p1: 'Bus stand', c_p2: 'Hospital', c_p3: 'Market (Shankar kirana)', c_d1: 'Old police station', c_d2: 'RTC depot', c_d3: 'Gangapur',
       listening: '🎤 Listening…', heard: 'Bus stand', noSpeech: 'No mic in this browser — filled a sample', spoken: '🔊 Reading aloud', fam: 'Book-for-family (S11) is in the app', callDemo: '📞 Opens the phone dialer', sosDemo: '🆘 Calls 112 + sends location SMS',
     }
@@ -326,7 +340,12 @@
     parcel: { en: 'S8 · Parcel', why: 'Three steps with an icon progress row: Where, What, Who pays. Sizes are pictures of a bag, a box and a sack. A photo of the parcel is shown to the captain and the receiver.', rules: ['Receiver-pays is the common case for shops sending to villages', 'Pickup OTP for the sender, delivery OTP sent to the receiver by SMS/WhatsApp with a tracking link'] },
     pride: { en: 'S8 · Parcel on the way', why: 'Same captain card as a ride, with two OTPs: pickup and delivery. The receiver gets a link to watch the bandi and the captain phone number.', rules: ['Photo proof at delivery', 'Cash on delivery is reconciled in the captain settlement'] },
     rides: { en: 'S9 · My rides', why: 'Rows with the service icon, a relative date and the fare. Tapping opens the receipt with the captain name and vehicle number.', rules: [] },
-    ckyc: { en: 'C0 · Register', why: 'Registration happens in person at the town office in ten minutes. The captain only takes photos; the ops team fills the rest. A vehicle type and number are the only typed fields.', rules: ['Bike and auto captains get the yellow/green jacket, sticker and helmet at this step', 'Zero commission for the first three months is explained here in person'] },
+    ckyc: { en: 'V0 · Register', why: 'Registration takes ten minutes at the town office or at home. Tap Aadhaar / licence / RC to fetch them from DigiLocker in one go, take a selfie, and the checks run automatically. A vehicle type and number are the only typed fields.', rules: ['Bike and auto captains get the yellow/green jacket, sticker and helmet at this step', 'Zero commission for the first three months is explained here in person'] },
+    cdigi: { en: 'V1 · DigiLocker consent', why: 'Private companies cannot call UIDAI Aadhaar e-KYC directly; DigiLocker with the captain\'s consent is the legal route and also returns the licence (Sarathi) and RC (Vahan) as government-signed documents. One tap, explained in spoken Telugu.', rules: ['Consent is recorded (time, app version, terms version) for the DPDP Act', 'Captains without DigiLocker get an account opened at the office in five minutes'] },
+    cdigiotp: { en: 'V2 · DigiLocker OTP', why: 'DigiLocker sends a 6-digit OTP to the Aadhaar-linked phone. After it, the KYC provider fetches e-Aadhaar, DL and RC in one go.', rules: ['Any code works in this prototype', 'Fetch takes 2 to 5 seconds in production'] },
+    cdocs: { en: 'V3 · Documents received', why: 'Extracted fields are shown in big type so the captain can confirm them. The RC here belongs to someone else, which is common (a brother\'s or an owner\'s auto), so the app asks for an owner letter instead of rejecting.', rules: ['Name, DOB, DL validity and class, RC owner and insurance are what the rules use', 'Owner also gets an SMS to object within 24 hours'] },
+    cselfie: { en: 'V4 · Selfie with liveness', why: 'The camera asks the captain to blink and turn, which defeats a photo of a photo. The selfie is matched against the Aadhaar photo from DigiLocker.', rules: ['Prompts are spoken aloud', 'Works on a ₹6,000 phone in daylight; the office helps if the score is low'] },
+    cchecks: { en: 'V5 · Automatic checks', why: 'All rules run in seconds and each shows a green or amber line. Most captains are auto-approved; this one needs the owner letter, and taking its photo clears the case without a human. Police verification stays manual with a 30-day window.', rules: ['Same rules table as the owner portal (docs/05)', 'Town manager sees only the amber cases in the portal queue'] },
     chome: { en: 'C1 · Online', why: 'One giant toggle. Grey means offline, green with a pulsing ring means online. Earnings today sit right under it in 40 sp digits because that is what a captain checks all day.', rules: ['Dark-green header tells the two apps apart at a glance', 'Go online in the prototype: a request arrives after 4 seconds', 'A real phone vibrates and speaks the request in Telugu'] },
     creq: { en: 'C2 · Request', why: 'Pickup landmark and distance from the captain in big type, fare in 56 sp, and one huge Accept button with a 15-second countdown. Reject is small and grey.', rules: ['Coloured by service: yellow bike, green auto, orange parcel', 'Timeout offers the ride to the next nearest captain', 'The app reads the request aloud'] },
     cpick: { en: 'C3 · To pickup', why: 'Call the rider and Navigate are the two big buttons. Arrived is the primary action once there; it tells the rider\'s phone to vibrate and speak.', rules: ['Navigate opens Google Maps with the pickup point', 'The rider sees the captain moving on their map'] },
@@ -338,7 +357,7 @@
     help: { en: 'S10 · Help', why: 'Support is a real person in the town who speaks Telugu, 6 am to 11 pm. The missed-call line is the product for people without the app.', rules: ['WhatsApp support for shops', 'A 60-second Telugu video on how to book'] },
   };
 
-  const CJUMPS = [['ckyc','C0'],['chome','C1'],['creq','C2'],['cpick','C3'],['cotp','C4'],['ctrip','C5'],['ccollect','C6'],['cearn','C7'],['chelp','C8']];
+  const CJUMPS = [['ckyc','V0'],['cdigi','V1'],['cdigiotp','V2'],['cdocs','V3'],['cselfie','V4'],['cchecks','V5'],['chome','C1'],['creq','C2'],['cpick','C3'],['cotp','C4'],['ctrip','C5'],['ccollect','C6'],['cearn','C7'],['chelp','C8']];
   const JUMPS = [['splash','S0'],['lang','S1'],['phone','S2'],['home','S3'],['book','S4'],['finding','S5'],['ride','S6'],['done','S7'],['parcel','S8'],['rides','S9'],['help','S10']];
 
   function speak(text) {
@@ -538,12 +557,50 @@
   const svcIcon = r => ({ bike: '🏍️', auto: '🛺', parcel: '📦' })[r.svc];
   const qr = () => { let h = ''; let x = 7; for (let i = 0; i < 144; i++) { x = (x * 1103515245 + 12345) & 0x7fffffff; h += `<i class="${(x >> 16) & 1 ? '' : 'w'}"></i>`; } return `<div class="qr">${h}</div>`; };
   const CS = {
-    ckyc: () => `${status()}${cbar(t('c_kycTitle'), t('c_kycVoice'))}<div class="body">
-      ${[['🪪','c_aadhaar'],['🚗','c_dl'],['📄','c_rc'],['🤳','c_selfie'],['🏦','c_bank']].map(([e,k],i) => `<div class="kyc ${i < 2 ? 'done' : ''}"><span class="em">${e}</span><b>${t(k)}</b>${i < 2 ? '<span style="font-size:26px">✅</span>' : `<button data-toast="📷">${t('c_takePhoto')}</button>`}</div>`).join('')}
+    ckyc: () => { const d = state.c.docs, sf = state.c.selfie; return `${status()}${cbar(t('c_kycTitle'), t('c_kycVoice'))}<div class="body">
+      ${[['🪪','c_aadhaar',d,'cdigi'],['🚗','c_dl',d,'cdigi'],['📄','c_rc',d,'cdigi'],['🤳','c_selfie',sf,'cselfie']].map(([e,k,done,go]) => `<div class="kyc ${done ? 'done' : ''}"><span class="em">${e}</span><b>${t(k)}</b>${done ? '<span style="font-size:26px">✅</span>' : `<button data-go="${go}">${go === 'cselfie' ? '📷' : '🔐'} ${go === 'cselfie' ? t('c_takePhoto') : 'DigiLocker'}</button>`}</div>`).join('')}
+      <div class="kyc"><span class="em">🏦</span><b>${t('c_bank')}</b><button data-toast="UPI ID">✏️</button></div>
       <div class="tiles"><button class="tile on">🏍️ ${t('bike')}</button><button class="tile">🛺 ${t('auto')}</button></div>
       <div class="field big-digits"><span style="font-size:26px">🔢</span><div style="flex:1"><span class="lbl">${t('c_plate')}</span><input value="TS 32 A 1234" aria-label="Vehicle number"></div></div>
       <button class="big ghost" data-toast="${t('callDemo')}">📞 ${t('c_callOffice')}</button>
-      <button class="big" data-go="chome">✅ ${t('c_done')}</button></div>`,
+      <button class="big ${d && sf ? '' : 'ghost'}" data-go="${d && sf ? 'cchecks' : 'cdigi'}">✅ ${t('c_done')}</button></div>`; },
+    cdigi: () => `${status()}${cbar(t('v_digiTitle'), t('v_digiVoice'), 'ckyc')}<div class="body" style="text-align:center">
+      <div style="font-size:64px;line-height:1.2">🔐</div>
+      <div class="tiles three"><div class="tile" style="min-height:84px">🪪<small>${t('c_aadhaar')}</small></div><div class="tile" style="min-height:84px">🚗<small>${t('c_dl')}</small></div><div class="tile" style="min-height:84px">📄<small>${t('c_rc')}</small></div></div>
+      <div style="font-size:20px;font-weight:700;line-height:1.5">${t('v_digiVoice')}</div>
+      <div class="voice">${t('v_digiWhy')}</div>
+      <div style="flex:1"></div>
+      <button class="big" data-go="cdigiotp">✅ ${t('v_digiAgree')}</button>
+      <button class="big ghost" data-toast="${t('v_digiNoToast')}">📞 ${t('v_digiNo')}</button></div>`,
+    cdigiotp: () => `${status()}${cbar(t('v_otpTitle'), t('v_otpVoice'), 'cdigi')}<div class="body" style="text-align:center">
+      ${state.c.digiOtp ? `<div class="pulse">📄</div><div style="font-size:22px;font-weight:700">${t('v_fetching')}</div>` : `
+      <div class="voice">${t('v_otpSub')}</div>
+      <div class="otp green"><b>4</b><b>7</b><b>2</b><b>9</b><b>1</b><b>·</b></div>
+      <div class="tiles three">${[1,2,3,4,5,6,7,8,9].map(n => `<button class="tile" style="min-height:64px;font-size:28px" data-dkey="${n}">${n}</button>`).join('')}<span></span><button class="tile" style="min-height:64px;font-size:28px" data-dkey="0">0</button><span></span></div>`}
+      </div>`,
+    cdocs: () => `${status()}${cbar(t('v_docsTitle'), t('v_docsVoice'), 'ckyc')}<div class="body">
+      <div class="kyc done" style="align-items:flex-start"><span class="em">🪪</span><div style="flex:1"><b>${t('c_aadhaar')} ✅</b><div style="font-size:15px;color:var(--app-muted)">${t('v_name')}: <b style="font-size:17px">శ్రీనివాస్ గౌడ్ · Srinivas Goud</b><br>${t('v_dob')}: 12‑06‑1994 · XXXX XXXX 4821</div></div><span style="font-size:34px">👤</span></div>
+      <div class="kyc done" style="align-items:flex-start"><span class="em">🚗</span><div style="flex:1"><b>${t('c_dl')} ✅</b><div style="font-size:15px;color:var(--app-muted)">TS15 20180012345 · ${t('v_class')}: MCWG<br>${t('v_validTill')}: 18‑03‑2031</div></div></div>
+      <div class="kyc" style="align-items:flex-start;border-color:var(--orange);background:#FDEBDF"><span class="em">📄</span><div style="flex:1"><b>${t('c_rc')} ⚠️</b><div style="font-size:15px;color:var(--app-muted)">TS 32 A 1234 · Hero Splendor+ · ${t('v_validTill')}: 2033<br>${t('v_owner')}: <b>రాములు గౌడ్ · Ramulu Goud</b></div><div style="font-size:15px;font-weight:700;color:var(--orange);margin-top:4px">${t('v_ownerDiff')}</div></div></div>
+      <button class="big ${state.c.letter ? 'ghost' : 'orange'}" data-letter="1">${state.c.letter ? '✅ ' + t('v_letterDone') : '📷 ' + t('v_ownerLetter')}</button>
+      <button class="big" data-go="${state.c.selfie ? 'cchecks' : 'cselfie'}">🤳 ${t('v_nextSelfie')}</button></div>`,
+    cselfie: () => { const st = state.c.selfieStep; return `${status()}${cbar(t('v_selfieTitle'), t('v_selfieVoice'), 'ckyc')}<div class="body" style="text-align:center;align-items:center">
+      <div class="pulse ${st >= 3 ? '' : 'orange'}" style="width:230px;height:230px;font-size:110px;background:${st >= 3 ? '#E4F3EA' : '#FFF3E6'}">${st >= 3 ? '😊' : '🙂'}</div>
+      <div style="font-size:26px;font-weight:800;line-height:1.45;min-height:40px">${t(['v_s0','v_s1','v_s2','v_s3'][st])}</div>
+      <div class="steps"><span class="${st >= 1 ? 'on' : ''}" style="${st >= 1 ? 'background:var(--green);color:#fff' : ''}">👁️</span><i></i><span class="${st >= 2 ? 'on' : ''}" style="${st >= 2 ? 'background:var(--green);color:#fff' : ''}">↔️</span><i></i><span class="${st >= 3 ? 'on' : ''}" style="${st >= 3 ? 'background:var(--green);color:#fff' : ''}">📷</span></div>
+      <div class="voice">${t('v_selfieWhy')}</div>
+      <div style="flex:1"></div>
+      ${st >= 3 ? `<button class="big" data-go="${state.c.docs ? 'cchecks' : 'ckyc'}">✅ ${t('next')}</button>` : ''}</div>`; },
+    cchecks: () => { const n = state.c.checkStep; const L = state.c.letter;
+      const items = [['v_ch1',1],['v_ch2',1],['v_ch3',1],['v_ch4',1],[L ? 'v_ch5ok' : 'v_ch5no', L ? 1 : 0],['v_ch6',1],['v_ch7',1],['v_ch8',2]];
+      const done = n >= items.length; const ok = L;
+      return `${status()}${cbar(t('v_checksTitle'), t('v_checksVoice'), 'ckyc')}<div class="body">
+      ${items.slice(0, n).map(([k, st]) => `<div class="kyc ${st === 1 ? 'done' : ''}" style="min-height:56px;${st === 0 ? 'border-color:var(--orange);background:#FDEBDF' : st === 2 ? 'border-style:dashed' : ''}"><span class="em" style="font-size:24px">${st === 1 ? '✅' : st === 0 ? '⚠️' : '🕒'}</span><b style="font-size:16px">${t(k)}</b></div>`).join('')}
+      ${done ? '' : `<div class="voice" style="text-align:center">⏳ ${t('v_checksVoice')}</div>`}
+      <div style="flex:1"></div>
+      ${done ? (ok ? `<div style="text-align:center;font-size:28px;font-weight:800;color:var(--green-deep)">🎉 ${t('v_approved')}</div><div class="voice" style="text-align:center">${t('v_approvedSub')}</div><button class="big" data-approve="1">🟢 ${t('v_goOnline')}</button>`
+                   : `<div style="text-align:center;font-size:26px;font-weight:800;color:var(--orange)">⚠️ ${t('v_review')}</div><div class="voice" style="text-align:center">${t('v_reviewSub')}</div><button class="big orange" data-letter="1" data-rerun="1">📷 ${t('v_ownerLetter')}</button>`) : ''}
+      </div>`; },
     chome: () => `${status()}${cbar(t('c_home'), t('c_homeVoice'))}<div class="body">
       <button class="online ${state.c.online ? 'on' : ''}" data-online="1"><span class="em">${state.c.online ? '🟢' : '🔴'}</span><b>${state.c.online ? t('c_online') : t('c_offline')}</b><span>${state.c.online ? t('c_onlineSub') : t('c_offlineSub')}</span></button>
       <div class="stat"><div><small>${t('c_today')}</small><b>₹${state.c.earn}</b></div><div><small>${t('c_trips')}</small><b>${state.c.trips}</b></div></div>
@@ -603,7 +660,7 @@
       <div class="voice" style="text-align:center;font-weight:700;color:var(--app-ink)">${t('c_how1')} → ${t('c_how2')} → ${t('c_how3')} → ${t('c_how4')}</div>
       </div>${cnav('chelp')}`,
   };
-  const CT = { ckyc: ['c_kycTitle','c_kycVoice'], chome: ['c_home','c_homeVoice'], creq: ['c_reqTitle','c_reqVoice'], cpick: ['c_pickTitle','c_pickVoice'], cotp: ['c_otpTitle','c_otpVoice'], ctrip: ['c_tripTitle','c_tripVoice'], ccollect: ['c_collectTitle','c_collectVoice'], cearn: ['c_earnTitle','c_earnVoice'], chelp: ['c_helpTitle','c_helpVoice'] };
+  const CT = { ckyc: ['c_kycTitle','c_kycVoice'], cdigi: ['v_digiTitle','v_digiVoice'], cdigiotp: ['v_otpTitle','v_otpVoice'], cdocs: ['v_docsTitle','v_docsVoice'], cselfie: ['v_selfieTitle','v_selfieVoice'], cchecks: ['v_checksTitle','v_checksVoice'], chome: ['c_home','c_homeVoice'], creq: ['c_reqTitle','c_reqVoice'], cpick: ['c_pickTitle','c_pickVoice'], cotp: ['c_otpTitle','c_otpVoice'], ctrip: ['c_tripTitle','c_tripVoice'], ccollect: ['c_collectTitle','c_collectVoice'], cearn: ['c_earnTitle','c_earnVoice'], chelp: ['c_helpTitle','c_helpVoice'] };
   let reqTimer, countTimer;
   function scheduleRequest(ms) {
     clearTimeout(reqTimer);
@@ -646,11 +703,13 @@
     state.screen = s; render();
     if (s === 'creq') { clearTimeout(countTimer); countTimer = setTimeout(() => { if (state.screen === 'creq') { state.c.req++; go('chome'); } }, 15000); }
     if (s === 'chome') scheduleRequest(state.c.online ? 6000 : 0);
+    if (s === 'cselfie') { state.c.selfieStep = 0; render(); [1,2,3].forEach(k => setTimeout(() => { if (state.screen === 'cselfie') { state.c.selfieStep = k; if (k === 3) state.c.selfie = true; render(); speak(t(['v_s0','v_s1','v_s2','v_s3'][k])); } }, k * 1800)); }
+    if (s === 'cchecks') { state.c.checkStep = 0; render(); for (let k = 1; k <= 8; k++) setTimeout(() => { if (state.screen === 'cchecks') { state.c.checkStep = k; render(); if (k === 8) speak(state.c.letter ? t('v_approved') : t('v_review')); } }, k * 600); }
     if (s === 'finding') setTimeout(() => { if (state.screen === 'finding') { go('ride'); speak(state.service === 'parcel' ? t('pRideVoice') : t('rideVoice')); } }, 3000);
   }
 
   document.addEventListener('click', e => {
-    const b = e.target.closest('[data-go],[data-say],[data-svc],[data-chip],[data-pay],[data-mic],[data-pstep],[data-size],[data-payer],[data-photo],[data-face],[data-toast],[data-lang],[data-jump],[data-online],[data-creject],[data-key],[data-cphoto],[data-ccollect]');
+    const b = e.target.closest('[data-go],[data-say],[data-svc],[data-chip],[data-pay],[data-mic],[data-pstep],[data-size],[data-payer],[data-photo],[data-face],[data-toast],[data-lang],[data-jump],[data-online],[data-creject],[data-key],[data-cphoto],[data-ccollect],[data-dkey],[data-letter],[data-approve]');
     if (!b) return;
     const d = b.dataset;
     if (d.toast) toast(d.toast);
@@ -658,6 +717,9 @@
     if (d.lang) { if (d.lang === 'te' || d.lang === 'en') { state.lang = d.lang; } else { state.lang = 'en'; toast('Prototype: ' + b.textContent + ' → English strings; the Android app has this language'); } speak(state.lang === 'te' ? 'నమస్తే! మన బండికి స్వాగతం' : 'Namaste! Welcome to Mana Bandi'); go('phone'); return; }
     if (d.jump) { state.mode = CS[d.jump] ? 'captain' : 'rider'; go(d.jump); return; }
     if (d.online) { state.c.online = !state.c.online; render(); if (state.c.online) { speak(t('c_onlineSub')); scheduleRequest(4000); } else clearTimeout(reqTimer); return; }
+    if (d.dkey) { state.c.digiOtp = true; render(); setTimeout(() => { if (state.screen === 'cdigiotp') { state.c.docs = true; state.c.digiOtp = false; go('cdocs'); speak(t('v_docsVoice')); } }, 2500); return; }
+    if (d.letter) { state.c.letter = true; toast('📷 ' + t('v_letterDone')); if (d.rerun) go('cchecks'); else render(); return; }
+    if (d.approve) { state.c.online = true; go('chome'); speak(t('c_onlineSub')); scheduleRequest(4000); return; }
     if (d.creject) { clearTimeout(countTimer); state.c.req++; go('chome'); return; }
     if (d.key) { state.c.otpOk = true; render(); return; }
     if (d.cphoto) { state.c.photo = true; render(); return; }

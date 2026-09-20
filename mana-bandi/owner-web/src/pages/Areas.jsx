@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { Circle, MapContainer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet'
+import MapTiles, { OFFLINE_MAP } from '../components/MapTiles'
 import { api } from '../lib/api'
 import { useTown } from '../lib/town'
 import { useToast } from '../lib/toast'
@@ -171,10 +172,10 @@ export default function Areas() {
             <h2>Map <small className="muted">· drag the మ marker to move the centre</small></h2>
             <button className={`btn sm ${addMode ? 'gold' : ''}`} onClick={() => { setAddMode((m) => !m); setNewLm(null) }}>{addMode ? 'Click the map to place a landmark…' : '＋ Add landmark by clicking map'}</button>
           </div>
-          <MapContainer center={[draft.center.lat, draft.center.lng]} zoom={zoom} className={`map map-areas ${addMode ? 'crosshair' : ''}`} scrollWheelZoom>
+          <MapContainer center={[draft.center.lat, draft.center.lng]} zoom={zoom} className={`map map-areas ${addMode ? 'crosshair' : ''} ${OFFLINE_MAP ? 'offline' : ''}`} scrollWheelZoom>
             <FlyTo center={draft.center} zoomFor={zoom} />
             <ClickCapture enabled={addMode && !newLm} onClick={onMapClick} />
-            <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <MapTiles />
             <Circle center={[draft.center.lat, draft.center.lng]} radius={draft.extendedRadiusKm * 1000} pathOptions={{ color: '#E8641B', weight: 1.5, dashArray: '6 6', fillOpacity: 0.03 }} />
             <Circle center={[draft.center.lat, draft.center.lng]} radius={draft.radiusKm * 1000} pathOptions={{ color: '#128A46', weight: 2, fillColor: '#128A46', fillOpacity: 0.08 }} />
             <Marker
