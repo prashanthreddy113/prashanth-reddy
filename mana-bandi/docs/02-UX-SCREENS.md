@@ -8,7 +8,7 @@ Everything below is written to be handed to a designer and a developer. Telugu s
 | --- | --- |
 | Touch target | ≥ 64 dp; primary button 72 dp tall, full width |
 | Text | Body 20 sp, label 22 sp, heading 28 sp, digits (fare, OTP, vehicle number) 40–56 sp |
-| Fonts | Noto Sans Telugu / Noto Sans (Devanagari, Kannada, Urdu Nastaliq via Noto Nastaliq Urdu) |
+| Fonts | **Noto Sans Telugu only** for all Telugu text (bold 700/800 for labels, line‑height ≥ 1.45 so vottu marks below letters are never clipped). No decorative or rounded display faces — they hurt legibility for weak readers. Noto Sans for Devanagari/Kannada, Noto Nastaliq Urdu for Urdu. |
 | Colours | Green `#128A46` primary · Yellow `#FFC72C` bike · Orange `#E8641B` parcel · Red `#D32F2F` cancel/SOS · Surface `#FFFDF7` · Text `#1B1B1B` |
 | Contrast | ≥ 4.5:1 everywhere; never yellow text on white |
 | Icons | Emoji‑style illustrations of the real vehicle types seen in town; same illustration on posters and stickers |
@@ -45,20 +45,20 @@ Everything below is written to be handed to a designer and a developer. Telugu s
 │      వస్తువులు పంపండి · ₹30 నుంచి │
 └──────────────────────────────┘
 ఎక్కడికి?  🏠 ఇల్లు  🚌 బస్టాండ్  🏥 ఆసుపత్రి  🛒 సంత
-👨‍👩‍👧 కుటుంబం కోసం బుక్ చెయ్యి
+👨‍👩‍👧 ఇంట్లో వాళ్ళ కోసం బుక్ చెయ్యండి
 ──────────────────────────────
 🏠 హోమ్      🕒 నా రైడ్లు      📞 సహాయం
 ```
 - Tapping a saved place chip *before* a vehicle opens S4 with the drop pre‑filled and the vehicle pre‑selected to Bike.
 - Voice: "బైక్, ఆటో లేదా పార్సెల్ — ఒకటి నొక్కండి".
 
-## S4 · Book ride (బండి బుక్ చెయ్యి)
+## S4 · Book ride (బండి బుక్ చెయ్యండి)
 - Header coloured by service.
-- **📍 ఎక్కడ నుంచి** — auto "ప్రస్తుత స్థలం · బస్టాండ్ దగ్గర" (nearest landmark from our town landmark table). Tap to change on a map with a single big pin.
+- **📍 ఎక్కడ నుంచి** — auto "మీరున్న చోటు · బస్టాండ్ దగ్గర" (nearest landmark from our town landmark table). Tap to change on a map with a single big pin.
 - **🎯 ఎక్కడికి** — huge field with 🎤 mic on the right; below it the saved‑place chips; below that "📞 కెప్టెన్‌కి ఫోన్‌లో చెప్తా" (I'll tell the captain on the phone).
 - Fare card: "₹ 45" in 48 sp · "6 కి.మీ · 12 నిమిషాలు" · night charge line when applicable.
 - Payment: two tiles — **💵 క్యాష్** (selected by default) · **📱 UPI**.
-- Primary: **బండి పిలువు** (Call the bandi).
+- Primary: **బండి పిలవండి** (Call the bandi).
 - Voice: "ఎక్కడికి పోవాలో చెప్పండి లేదా మైక్ నొక్కి మాట్లాడండి".
 
 ## S5 · Finding captain (కెప్టెన్ వెతుకుతున్నాం)
@@ -90,7 +90,7 @@ Everything below is written to be handed to a designer and a developer. Telugu s
 Progress row at the top: ①📍 → ②📦 → ③💵 with the current step filled orange.
 
 1. **ఎక్కడికి పంపాలి?** — receiver phone (32 sp), drop with 🎤 and saved receivers ("శంకర్ కిరాణా, గంగాపూర్"). Pickup auto.
-2. **ఏమి పంపుతున్నారు?** — three tiles with pictures: 🍱 చిన్నది (bag, < 5 kg) · 📦 మధ్యస్థం (box, < 15 kg) · 🧳 పెద్దది (sack, auto). "📷 ఫోటో తియ్యండి" — photo is shown to the captain and the receiver.
+2. **ఏం పంపుతున్నారు?** — three tiles with pictures: 🍱 చిన్నది (bag, < 5 kg) · 📦 మధ్యది (box, < 15 kg) · 🧳 పెద్దది (sack, auto). "📷 ఫోటో తియ్యండి" — photo is shown to the captain and the receiver.
 3. **డబ్బులు ఎవరు ఇస్తారు?** — 🙋 నేను · 🙍 అందుకునేవారు (receiver). Fare in 48 sp. Toggle "సామాను డబ్బులు కూడా వసూలు చెయ్యి" (collect goods money, phase 2).
 - Confirm → S5 → S6 with **pickup OTP** for the sender and **delivery OTP** sent to the receiver by SMS/WhatsApp with a tracking link.
 
@@ -98,7 +98,7 @@ Progress row at the top: ①📍 → ②📦 → ③💵 with the current step f
 - List rows: service icon · date in Telugu ("ఈరోజు", "నిన్న", "12 ఆగస్టు") · drop name · fare. Tap = receipt with captain name and vehicle number.
 
 ## S10 · Help (సహాయం)
-- **📞 సహాయానికి కాల్** (the town support number, 6 am–11 pm), **💬 WhatsApp**, **🌐 భాష మార్చు**, **▶️ ఎలా బుక్ చెయ్యాలి?** (60‑second Telugu video), **👨‍👩‍👧 కుటుంబం కోసం బుక్** (book for family).
+- **📞 సహాయానికి కాల్** (the town support number, 6 am–11 pm), **💬 WhatsApp**, **🌐 భాష మార్చండి**, **▶️ ఎలా బుక్ చెయ్యాలి?** (60‑second Telugu video), **👨‍👩‍👧 కుటుంబం కోసం బుక్** (book for family).
 
 ## S11 · Book for family (కుటుంబం కోసం)
 - Enter the rider's phone number + name/nickname, pick vehicle and drop, choose "వాళ్ళు క్యాష్ ఇస్తారు / నేను UPI ఇస్తా". The rider gets an SMS + captain call; the booker sees S6.
@@ -117,5 +117,6 @@ Progress row at the top: ①📍 → ②📦 → ③💵 with the current step f
 
 ## Accessibility checklist
 - TalkBack labels on every control in the app locale.
-- All copy reviewed by a native Telangana Telugu speaker for spoken register (not textbook Telugu).
+- All copy reviewed by a native Telangana Telugu speaker for spoken register (not textbook Telugu): "ఏం పంపుతున్నారు?" not "ఏమి పంపుతున్నారు?", "మధ్యది" not "మధ్యస్థం", "మీరున్న చోటు" not "ప్రస్తుత స్థలం". Polite ‑ండి forms on every button ("పంపండి", "పిలవండి").
+- Read every screen aloud to 5 non‑readers in Narayanakhed before release; if any word needs explaining, replace it.
 - Tested with: elderly non‑readers, bright sunlight (contrast), ₹6,000 Android Go phones (memory), one‑hand use, gloves off/on.

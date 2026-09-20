@@ -1,5 +1,5 @@
 <title>Mana Bandi Prototype</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@600;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700;800&family=Noto+Sans:wght@400;600;700;800&display=swap">
 <style>
   :root {
     --ground: #EFEAE0;
@@ -33,10 +33,10 @@
     font-family: "Noto Sans Telugu", "Noto Sans", system-ui, sans-serif;
     padding-inline: 16px; padding-block: 20px 40px;
   }
-  h1, h2, h3 { font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; margin: 0; text-wrap: balance; line-height: 1.1; }
+  h1, h2, h3 { font-family: "Noto Sans Telugu", "Noto Sans", sans-serif; font-weight: 800; margin: 0; text-wrap: balance; line-height: 1.45; }
   .top { max-width: 1080px; margin: 0 auto 20px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
   .brand { display: flex; align-items: center; gap: 14px; }
-  .mono { width: 52px; height: 52px; border-radius: 14px; background: var(--green); color: var(--yellow); display: grid; place-items: center; font-family: "Baloo Tammudu 2", sans-serif; font-size: 34px; font-weight: 800; line-height: 1; padding-top: 6px; }
+  .mono { width: 52px; height: 52px; border-radius: 14px; background: var(--green); color: var(--yellow); display: grid; place-items: center; font-family: "Noto Sans Telugu", sans-serif; font-size: 30px; font-weight: 800; line-height: 1; }
   .brand h1 { font-size: 30px; }
   .brand p { margin: 0; color: var(--muted); font-size: 14px; }
   .switch { display: flex; gap: 6px; }
@@ -50,14 +50,14 @@
   .screen { background: var(--cream); color: var(--app-ink); border-radius: 34px; height: 780px; overflow: hidden; display: flex; flex-direction: column; position: relative; font-family: "Noto Sans Telugu", "Noto Sans", sans-serif; }
   .status { height: 30px; display: flex; justify-content: space-between; align-items: center; padding: 0 22px; font-size: 12px; font-weight: 600; color: var(--app-muted); }
   .bar { display: flex; align-items: center; gap: 10px; padding: 8px 14px 10px; }
-  .bar h2 { flex: 1; font-size: 24px; color: var(--app-ink); }
+  .bar h2 { flex: 1; font-size: 23px; color: var(--app-ink); }
   .bar.tint { color: #fff; }
   .bar.tint h2 { color: #fff; }
   .icon-btn { width: 48px; height: 48px; border-radius: 14px; border: 0; background: rgba(0,0,0,.06); font-size: 22px; cursor: pointer; display: grid; place-items: center; }
   .bar.tint .icon-btn { background: rgba(255,255,255,.22); color: #fff; }
   .body { flex: 1; overflow-y: auto; padding: 8px 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-  .voice { font-size: 14px; color: var(--app-muted); padding: 0 4px; }
-  .big { min-height: 72px; width: 100%; border: 0; border-radius: 18px; font: inherit; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: #fff; background: var(--green); }
+  .voice { font-size: 16px; line-height: 1.5; color: var(--app-muted); padding: 0 4px; }
+  .big { min-height: 72px; width: 100%; border: 0; border-radius: 18px; font: inherit; font-size: 22px; font-weight: 800; line-height: 1.4; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: #fff; background: var(--green); }
   .big.yellow { background: var(--yellow); color: var(--app-ink); }
   .big.orange { background: var(--orange); }
   .big.ghost { background: var(--app-soft); color: var(--app-ink); font-weight: 600; font-size: 19px; }
@@ -65,39 +65,39 @@
   .big:focus-visible, .tile:focus-visible, .chip:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--green-deep); outline-offset: 2px; }
   .service { min-height: 120px; border: 0; border-radius: 22px; display: grid; grid-template-columns: 96px 1fr; align-items: center; text-align: left; padding: 10px 16px 10px 8px; cursor: pointer; font: inherit; }
   .service .em { font-size: 64px; text-align: center; line-height: 1; }
-  .service b { display: block; font-size: 30px; font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; line-height: 1.1; padding-top: 6px; }
-  .service span { font-size: 16px; opacity: .85; }
+  .service b { display: block; font-size: 30px; font-weight: 800; line-height: 1.45; }
+  .service span { font-size: 17px; opacity: .9; line-height: 1.5; }
   .service.bike { background: var(--yellow); color: var(--app-ink); }
   .service.auto { background: var(--green); color: #fff; }
   .service.parcel { background: var(--orange); color: #fff; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { border: 2px solid var(--app-line); background: #fff; border-radius: 999px; padding: 10px 14px; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; min-height: 48px; }
+  .chip { border: 2px solid var(--app-line); background: #fff; border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 17px; font-weight: 700; line-height: 1.5; cursor: pointer; min-height: 48px; }
   .chip.on { border-color: var(--green); background: #E4F3EA; }
   .field { background: #fff; border: 2px solid var(--app-line); border-radius: 18px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; min-height: 64px; }
-  .field .lbl { font-size: 13px; color: var(--app-muted); display: block; }
+  .field .lbl { font-size: 14px; color: var(--app-muted); display: block; }
   .field input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 20px; min-width: 0; color: var(--app-ink); }
   .field input:focus { outline: none; }
   .field.big-digits input { font-size: 32px; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
   .mic { width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--green); color: #fff; font-size: 24px; cursor: pointer; flex: none; }
   .fare { background: #fff; border-radius: 22px; padding: 14px 18px; display: grid; grid-template-columns: 1fr auto; align-items: center; border: 2px solid var(--app-line); }
-  .fare .amt { font-family: "Baloo Tammudu 2", sans-serif; font-size: 48px; font-weight: 800; line-height: 1; padding-top: 8px; font-variant-numeric: tabular-nums; }
+  .fare .amt { font-size: 48px; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; }
   .fare .meta { color: var(--app-muted); font-size: 16px; }
   .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .tiles.three { grid-template-columns: 1fr 1fr 1fr; }
-  .tile { border: 3px solid var(--app-line); background: #fff; border-radius: 20px; min-height: 96px; font: inherit; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; color: var(--app-ink); }
+  .tile { border: 3px solid var(--app-line); background: #fff; border-radius: 20px; min-height: 96px; font: inherit; font-size: 18px; font-weight: 700; line-height: 1.45; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; color: var(--app-ink); }
   .tile .em { font-size: 34px; line-height: 1; }
-  .tile small { font-weight: 400; font-size: 13px; color: var(--app-muted); }
+  .tile small { font-weight: 400; font-size: 14px; color: var(--app-muted); }
   .tile.on { border-color: var(--green); background: #E4F3EA; }
   .tile.on.o { border-color: var(--orange); background: #FDEBDF; }
   .lang { min-height: 108px; font-size: 26px; }
   .nav { display: flex; border-top: 2px solid var(--app-line); background: #fff; }
-  .nav button { flex: 1; min-height: 68px; border: 0; background: transparent; font: inherit; font-size: 15px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; color: var(--app-muted); }
+  .nav button { flex: 1; min-height: 68px; border: 0; background: transparent; font: inherit; font-size: 15px; font-weight: 700; line-height: 1.4; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; color: var(--app-muted); }
   .nav button .em { font-size: 24px; }
   .nav button.on { color: var(--green-deep); }
   .card { background: #fff; border: 2px solid var(--app-line); border-radius: 22px; padding: 14px 16px; }
-  .plate { font-family: "Baloo Tammudu 2", sans-serif; font-size: 40px; font-weight: 800; letter-spacing: 2px; line-height: 1; padding-top: 8px; font-variant-numeric: tabular-nums; }
+  .plate { font-size: 38px; font-weight: 800; letter-spacing: 2px; line-height: 1.3; margin-top: 6px; font-variant-numeric: tabular-nums; }
   .otp { display: flex; gap: 10px; justify-content: center; }
-  .otp b { width: 60px; height: 76px; display: grid; place-items: center; background: #fff; border: 3px solid var(--app-line); border-radius: 16px; font-size: 40px; font-family: "Baloo Tammudu 2", sans-serif; font-variant-numeric: tabular-nums; padding-top: 6px; }
+  .otp b { width: 60px; height: 76px; display: grid; place-items: center; background: #fff; border: 3px solid var(--app-line); border-radius: 16px; font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; }
   .otp.green b { border-color: var(--green); background: #E4F3EA; }
   .otp.orange b { border-color: var(--orange); background: #FDEBDF; }
   .map { height: 170px; border-radius: 22px; background:
@@ -124,21 +124,21 @@
   .faces { display: flex; gap: 10px; justify-content: center; }
   .faces button { width: 90px; height: 90px; border-radius: 24px; border: 3px solid var(--app-line); background: #fff; font-size: 44px; cursor: pointer; }
   .faces button.on { border-color: var(--green); background: #E4F3EA; }
-  .greet { font-family: "Baloo Tammudu 2", "Noto Sans Telugu", sans-serif; font-size: 30px; font-weight: 800; padding: 6px 4px 0; line-height: 1.1; }
+  .greet { font-size: 26px; font-weight: 800; padding: 4px 4px 0; line-height: 1.45; }
   .toast { position: absolute; left: 16px; right: 16px; bottom: 90px; background: #1B1B1B; color: #fff; border-radius: 16px; padding: 12px 16px; font-size: 16px; opacity: 0; transition: opacity .25s; pointer-events: none; }
   .toast.show { opacity: 1; }
   .photo { height: 120px; border-radius: 18px; background: var(--app-soft); display: grid; place-items: center; color: var(--app-muted); font-size: 15px; border: 2px dashed var(--app-line); }
   .photo.taken { background: #FDEBDF; color: var(--orange); font-size: 48px; border-style: solid; border-color: var(--orange); }
   .splash { flex: 1; background: var(--green); color: #fff; display: grid; place-items: center; text-align: center; padding: 20px; cursor: pointer; }
-  .splash .mono { width: 120px; height: 120px; border-radius: 32px; font-size: 80px; padding-top: 12px; margin: 0 auto 16px; }
-  .splash h2 { color: #fff; font-size: 40px; }
+  .splash .mono { width: 120px; height: 120px; border-radius: 32px; font-size: 72px; margin: 0 auto 16px; }
+  .splash h2 { color: #fff; font-size: 38px; }
   .splash p { font-size: 18px; opacity: .9; margin: 6px 0 0; }
   .splash small { display: block; margin-top: 40px; opacity: .7; }
 
   /* Notes panel */
   .notes { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); }
   .notes .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .notes h2 { font-size: 26px; }
+  .notes h2 { font-size: 24px; }
   .notes p { margin: 0; line-height: 1.55; font-size: 15px; max-width: 62ch; }
   .notes ul { margin: 0; padding-left: 20px; line-height: 1.55; font-size: 15px; max-width: 62ch; }
   .says { border-left: 4px solid var(--yellow); padding: 8px 14px; background: color-mix(in srgb, var(--yellow) 14%, var(--panel)); border-radius: 0 12px 12px 0; font-size: 15px; }
@@ -197,28 +197,28 @@
   const T = {
     te: {
       tag: 'పిలిస్తే చాలు, బండి వస్తుంది', tap: 'నొక్కండి →',
-      chooseLang: 'మీ భాష ఎంచుకోండి', phoneTitle: 'ఫోన్ నంబర్', phoneVoice: 'మీ ఫోన్ నంబర్ నొక్కండి', sendOtp: 'OTP పంపు',
+      chooseLang: 'మీ భాష ఎంచుకోండి', phoneTitle: 'ఫోన్ నంబర్', phoneVoice: 'మీ ఫోన్ నంబర్ నొక్కండి', sendOtp: 'OTP పంపండి',
       otpTitle: 'OTP', otpVoice: 'మెసేజ్‌లో వచ్చిన 4 అంకెలు నొక్కండి', callOtp: '📞 కాల్ చేసి OTP చెప్పండి', next: 'సరే',
-      hello: 'నమస్తే', homeVoice: 'బైక్, ఆటో లేదా పార్సెల్ — ఒకటి నొక్కండి',
+      hello: 'నమస్కారం', homeVoice: 'బైక్, ఆటో లేదా పార్సెల్ — ఒకటి నొక్కండి',
       bike: 'బైక్', bikeSub: 'ఒక్కరికి · ₹20 నుంచి', auto: 'ఆటో', autoSub: 'కుటుంబం · సామాను · ₹30 నుంచి', parcel: 'పార్సెల్', parcelSub: 'వస్తువులు పంపండి · ₹30 నుంచి',
-      where: 'ఎక్కడికి?', family: '👨‍👩‍👧 కుటుంబం కోసం బుక్ చెయ్యి',
+      where: 'ఎక్కడికి?', family: '👨‍👩‍👧 ఇంట్లో వాళ్ళ కోసం బుక్ చెయ్యండి',
       navHome: 'హోమ్', navRides: 'నా రైడ్లు', navHelp: 'సహాయం',
       places: ['🏠 ఇల్లు', '🚌 బస్టాండ్', '🏥 ఆసుపత్రి', '🛒 సంత', '🏫 కాలేజీ', '🛕 గుడి'],
-      bookTitle: 'బండి బుక్ చెయ్యి', bookVoice: 'ఎక్కడికి పోవాలో చెప్పండి లేదా మైక్ నొక్కి మాట్లాడండి',
-      from: 'ఎక్కడ నుంచి', here: 'ప్రస్తుత స్థలం · బస్టాండ్ దగ్గర', to: 'ఎక్కడికి', toPh: 'చెప్పండి లేదా టైప్ చెయ్యండి', tellCaptain: '📞 కెప్టెన్‌కి ఫోన్‌లో చెప్తా',
-      cash: '💵 క్యాష్', upi: '📱 UPI', book: 'బండి పిలువు', km: 'కి.మీ', min: 'నిమిషాలు', night: 'రాత్రి ఛార్జి +20%',
+      bookTitle: 'బండి బుక్ చెయ్యండి', bookVoice: 'ఎక్కడికి పోవాలో చెప్పండి లేదా మైక్ నొక్కి మాట్లాడండి',
+      from: 'ఎక్కడ నుంచి', here: 'మీరున్న చోటు · బస్టాండ్ దగ్గర', to: 'ఎక్కడికి', toPh: 'చెప్పండి లేదా టైప్ చెయ్యండి', tellCaptain: '📞 కెప్టెన్‌కి ఫోన్‌లో చెప్తా',
+      cash: '💵 క్యాష్', upi: '📱 UPI', book: 'బండి పిలవండి', km: 'కి.మీ', min: 'నిమిషాలు', night: 'రాత్రి ఛార్జి +20%',
       finding: 'కెప్టెన్ వెతుకుతున్నాం', findingVoice: 'దగ్గర్లో బండి వెతుకుతున్నాం, కొంచెం ఆగండి', nearby: 'దగ్గర్లో 4 బండ్లు ఉన్నాయి', cancel: '❌ రద్దు',
       rideTitle: 'కెప్టెన్ వస్తున్నారు · 3 నిమిషాలు', rideVoice: 'శ్రీనివాస్ వస్తున్నారు. బండి నంబర్ TS 32 A 1234. ఈ నాలుగు అంకెలు కెప్టెన్‌కి చెప్పండి',
       tellOtp: 'కెప్టెన్‌కి ఈ నంబర్ చెప్పండి', call: '📞 కాల్ చెయ్యండి', sos: '🆘', arrived: 'వచ్చారు ✔',
       doneTitle: 'పూర్తయింది', doneVoice: 'ప్రయాణం పూర్తయింది. క్యాష్ నలభై ఐదు రూపాయలు ఇవ్వండి', giveCash: 'క్యాష్ ఇవ్వండి', showQr: 'UPI QR చూపించండి', how: 'ప్రయాణం ఎలా ఉంది?', tip: 'టిప్', ok: 'సరే',
-      pTitle: 'పార్సెల్', p1Voice: 'ఎవరికి పంపాలి? వాళ్ళ ఫోన్ నంబర్, ఊరు చెప్పండి', p2Voice: 'ఏమి పంపుతున్నారు? చిన్నది, మధ్యస్థం, పెద్దది — ఒకటి నొక్కండి', p3Voice: 'డబ్బులు ఎవరు ఇస్తారు? మీరా, అందుకునేవారా?',
-      p1: 'ఎక్కడికి పంపాలి?', rphone: 'అందుకునేవారి ఫోన్', p2: 'ఏమి పంపుతున్నారు?', small: 'చిన్నది', smallS: 'బ్యాగ్ · 5 కిలోల లోపు', medium: 'మధ్యస్థం', mediumS: 'బాక్స్ · 15 కిలోల లోపు', bigp: 'పెద్దది', bigS: 'బస్తా · ఆటో', takePhoto: '📷 ఫోటో తియ్యండి', photoTaken: 'ఫోటో తీశారు ✔',
-      p3: 'డబ్బులు ఎవరు ఇస్తారు?', me: '🙋 నేను', receiver: '🙍 అందుకునేవారు', sendParcel: 'పార్సెల్ పంపు',
-      pFinding: 'పార్సెల్‌కి బండి వెతుకుతున్నాం', pRideTitle: 'పార్సెల్ తీసుకెళ్తున్నారు', pRideVoice: 'కెప్టెన్ వస్తున్నారు. ఈ పికప్ నంబర్ కెప్టెన్‌కి చెప్పండి. డెలివరీ నంబర్ అందుకునేవారికి మెసేజ్ వెళ్ళింది', pickupOtp: 'పికప్ OTP', deliveryOtp: 'డెలివరీ OTP · అందుకునేవారికి పంపాం', share: '💬 WhatsApp‌లో ట్రాకింగ్ పంపు',
+      pTitle: 'పార్సెల్', p1Voice: 'ఎవరికి పంపాలి? వాళ్ళ ఫోన్ నంబర్, ఊరు చెప్పండి', p2Voice: 'ఏం పంపుతున్నారు? చిన్నది, మధ్యది, పెద్దది — ఒకటి నొక్కండి', p3Voice: 'డబ్బులు ఎవరు ఇస్తారు? మీరా, అందుకునేవారా?',
+      p1: 'ఎక్కడికి పంపాలి?', rphone: 'అందుకునేవారి ఫోన్', p2: 'ఏం పంపుతున్నారు?', small: 'చిన్నది', smallS: 'బ్యాగ్ · 5 కిలోల లోపు', medium: 'మధ్యది', mediumS: 'బాక్స్ · 15 కిలోల లోపు', bigp: 'పెద్దది', bigS: 'బస్తా · ఆటో', takePhoto: '📷 ఫోటో తియ్యండి', photoTaken: 'ఫోటో తీశారు ✔',
+      p3: 'డబ్బులు ఎవరు ఇస్తారు?', me: '🙋 నేను', receiver: '🙍 అందుకునేవారు', sendParcel: 'పార్సెల్ పంపండి',
+      pFinding: 'పార్సెల్‌కి బండి వెతుకుతున్నాం', pRideTitle: 'పార్సెల్ తీసుకెళ్తున్నారు', pRideVoice: 'కెప్టెన్ వస్తున్నారు. ఈ పికప్ నంబర్ కెప్టెన్‌కి చెప్పండి. డెలివరీ నంబర్ అందుకునేవారికి మెసేజ్ వెళ్ళింది', pickupOtp: 'పికప్ OTP', deliveryOtp: 'డెలివరీ OTP · అందుకునేవారికి పంపాం', share: '💬 WhatsApp‌లో ట్రాకింగ్ పంపండి',
       ridesTitle: 'నా రైడ్లు', ridesVoice: 'మీ పాత రైడ్లు', today: 'ఈరోజు', yday: 'నిన్న',
-      helpTitle: 'సహాయం', helpVoice: 'సహాయం కావాలంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి, మేము మాట్లాడతాం', callSupport: '📞 సహాయానికి కాల్ (08455 …)', wa: '💬 WhatsApp‌లో మాట్లాడు', changeLang: '🌐 భాష మార్చు', howTo: '▶️ ఎలా బుక్ చెయ్యాలి? (వీడియో)',
-      missed: 'యాప్ లేకపోతే: మిస్డ్ కాల్ ఇవ్వండి, మేమే బుక్ చేస్తాం',
-      listening: '🎤 వింటున్నాం…', heard: 'బస్టాండ్', noSpeech: 'ఈ బ్రౌజర్‌లో మైక్ లేదు — నమూనా పెట్టాం', spoken: '🔊 చదువుతున్నాం', fam: 'కుటుంబం కోసం బుక్ చెయ్యడం (S11) — యాప్‌లో', callDemo: '📞 ఫోన్ డయలర్ తెరుస్తుంది', sosDemo: '🆘 112కి కాల్ + లొకేషన్ SMS',
+      helpTitle: 'సహాయం', helpVoice: 'సహాయం కావాలంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి, మేం మాట్లాడతాం', callSupport: '📞 సహాయం కోసం కాల్ చెయ్యండి', wa: '💬 WhatsApp‌లో మాట్లాడండి', changeLang: '🌐 భాష మార్చండి', howTo: '▶️ ఎలా బుక్ చెయ్యాలి? (వీడియో)',
+      missed: 'యాప్ లేకపోతే మిస్డ్ కాల్ ఇవ్వండి, మేమే బుక్ చేసి పెడతాం',
+      listening: '🎤 వింటున్నాం…', heard: 'బస్టాండ్', noSpeech: 'ఈ బ్రౌజర్‌లో మైక్ లేదు — ఉదాహరణ పెట్టాం', spoken: '🔊 చదివి వినిపిస్తున్నాం', fam: 'ఇంట్లో వాళ్ళ కోసం బుక్ చెయ్యడం (S11) యాప్‌లో ఉంది', callDemo: '📞 ఫోన్ డయలర్ తెరుస్తుంది', sosDemo: '🆘 112కి కాల్ + లొకేషన్ SMS',
     },
     en: {
       tag: 'Just call, the bandi comes', tap: 'Tap →',
@@ -387,7 +387,7 @@
         <button class="big danger" data-toast="${t('sosDemo')}" aria-label="SOS">${t('sos')}</button>
       </div></div>`; },
     done: () => { const f = fare(); return `${status()}${bar(t('doneTitle'), t('doneVoice'), 'home')}<div class="body" style="text-align:center">
-      <div style="font-family:'Baloo Tammudu 2',sans-serif;font-size:72px;font-weight:800;line-height:1;padding-top:14px;font-variant-numeric:tabular-nums">₹${f.amt}</div>
+      <div style="font-size:72px;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums">₹${f.amt}</div>
       <div style="font-size:22px;font-weight:700">${state.pay === 'cash' ? t('giveCash') : t('showQr')} ${state.pay === 'cash' ? '💵' : '📱'}</div>
       <div class="voice" style="margin-top:8px">${t('how')}</div>
       <div class="faces">${['😊','😐','😞'].map(f => `<button class="${state.face === f ? 'on' : ''}" data-face="${f}">${f}</button>`).join('')}</div>
