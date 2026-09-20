@@ -1,0 +1,20 @@
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local config
+local.properties
+
+# IDE
+*.iml
+.idea/
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Misc
+*.log
+.DS_Store

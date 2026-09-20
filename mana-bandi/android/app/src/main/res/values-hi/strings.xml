@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">मन बंडी</string>
+
+    <!-- Common -->
+    <string name="speak_cd">पढ़कर सुनाएँ</string>
+    <string name="back">पीछे</string>
+    <string name="next">आगे</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="default_name">दोस्त</string>
+
+    <!-- Language -->
+    <string name="lang_title">अपनी भाषा चुनें</string>
+    <string name="lang_speech">अपनी भाषा चुनें। एक पर दबाएँ।</string>
+
+    <!-- Phone -->
+    <string name="phone_title">आपका मोबाइल नंबर</string>
+    <string name="phone_hint">10 अंकों का नंबर</string>
+    <string name="phone_next">OTP भेजें</string>
+    <string name="phone_speech">अपना मोबाइल नंबर डालें। आपको OTP मिलेगा।</string>
+
+    <!-- OTP -->
+    <string name="otp_title">4 अंकों का कोड डालें</string>
+    <string name="otp_sub">%1$s पर भेजा गया</string>
+    <string name="otp_verify">आगे बढ़ें</string>
+    <string name="otp_call">OTP के लिए कॉल करें</string>
+    <string name="otp_call_stub">हम अभी आपको कॉल करेंगे</string>
+    <string name="otp_demo_hint">डेमो: कोई भी कोड चलेगा</string>
+    <string name="otp_speech">आपके फ़ोन पर आया 4 अंकों का कोड डालें।</string>
+
+    <!-- Home -->
+    <string name="home_greeting">नमस्ते, %1$s</string>
+    <string name="home_what">कहाँ जाना है?</string>
+    <string name="home_speech">बाइक, ऑटो या पार्सल। जो चाहिए उस पर दबाएँ।</string>
+    <string name="service_bike">बाइक</string>
+    <string name="service_bike_sub">1 आदमी, जल्दी</string>
+    <string name="service_auto">ऑटो</string>
+    <string name="service_auto_sub">3 लोग, आराम से</string>
+    <string name="service_parcel">पार्सल</string>
+    <string name="service_parcel_sub">बैग या डिब्बा भेजें</string>
+    <string name="saved_places">मेरी जगहें</string>
+    <string name="place_home">घर</string>
+    <string name="place_bus">बस स्टैंड</string>
+    <string name="place_hospital">अस्पताल</string>
+    <string name="place_market">बाज़ार</string>
+    <string name="nav_home">होम</string>
+    <string name="nav_rides">मेरी सवारी</string>
+    <string name="nav_help">मदद</string>
+
+    <!-- Book ride -->
+    <string name="book_title_bike">बाइक बुलाएँ</string>
+    <string name="book_title_auto">ऑटो बुलाएँ</string>
+    <string name="book_speech">बोलें या लिखें कहाँ जाना है। फिर गाड़ी बुलाओ दबाएँ।</string>
+    <string name="pickup_label">कहाँ से</string>
+    <string name="pickup_current">अभी की जगह (नारायणखेड़)</string>
+    <string name="drop_label">कहाँ जाना है?</string>
+    <string name="drop_hint">बोलें या लिखें</string>
+    <string name="mic_speak">बोलें</string>
+    <string name="mic_prompt">अब बोलें</string>
+    <string name="mic_unavailable">इस फ़ोन में बोलकर लिखना नहीं है</string>
+    <string name="fare_distance">दूरी</string>
+    <string name="fare_amount">किराया</string>
+    <string name="km">%1$d कि.मी.</string>
+    <string name="pay_title">पैसे कैसे देंगे?</string>
+    <string name="pay_cash">नकद</string>
+    <string name="pay_upi">UPI</string>
+    <string name="book_now">गाड़ी बुलाओ</string>
+
+    <!-- Finding captain -->
+    <string name="finding_title">गाड़ी ढूँढ रहे हैं…</string>
+    <string name="finding_sub">थोड़ा रुकें</string>
+    <string name="finding_speech">हम आपके लिए गाड़ी ढूँढ रहे हैं। थोड़ा रुकें।</string>
+
+    <!-- Ride -->
+    <string name="ride_captain_coming">कैप्टन आ रहा है</string>
+    <string name="ride_speech">कैप्टन आ रहा है। गाड़ी नंबर देखें। यह OTP कैप्टन को बताएँ।</string>
+    <string name="captain">कैप्टन</string>
+    <string name="ride_vehicle">गाड़ी नंबर</string>
+    <string name="ride_otp">यह OTP कैप्टन को बताएँ</string>
+    <string name="ride_delivery_otp">डिलीवरी OTP – पाने वाले को बताएँ</string>
+    <string name="call_captain">कैप्टन को कॉल</string>
+    <string name="sos">SOS</string>
+
+    <!-- Parcel -->
+    <string name="parcel_title">पार्सल भेजें</string>
+    <string name="parcel_step1">कहाँ?</string>
+    <string name="parcel_step2">क्या?</string>
+    <string name="parcel_step3">पैसे कौन?</string>
+    <string name="parcel_speech1">बताएँ पार्सल किसे और कहाँ भेजना है।</string>
+    <string name="parcel_speech2">पार्सल कितना बड़ा है चुनें। चाहें तो फ़ोटो लें।</string>
+    <string name="parcel_speech3">पैसे कौन देगा चुनें, फिर ठीक है दबाएँ।</string>
+    <string name="parcel_receiver_phone">पाने वाले का फ़ोन</string>
+    <string name="parcel_drop">कहाँ भेजना है?</string>
+    <string name="size_small">छोटा (बैग)</string>
+    <string name="size_medium">मध्यम (डिब्बा)</string>
+    <string name="size_big">बड़ा (बोरी)</string>
+    <string name="take_photo">फ़ोटो लें</string>
+    <string name="photo_taken">फ़ोटो जुड़ गई</string>
+    <string name="camera_unavailable">कैमरा नहीं मिला</string>
+    <string name="pay_me">मैं</string>
+    <string name="pay_receiver">पाने वाला देगा</string>
+    <string name="confirm">ठीक है, भेजें</string>
+
+    <!-- My rides -->
+    <string name="rides_title">मेरी सवारी</string>
+    <string name="rides_speech">ये आपकी पुरानी सवारियाँ हैं।</string>
+
+    <!-- Help -->
+    <string name="help_title">मदद</string>
+    <string name="help_speech">मदद के लिए कॉल करें या व्हाट्सऐप करें।</string>
+    <string name="help_call">सपोर्ट को कॉल</string>
+    <string name="help_whatsapp">व्हाट्सऐप</string>
+    <string name="help_language">भाषा बदलें</string>
+    <string name="help_how">गाड़ी कैसे बुलाएँ?</string>
+    <string name="how1">बाइक, ऑटो या पार्सल चुनें</string>
+    <string name="how2">बताएँ कहाँ जाना है</string>
+    <string name="how3">कैप्टन आएगा, नकद दें</string>
+    <string name="whatsapp_msg">नमस्ते, मुझे मन बंडी में मदद चाहिए।</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mana Bandi design system -->
+    <color name="primary">#128A46</color>       <!-- Telangana auto green -->
+    <color name="accent">#FFC72C</color>        <!-- turmeric yellow (bike) -->
+    <color name="parcel">#E8641B</color>        <!-- parcel orange -->
+    <color name="danger">#D32F2F</color>
+    <color name="surface">#FFFDF7</color>
+    <color name="text">#1B1B1B</color>
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">منا بنڈی</string>
+
+    <!-- Common -->
+    <string name="speak_cd">پڑھ کر سنائیں</string>
+    <string name="back">پیچھے</string>
+    <string name="next">آگے</string>
+    <string name="cancel">منسوخ</string>
+    <string name="default_name">دوست</string>
+
+    <!-- Language -->
+    <string name="lang_title">اپنی زبان چنیں</string>
+    <string name="lang_speech">اپنی زبان چنیں۔ ایک پر دبائیں۔</string>
+
+    <!-- Phone -->
+    <string name="phone_title">آپ کا موبائل نمبر</string>
+    <string name="phone_hint">10 ہندسوں کا نمبر</string>
+    <string name="phone_next">OTP بھیجیں</string>
+    <string name="phone_speech">اپنا موبائل نمبر ڈالیں۔ آپ کو OTP ملے گا۔</string>
+
+    <!-- OTP -->
+    <string name="otp_title">4 ہندسوں کا کوڈ ڈالیں</string>
+    <string name="otp_sub">%1$s پر بھیجا گیا</string>
+    <string name="otp_verify">آگے</string>
+    <string name="otp_call">OTP کے لیے کال کریں</string>
+    <string name="otp_call_stub">ہم ابھی آپ کو کال کریں گے</string>
+    <string name="otp_demo_hint">ڈیمو: کوئی بھی کوڈ چلے گا</string>
+    <string name="otp_speech">آپ کے فون پر آیا 4 ہندسوں کا کوڈ ڈالیں۔</string>
+
+    <!-- Home -->
+    <string name="home_greeting">السلام علیکم، %1$s</string>
+    <string name="home_what">کہاں جانا ہے؟</string>
+    <string name="home_speech">بائیک، آٹو یا پارسل۔ جو چاہیے اس پر دبائیں۔</string>
+    <string name="service_bike">بائیک</string>
+    <string name="service_bike_sub">1 آدمی، جلدی</string>
+    <string name="service_auto">آٹو</string>
+    <string name="service_auto_sub">3 لوگ، آرام سے</string>
+    <string name="service_parcel">پارسل</string>
+    <string name="service_parcel_sub">بیگ یا ڈبہ بھیجیں</string>
+    <string name="saved_places">میری جگہیں</string>
+    <string name="place_home">گھر</string>
+    <string name="place_bus">بس اسٹینڈ</string>
+    <string name="place_hospital">ہسپتال</string>
+    <string name="place_market">بازار</string>
+    <string name="nav_home">ہوم</string>
+    <string name="nav_rides">میری سواریاں</string>
+    <string name="nav_help">مدد</string>
+
+    <!-- Book ride -->
+    <string name="book_title_bike">بائیک بلائیں</string>
+    <string name="book_title_auto">آٹو بلائیں</string>
+    <string name="book_speech">بولیں یا لکھیں کہاں جانا ہے۔ پھر گاڑی بلاؤ دبائیں۔</string>
+    <string name="pickup_label">کہاں سے</string>
+    <string name="pickup_current">موجودہ جگہ (نارائن کھیڑ)</string>
+    <string name="drop_label">کہاں جانا ہے؟</string>
+    <string name="drop_hint">بولیں یا لکھیں</string>
+    <string name="mic_speak">بولیں</string>
+    <string name="mic_prompt">اب بولیں</string>
+    <string name="mic_unavailable">اس فون میں بول کر لکھنا نہیں ہے</string>
+    <string name="fare_distance">فاصلہ</string>
+    <string name="fare_amount">کرایہ</string>
+    <string name="km">%1$d کلومیٹر</string>
+    <string name="pay_title">پیسے کیسے دیں گے؟</string>
+    <string name="pay_cash">نقد</string>
+    <string name="pay_upi">UPI</string>
+    <string name="book_now">گاڑی بلاؤ</string>
+
+    <!-- Finding captain -->
+    <string name="finding_title">گاڑی ڈھونڈ رہے ہیں…</string>
+    <string name="finding_sub">تھوڑا انتظار کریں</string>
+    <string name="finding_speech">ہم آپ کے لیے گاڑی ڈھونڈ رہے ہیں۔ تھوڑا انتظار کریں۔</string>
+
+    <!-- Ride -->
+    <string name="ride_captain_coming">کیپٹن آ رہا ہے</string>
+    <string name="ride_speech">کیپٹن آ رہا ہے۔ گاڑی نمبر دیکھیں۔ یہ OTP کیپٹن کو بتائیں۔</string>
+    <string name="captain">کیپٹن</string>
+    <string name="ride_vehicle">گاڑی نمبر</string>
+    <string name="ride_otp">یہ OTP کیپٹن کو بتائیں</string>
+    <string name="ride_delivery_otp">ڈیلیوری OTP – وصول کرنے والے کو بتائیں</string>
+    <string name="call_captain">کیپٹن کو کال</string>
+    <string name="sos">SOS</string>
+
+    <!-- Parcel -->
+    <string name="parcel_title">پارسل بھیجیں</string>
+    <string name="parcel_step1">کہاں؟</string>
+    <string name="parcel_step2">کیا؟</string>
+    <string name="parcel_step3">پیسے کون؟</string>
+    <string name="parcel_speech1">بتائیں پارسل کسے اور کہاں بھیجنا ہے۔</string>
+    <string name="parcel_speech2">پارسل کتنا بڑا ہے چنیں۔ چاہیں تو فوٹو لیں۔</string>
+    <string name="parcel_speech3">پیسے کون دے گا چنیں، پھر ٹھیک ہے دبائیں۔</string>
+    <string name="parcel_receiver_phone">وصول کرنے والے کا فون</string>
+    <string name="parcel_drop">کہاں بھیجنا ہے؟</string>
+    <string name="size_small">چھوٹا (بیگ)</string>
+    <string name="size_medium">درمیانہ (ڈبہ)</string>
+    <string name="size_big">بڑا (بوری)</string>
+    <string name="take_photo">فوٹو لیں</string>
+    <string name="photo_taken">فوٹو شامل ہو گئی</string>
+    <string name="camera_unavailable">کیمرہ نہیں ملا</string>
+    <string name="pay_me">میں</string>
+    <string name="pay_receiver">وصول کرنے والا دے گا</string>
+    <string name="confirm">ٹھیک ہے، بھیجیں</string>
+
+    <!-- My rides -->
+    <string name="rides_title">میری سواریاں</string>
+    <string name="rides_speech">یہ آپ کی پرانی سواریاں ہیں۔</string>
+
+    <!-- Help -->
+    <string name="help_title">مدد</string>
+    <string name="help_speech">مدد کے لیے کال کریں یا واٹس ایپ کریں۔</string>
+    <string name="help_call">سپورٹ کو کال</string>
+    <string name="help_whatsapp">واٹس ایپ</string>
+    <string name="help_language">زبان بدلیں</string>
+    <string name="help_how">گاڑی کیسے بلائیں؟</string>
+    <string name="how1">بائیک، آٹو یا پارسل چنیں</string>
+    <string name="how2">بتائیں کہاں جانا ہے</string>
+    <string name="how3">کیپٹن آئے گا، نقد دیں</string>
+    <string name="whatsapp_msg">السلام علیکم، مجھے منا بنڈی میں مدد چاہیے۔</string>
+</resources>
