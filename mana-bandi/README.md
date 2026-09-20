@@ -18,8 +18,9 @@ mana-bandi/
   docs/02-UX-SCREENS.md     screen‑by‑screen spec with Telugu copy and what the app speaks on each screen
   docs/03-LAUNCH-PLAN.md    Narayanakhed pilot → Zaheerabad → Sangareddy district → Telangana & Andhra towns; team, cost, risks
   docs/04-ARCHITECTURE.md   apps, backend services, data model, dispatch / voice‑OTP / missed‑call / parcel COD flows
-  prototype/index.html      clickable phone prototype (Telugu / English) with design notes — open in any browser
+  prototype/index.html      clickable phone prototype of BOTH apps (rider + captain), Telugu / English, with design notes
   android/                  Kotlin + Jetpack Compose starter for the rider app (te, en, hi, kn, mr, ur)
+  android-captain/          Kotlin + Jetpack Compose starter for the captain (driver) app, same six languages
 ```
 
 ## The five rules the whole product follows
@@ -32,11 +33,11 @@ mana-bandi/
 
 ## Try the prototype
 
-Open `prototype/index.html` in a browser (Chrome on Android gives Telugu speech and mic). Use the S0–S10 buttons to jump between screens.
+Open `prototype/index.html` in a browser (Chrome on Android gives Telugu speech and mic). Switch between **Rider app** and **Captain app** at the top; use the S0–S10 / C0–C8 buttons to jump between screens. In the captain app, tap the big toggle to go online and a ride request arrives a few seconds later.
 
-## Run the Android starter
+## Run the Android starters
 
-See `android/README.md`. It opens in Android Studio, defaults to Telugu, and contains every rider screen with fake data so the flows can be tested on a phone before the backend exists.
+See `android/README.md` (rider) and `android-captain/README.md` (captain). Both open in Android Studio, default to Telugu, and contain every screen with fake data so the flows can be tested on a phone before the backend exists. The captain app has a dark‑green header and icon so drivers can tell the two apart.
 
 ## Where the backend goes
 

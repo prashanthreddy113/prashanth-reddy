@@ -135,6 +135,40 @@
   .splash p { font-size: 18px; opacity: .9; margin: 6px 0 0; }
   .splash small { display: block; margin-top: 40px; opacity: .7; }
 
+  /* Captain mode */
+  .cbar { background: var(--green-deep); color: #fff; }
+  .cbar h2 { color: #fff; } .cbar .icon-btn { background: rgba(255,255,255,.22); color: #fff; }
+  .online { border: 0; border-radius: 26px; min-height: 230px; width: 100%; font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; color: #fff; background: #6E746F; position: relative; }
+  .online.on { background: var(--green); }
+  .online .em { font-size: 64px; line-height: 1; }
+  .online b { font-size: 26px; line-height: 1.45; text-align: center; }
+  .online span { font-size: 17px; opacity: .9; text-align: center; line-height: 1.5; }
+  .online.on::before { content: ""; position: absolute; inset: 0; border-radius: 26px; border: 4px solid #fff; opacity: 0; animation: ring 2s ease-out infinite; }
+  .stat { background: #fff; border: 2px solid var(--app-line); border-radius: 22px; padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat div { text-align: center; } .stat small { color: var(--app-muted); font-size: 14px; display: block; }
+  .stat b { font-size: 40px; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .req { border-radius: 22px; padding: 16px; color: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .req .from { font-size: 26px; font-weight: 800; line-height: 1.45; }
+  .req .meta { font-size: 18px; opacity: .95; line-height: 1.5; }
+  .req .amt { font-size: 56px; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .accept { min-height: 130px; font-size: 30px; border-radius: 26px; }
+  .count { height: 12px; border-radius: 6px; background: var(--app-soft); overflow: hidden; }
+  .count i { display: block; height: 100%; background: var(--green); width: 100%; animation: shrink 15s linear forwards; }
+  @keyframes shrink { from { width: 100%; } to { width: 0; } }
+  .slide { position: relative; height: 76px; border-radius: 38px; background: #E4F3EA; border: 3px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 700; color: var(--green-deep); overflow: hidden; }
+  .slide input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; margin: 0; }
+  .slide .thumb { position: absolute; left: 4px; top: 4px; width: 64px; height: 62px; border-radius: 32px; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 30px; pointer-events: none; transition: left .05s; }
+  .qr { width: 180px; height: 180px; margin: 0 auto; background: #fff; border: 3px solid var(--app-line); border-radius: 14px; display: grid; grid-template-columns: repeat(12, 1fr); padding: 8px; gap: 1px; }
+  .qr i { background: #1B1B1B; border-radius: 1px; } .qr i.w { background: transparent; }
+  .cash { font-size: 64px; font-weight: 800; line-height: 1.2; text-align: center; font-variant-numeric: tabular-nums; }
+  .kyc { display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid var(--app-line); border-radius: 18px; padding: 10px 14px; min-height: 68px; }
+  .kyc .em { font-size: 30px; } .kyc b { flex: 1; font-size: 18px; }
+  .kyc button { min-height: 48px; border: 2px solid var(--green); background: #fff; color: var(--green-deep); border-radius: 999px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .kyc.done { border-color: var(--green); background: #E4F3EA; }
+  .mode { display: flex; gap: 6px; }
+  .mode button { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 14px; cursor: pointer; }
+  .mode button[aria-pressed="true"] { background: var(--green-deep); border-color: var(--green-deep); color: #fff; }
+
   /* Notes panel */
   .notes { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); }
   .notes .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
@@ -155,12 +189,18 @@
     <div class="mono">మ</div>
     <div>
       <h1>మన బండి · Mana Bandi</h1>
-      <p>Clickable prototype of the rider app · Narayanakhed / Zaheerabad launch</p>
+      <p>Clickable prototype · rider app and captain (driver) app · Narayanakhed / Zaheerabad launch</p>
     </div>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+  <div class="mode" role="group" aria-label="Which app">
+    <button type="button" id="mode-rider" aria-pressed="true">🙋 Rider app</button>
+    <button type="button" id="mode-captain" aria-pressed="false">🧢 Captain app</button>
   </div>
   <div class="switch" role="group" aria-label="Prototype language">
     <button type="button" id="lang-te" aria-pressed="true">తెలుగు</button>
     <button type="button" id="lang-en" aria-pressed="false">English</button>
+  </div>
   </div>
 </header>
 
@@ -184,6 +224,7 @@
       <span><i style="background:#128A46"></i>Auto</span>
       <span><i style="background:#E8641B"></i>Parcel</span>
       <span><i style="background:#D32F2F"></i>Cancel / SOS only</span>
+      <span><i style="background:#0B5E2F"></i>Captain app header</span>
     </div>
   </aside>
 </div>
@@ -192,7 +233,7 @@
 (function () {
   const $ = (s, r) => (r || document).querySelector(s);
   const screen = $('#screen');
-  const state = { lang: 'te', screen: 'splash', service: 'bike', drop: '', pay: 'cash', parcelStep: 1, size: 'm', payer: 'me', photo: false, face: null, name: 'లక్ష్మి' };
+  const state = { mode: 'rider', lang: 'te', screen: 'splash', c: { online: false, earn: 480, trips: 7, req: 0, otpOk: false, photo: false },  service: 'bike', drop: '', pay: 'cash', parcelStep: 1, size: 'm', payer: 'me', photo: false, face: null, name: 'లక్ష్మి' };
 
   const T = {
     te: {
@@ -218,6 +259,18 @@
       ridesTitle: 'నా రైడ్లు', ridesVoice: 'మీ పాత రైడ్లు', today: 'ఈరోజు', yday: 'నిన్న',
       helpTitle: 'సహాయం', helpVoice: 'సహాయం కావాలంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి, మేం మాట్లాడతాం', callSupport: '📞 సహాయం కోసం కాల్ చెయ్యండి', wa: '💬 WhatsApp‌లో మాట్లాడండి', changeLang: '🌐 భాష మార్చండి', howTo: '▶️ ఎలా బుక్ చెయ్యాలి? (వీడియో)',
       missed: 'యాప్ లేకపోతే మిస్డ్ కాల్ ఇవ్వండి, మేమే బుక్ చేసి పెడతాం',
+
+      c_home: 'మన బండి కెప్టెన్', c_offline: 'ఆఫ్‌లైన్', c_offlineSub: 'నొక్కి ఆన్ చెయ్యండి', c_online: 'ఆన్‌లైన్', c_onlineSub: 'రైడ్ల కోసం చూస్తున్నాం…', c_homeVoice: 'రైడ్లు కావాలంటే పెద్ద బటన్ నొక్కి ఆన్ అవ్వండి',
+      c_today: 'ఈరోజు సంపాదన', c_trips: 'రైడ్లు', c_earn: 'సంపాదన', c_office: 'ఆఫీస్', c_navHome: 'హోమ్', c_navEarn: 'సంపాదన', c_navHelp: 'సాయం',
+      c_reqTitle: 'కొత్త రైడ్ వచ్చింది', c_reqVoice: 'కొత్త రైడ్. బస్టాండ్ నుంచి, 2 కిలోమీటర్లు దూరం. 45 రూపాయలు. ఒప్పుకోవాలంటే పెద్ద ఆకుపచ్చ బటన్ నొక్కండి', c_from: 'పికప్', c_to: 'డ్రాప్', c_away: 'మీ నుంచి', c_accept: 'ఒప్పుకోండి', c_reject: 'వద్దు', c_secs: 'సెకన్లు',
+      c_pickTitle: 'పికప్‌కి వెళ్ళండి', c_pickVoice: 'రైడర్ దగ్గరికి వెళ్ళండి. దారి కావాలంటే దారి చూపండి నొక్కండి. చేరాక వచ్చాను నొక్కండి', c_rider: 'రైడర్', c_callRider: 'రైడర్‌కి కాల్ చెయ్యండి', c_nav: 'దారి చూపండి', c_arrived: 'వచ్చాను',
+      c_otpTitle: 'రైడర్ చెప్పే 4 అంకెలు', c_otpVoice: 'రైడర్ చెప్పే నాలుగు అంకెలు పెట్టండి. అప్పుడే రైడ్ మొదలవుతుంది', c_pOtpTitle: 'పార్సెల్ పికప్ OTP', c_pPhoto: 'పార్సెల్ ఫోటో తియ్యండి', c_start: 'రైడ్ మొదలు పెట్టండి',
+      c_tripTitle: 'ప్రయాణంలో', c_tripVoice: 'డ్రాప్ చోటుకి వెళ్ళండి. చేరాక కుడి వైపుకి జరపండి', c_slide: 'చేరాక జరపండి →', c_finish: 'పూర్తయింది',
+      c_collectTitle: 'డబ్బులు తీసుకోండి', c_collectVoice: 'నలభై ఐదు రూపాయలు క్యాష్ తీసుకోండి. తీసుకున్నాక ఆకుపచ్చ బటన్ నొక్కండి', c_cash: 'క్యాష్ తీసుకోండి', c_upi: 'QR చూపించండి', c_dPhoto: 'డెలివరీ ఫోటో తియ్యండి', c_dOtp: 'అందుకునేవారు చెప్పే OTP', c_collected: 'తీసుకున్నాను',
+      c_earnTitle: 'నా సంపాదన', c_earnVoice: 'ఈరోజు, ఈ వారం సంపాదన. సెటిల్‌మెంట్ ఆఫీస్‌లో అడగండి', c_week: 'ఈ వారం', c_settle: 'ఆఫీస్ ఇవ్వాల్సింది', c_commission: 'కమీషన్ 0% (మొదటి 3 నెలలు)', c_callOffice: 'ఆఫీస్‌కి కాల్ చెయ్యండి',
+      c_helpTitle: 'సాయం', c_helpVoice: 'సాయం కావాలంటే ఆఫీస్‌కి కాల్ చెయ్యండి', c_how1: 'ఆన్ అవ్వండి', c_how2: 'రైడ్ ఒప్పుకోండి', c_how3: 'OTP పెట్టండి', c_how4: 'క్యాష్ తీసుకోండి',
+      c_kycTitle: 'ఆఫీస్‌లో నమోదు', c_kycVoice: 'ఆధార్, లైసెన్స్, ఆర్‌సీ ఫోటోలు తియ్యండి. ఆఫీస్ వాళ్ళు మిగతాది చేస్తారు', c_aadhaar: 'ఆధార్', c_dl: 'లైసెన్స్', c_rc: 'ఆర్‌సీ', c_selfie: 'మీ ఫోటో', c_bank: 'బ్యాంక్ / UPI', c_takePhoto: '📷 ఫోటో', c_done: 'పూర్తయింది', c_plate: 'బండి నంబర్',
+      c_newReq: '🔔 కొత్త రైడ్ వచ్చింది', c_navDemo: '🧭 Google Maps తెరుస్తుంది', c_riderName: 'లక్ష్మి', c_p1: 'బస్టాండ్', c_p2: 'దవాఖానా', c_p3: 'బజారు (శంకర్ కిరాణా)', c_d1: 'పాత పోలీస్ స్టేషన్', c_d2: 'ఆర్‌టీసీ డిపో', c_d3: 'గంగాపూర్',
       listening: '🎤 వింటున్నాం…', heard: 'బస్టాండ్', noSpeech: 'ఈ బ్రౌజర్‌లో మైక్ లేదు — ఉదాహరణ పెట్టాం', spoken: '🔊 చదివి వినిపిస్తున్నాం', fam: 'ఇంట్లో వాళ్ళ కోసం బుక్ చెయ్యడం (S11) యాప్‌లో ఉంది', callDemo: '📞 ఫోన్ డయలర్ తెరుస్తుంది', sosDemo: '🆘 112కి కాల్ + లొకేషన్ SMS',
     },
     en: {
@@ -243,6 +296,18 @@
       ridesTitle: 'My rides', ridesVoice: 'Your past rides', today: 'Today', yday: 'Yesterday',
       helpTitle: 'Help', helpVoice: 'Need help? Tap the big green button and we will talk', callSupport: '📞 Call support (08455 …)', wa: '💬 Chat on WhatsApp', changeLang: '🌐 Change language', howTo: '▶️ How to book? (video)',
       missed: 'No app? Give a missed call, we book for you',
+
+      c_home: 'Mana Bandi Captain', c_offline: 'OFFLINE', c_offlineSub: 'Tap to go online', c_online: 'ONLINE', c_onlineSub: 'Looking for rides…', c_homeVoice: 'To get rides, tap the big button and go online',
+      c_today: 'Earned today', c_trips: 'Rides', c_earn: 'Earnings', c_office: 'Office', c_navHome: 'Home', c_navEarn: 'Earnings', c_navHelp: 'Help',
+      c_reqTitle: 'New ride', c_reqVoice: 'New ride. From the bus stand, 2 kilometres away. 45 rupees. Tap the big green button to accept', c_from: 'Pickup', c_to: 'Drop', c_away: 'from you', c_accept: 'Accept', c_reject: 'No', c_secs: 'seconds',
+      c_pickTitle: 'Go to pickup', c_pickVoice: 'Go to the rider. Tap Navigate for directions. Tap Arrived when you reach', c_rider: 'Rider', c_callRider: 'Call rider', c_nav: 'Navigate', c_arrived: 'Arrived',
+      c_otpTitle: 'Rider\'s 4 digits', c_otpVoice: 'Type the four digits the rider tells you. Only then the ride starts', c_pOtpTitle: 'Parcel pickup OTP', c_pPhoto: 'Photo of the parcel', c_start: 'Start ride',
+      c_tripTitle: 'On trip', c_tripVoice: 'Go to the drop place. Slide right when you reach', c_slide: 'Slide when you reach →', c_finish: 'Finished',
+      c_collectTitle: 'Collect money', c_collectVoice: 'Collect forty-five rupees cash. Tap the green button after collecting', c_cash: 'Collect cash', c_upi: 'Show QR', c_dPhoto: 'Delivery photo', c_dOtp: 'OTP from the receiver', c_collected: 'Collected',
+      c_earnTitle: 'My earnings', c_earnVoice: 'Earnings today and this week. Ask the office about settlement', c_week: 'This week', c_settle: 'Office owes you', c_commission: 'Commission 0% (first 3 months)', c_callOffice: 'Call office',
+      c_helpTitle: 'Help', c_helpVoice: 'Need help? Call the office', c_how1: 'Go online', c_how2: 'Accept ride', c_how3: 'Enter OTP', c_how4: 'Collect cash',
+      c_kycTitle: 'Register at office', c_kycVoice: 'Take photos of Aadhaar, licence and RC. The office does the rest', c_aadhaar: 'Aadhaar', c_dl: 'Licence', c_rc: 'RC', c_selfie: 'Your photo', c_bank: 'Bank / UPI', c_takePhoto: '📷 Photo', c_done: 'Done', c_plate: 'Vehicle number',
+      c_newReq: '🔔 New ride request', c_navDemo: '🧭 Opens Google Maps', c_riderName: 'Lakshmi', c_p1: 'Bus stand', c_p2: 'Hospital', c_p3: 'Market (Shankar kirana)', c_d1: 'Old police station', c_d2: 'RTC depot', c_d3: 'Gangapur',
       listening: '🎤 Listening…', heard: 'Bus stand', noSpeech: 'No mic in this browser — filled a sample', spoken: '🔊 Reading aloud', fam: 'Book-for-family (S11) is in the app', callDemo: '📞 Opens the phone dialer', sosDemo: '🆘 Calls 112 + sends location SMS',
     }
   };
@@ -261,9 +326,19 @@
     parcel: { en: 'S8 · Parcel', why: 'Three steps with an icon progress row: Where, What, Who pays. Sizes are pictures of a bag, a box and a sack. A photo of the parcel is shown to the captain and the receiver.', rules: ['Receiver-pays is the common case for shops sending to villages', 'Pickup OTP for the sender, delivery OTP sent to the receiver by SMS/WhatsApp with a tracking link'] },
     pride: { en: 'S8 · Parcel on the way', why: 'Same captain card as a ride, with two OTPs: pickup and delivery. The receiver gets a link to watch the bandi and the captain phone number.', rules: ['Photo proof at delivery', 'Cash on delivery is reconciled in the captain settlement'] },
     rides: { en: 'S9 · My rides', why: 'Rows with the service icon, a relative date and the fare. Tapping opens the receipt with the captain name and vehicle number.', rules: [] },
+    ckyc: { en: 'C0 · Register', why: 'Registration happens in person at the town office in ten minutes. The captain only takes photos; the ops team fills the rest. A vehicle type and number are the only typed fields.', rules: ['Bike and auto captains get the yellow/green jacket, sticker and helmet at this step', 'Zero commission for the first three months is explained here in person'] },
+    chome: { en: 'C1 · Online', why: 'One giant toggle. Grey means offline, green with a pulsing ring means online. Earnings today sit right under it in 40 sp digits because that is what a captain checks all day.', rules: ['Dark-green header tells the two apps apart at a glance', 'Go online in the prototype: a request arrives after 4 seconds', 'A real phone vibrates and speaks the request in Telugu'] },
+    creq: { en: 'C2 · Request', why: 'Pickup landmark and distance from the captain in big type, fare in 56 sp, and one huge Accept button with a 15-second countdown. Reject is small and grey.', rules: ['Coloured by service: yellow bike, green auto, orange parcel', 'Timeout offers the ride to the next nearest captain', 'The app reads the request aloud'] },
+    cpick: { en: 'C3 · To pickup', why: 'Call the rider and Navigate are the two big buttons. Arrived is the primary action once there; it tells the rider\'s phone to vibrate and speak.', rules: ['Navigate opens Google Maps with the pickup point', 'The rider sees the captain moving on their map'] },
+    cotp: { en: 'C4 · OTP', why: 'The captain types the four digits the rider says. This stops wrong pickups and stops off-app rides. For a parcel the captain also photographs the parcel.', rules: ['Four 56 sp boxes, numeric keypad only'] },
+    ctrip: { en: 'C5 · On trip', why: 'Drop landmark in big type, Navigate, and a slide-to-finish control so a bump in the road cannot end the ride by accident.', rules: ['SOS is available to captains too'] },
+    ccollect: { en: 'C6 · Collect', why: 'The fare in 64 sp and one instruction: collect cash, or show the UPI QR. Collected adds the fare to today\'s earnings. For parcels: delivery photo and the receiver\'s OTP first.', rules: ['Cash trips are settled daily at the office', 'UPI trips are paid out next day'] },
+    cearn: { en: 'C7 · Earnings', why: 'Today, this week and what the office owes, all in big digits, plus the list of today\'s trips. Commission is written on every screen so nobody feels cheated.', rules: ['Call office is always one tap away'] },
+    chelp: { en: 'C8 · Help', why: 'Call office, WhatsApp, change language, and the four-step pictograph of how the day works.', rules: [] },
     help: { en: 'S10 · Help', why: 'Support is a real person in the town who speaks Telugu, 6 am to 11 pm. The missed-call line is the product for people without the app.', rules: ['WhatsApp support for shops', 'A 60-second Telugu video on how to book'] },
   };
 
+  const CJUMPS = [['ckyc','C0'],['chome','C1'],['creq','C2'],['cpick','C3'],['cotp','C4'],['ctrip','C5'],['ccollect','C6'],['cearn','C7'],['chelp','C8']];
   const JUMPS = [['splash','S0'],['lang','S1'],['phone','S2'],['home','S3'],['book','S4'],['finding','S5'],['ride','S6'],['done','S7'],['parcel','S8'],['rides','S9'],['help','S10']];
 
   function speak(text) {
@@ -437,9 +512,120 @@
       </div>${nav('help')}`,
   };
 
+  // ---- Captain (driver) app ----
+  const REQS = [
+    { svc: 'bike', from: 'c_p1', to: 'c_d1', away: 2, km: 4, amt: 52, pay: 'cash' },
+    { svc: 'auto', from: 'c_p2', to: 'c_d2', away: 1, km: 3, amt: 66, pay: 'upi' },
+    { svc: 'parcel', from: 'c_p3', to: 'c_d3', away: 3, km: 9, amt: 82, pay: 'cash' },
+  ];
+  const creq = () => REQS[state.c.req % REQS.length];
+  function cbar(title, voice, back) {
+    return `<div class="bar cbar">
+      ${back ? `<button class="icon-btn" data-go="${back}" aria-label="Back">←</button>` : ''}
+      <h2>${title}</h2>
+      <button class="icon-btn" data-say="${voice.replace(/"/g, '&quot;')}" aria-label="Read aloud">🔊</button>
+    </div>`;
+  }
+  function cnav(on) {
+    return `<div class="nav">
+      <button class="${on === 'chome' ? 'on' : ''}" data-go="chome"><span class="em">🏠</span>${t('c_navHome')}</button>
+      <button class="${on === 'cearn' ? 'on' : ''}" data-go="cearn"><span class="em">💰</span>${t('c_navEarn')}</button>
+      <button class="${on === 'chelp' ? 'on' : ''}" data-go="chelp"><span class="em">📞</span>${t('c_navHelp')}</button>
+    </div>`;
+  }
+  const svcBg = r => ({ bike: 'var(--yellow)', auto: 'var(--green)', parcel: 'var(--orange)' })[r.svc];
+  const svcFg = r => r.svc === 'bike' ? 'var(--app-ink)' : '#fff';
+  const svcIcon = r => ({ bike: '🏍️', auto: '🛺', parcel: '📦' })[r.svc];
+  const qr = () => { let h = ''; let x = 7; for (let i = 0; i < 144; i++) { x = (x * 1103515245 + 12345) & 0x7fffffff; h += `<i class="${(x >> 16) & 1 ? '' : 'w'}"></i>`; } return `<div class="qr">${h}</div>`; };
+  const CS = {
+    ckyc: () => `${status()}${cbar(t('c_kycTitle'), t('c_kycVoice'))}<div class="body">
+      ${[['🪪','c_aadhaar'],['🚗','c_dl'],['📄','c_rc'],['🤳','c_selfie'],['🏦','c_bank']].map(([e,k],i) => `<div class="kyc ${i < 2 ? 'done' : ''}"><span class="em">${e}</span><b>${t(k)}</b>${i < 2 ? '<span style="font-size:26px">✅</span>' : `<button data-toast="📷">${t('c_takePhoto')}</button>`}</div>`).join('')}
+      <div class="tiles"><button class="tile on">🏍️ ${t('bike')}</button><button class="tile">🛺 ${t('auto')}</button></div>
+      <div class="field big-digits"><span style="font-size:26px">🔢</span><div style="flex:1"><span class="lbl">${t('c_plate')}</span><input value="TS 32 A 1234" aria-label="Vehicle number"></div></div>
+      <button class="big ghost" data-toast="${t('callDemo')}">📞 ${t('c_callOffice')}</button>
+      <button class="big" data-go="chome">✅ ${t('c_done')}</button></div>`,
+    chome: () => `${status()}${cbar(t('c_home'), t('c_homeVoice'))}<div class="body">
+      <button class="online ${state.c.online ? 'on' : ''}" data-online="1"><span class="em">${state.c.online ? '🟢' : '🔴'}</span><b>${state.c.online ? t('c_online') : t('c_offline')}</b><span>${state.c.online ? t('c_onlineSub') : t('c_offlineSub')}</span></button>
+      <div class="stat"><div><small>${t('c_today')}</small><b>₹${state.c.earn}</b></div><div><small>${t('c_trips')}</small><b>${state.c.trips}</b></div></div>
+      <div class="tiles"><button class="tile" data-go="cearn"><span class="em">💰</span>${t('c_earn')}</button><button class="tile" data-toast="${t('callDemo')}"><span class="em">📞</span>${t('c_office')}</button></div>
+      </div>${cnav('chome')}`,
+    creq: () => { const r = creq(); return `${status()}${cbar(t('c_reqTitle'), t('c_reqVoice'))}<div class="body">
+      <div class="req" style="background:${svcBg(r)};color:${svcFg(r)}">
+        <div style="font-size:44px;line-height:1">${svcIcon(r)}</div>
+        <div class="meta">📍 ${t('c_from')} · ${r.away} ${t('km')} ${t('c_away')}</div>
+        <div class="from">${t(r.from)}</div>
+        <div class="meta">🎯 ${t('c_to')}: ${t(r.to)} · ${r.km} ${t('km')}</div>
+        <div class="amt">₹${r.amt} <span style="font-size:22px">${r.pay === 'cash' ? '💵' : '📱'}</span></div>
+      </div>
+      <div class="count"><i></i></div>
+      <button class="big accept" data-go="cpick">✅ ${t('c_accept')}</button>
+      <button class="big ghost" data-creject="1" style="min-height:56px;font-size:17px">❌ ${t('c_reject')}</button></div>`; },
+    cpick: () => { const r = creq(); return `${status()}${cbar(t('c_pickTitle'), t('c_pickVoice'))}<div class="body">
+      <div class="map"><span class="pin" style="left:64%;top:34%">📍</span><span class="cap">${svcIcon(r)}</span></div>
+      <div class="card"><div style="font-size:14px;color:var(--app-muted)">${t('c_rider')}</div><div style="font-size:24px;font-weight:800">👤 ${t('c_riderName')} · ${t(r.from)}</div><div style="font-size:18px">${r.away} ${t('km')} · ₹${r.amt}</div></div>
+      <button class="big" data-toast="${t('callDemo')}">📞 ${t('c_callRider')}</button>
+      <button class="big ghost" data-toast="${t('c_navDemo')}">🧭 ${t('c_nav')}</button>
+      <div style="flex:1"></div>
+      <button class="big yellow" data-go="cotp">✅ ${t('c_arrived')}</button></div>`; },
+    cotp: () => { const r = creq(); const p = r.svc === 'parcel'; return `${status()}${cbar(p ? t('c_pOtpTitle') : t('c_otpTitle'), t('c_otpVoice'), 'cpick')}<div class="body">
+      <div class="voice" style="text-align:center;font-weight:700;color:var(--app-ink)">${p ? t('c_pOtpTitle') : t('c_otpTitle')}</div>
+      <div class="otp ${p ? 'orange' : 'green'}"><b>${state.c.otpOk ? '4' : ''}</b><b>${state.c.otpOk ? '7' : ''}</b><b>${state.c.otpOk ? '2' : ''}</b><b>${state.c.otpOk ? '9' : ''}</b></div>
+      <div class="tiles three">${[1,2,3,4,5,6,7,8,9].map(n => `<button class="tile" style="min-height:64px;font-size:28px" data-key="${n}">${n}</button>`).join('')}<span></span><button class="tile" style="min-height:64px;font-size:28px" data-key="0">0</button><span></span></div>
+      ${p ? `<button class="big ghost" data-cphoto="1">${state.c.photo ? '✅ ' : '📷 '}${t('c_pPhoto')}</button>` : ''}
+      <button class="big ${state.c.otpOk ? '' : 'ghost'}" data-go="ctrip" ${state.c.otpOk ? '' : 'disabled style="opacity:.5"'}>▶️ ${t('c_start')}</button></div>`; },
+    ctrip: () => { const r = creq(); return `${status()}${cbar(t('c_tripTitle'), t('c_tripVoice'))}<div class="body">
+      <div class="map"><span class="pin" style="left:78%;top:58%">🎯</span><span class="cap">${svcIcon(r)}</span></div>
+      <div class="card"><div style="font-size:14px;color:var(--app-muted)">🎯 ${t('c_to')}</div><div style="font-size:28px;font-weight:800;line-height:1.45">${t(r.to)}</div><div style="font-size:18px">${r.km} ${t('km')} · ₹${r.amt}</div></div>
+      <button class="big ghost" data-toast="${t('c_navDemo')}">🧭 ${t('c_nav')}</button>
+      <div style="flex:1"></div>
+      <div class="slide"><span>${t('c_slide')}</span><input type="range" min="0" max="100" value="0" id="slide" aria-label="Slide to finish"><div class="thumb" id="thumb">${svcIcon(r)}</div></div>
+      <button class="big danger" data-toast="${t('sosDemo')}" style="min-height:56px">🆘 SOS</button></div>`; },
+    ccollect: () => { const r = creq(); const p = r.svc === 'parcel'; return `${status()}${cbar(t('c_collectTitle'), t('c_collectVoice'))}<div class="body" style="text-align:center">
+      <div class="cash">₹${r.amt}</div>
+      <div style="font-size:22px;font-weight:800">${r.pay === 'cash' ? '💵 ' + t('c_cash') : '📱 ' + t('c_upi')}</div>
+      ${r.pay === 'upi' ? qr() : ''}
+      ${p ? `<button class="big ghost" data-cphoto="1">${state.c.photo ? '✅ ' : '📷 '}${t('c_dPhoto')}</button><div class="voice">${t('c_dOtp')}</div><div class="otp orange"><b>8</b><b>1</b><b>5</b><b>3</b></div>` : ''}
+      <div style="flex:1"></div>
+      <button class="big" data-ccollect="1">✅ ${t('c_collected')}</button></div>`; },
+    cearn: () => `${status()}${cbar(t('c_earnTitle'), t('c_earnVoice'))}<div class="body">
+      <div class="stat"><div><small>${t('c_today')}</small><b>₹${state.c.earn}</b></div><div><small>${t('c_week')}</small><b>₹${state.c.earn + 2140}</b></div></div>
+      <div class="stat" style="grid-template-columns:1fr"><div><small>${t('c_settle')}</small><b style="color:var(--green-deep)">₹${Math.round((state.c.earn + 2140) * 0.35)}</b><small>${t('c_commission')}</small></div></div>
+      <div class="row"><span class="em">🏍️</span><div><b>${t('c_p1')} → ${t('c_d1')}</b><small>09:10</small></div><span class="amt">₹52</span></div>
+      <div class="row"><span class="em">🛺</span><div><b>${t('c_p2')} → ${t('c_d2')}</b><small>10:35</small></div><span class="amt">₹66</span></div>
+      <div class="row"><span class="em">📦</span><div><b>${t('c_p3')} → ${t('c_d3')}</b><small>12:05</small></div><span class="amt">₹82</span></div>
+      <button class="big ghost" data-toast="${t('callDemo')}">📞 ${t('c_callOffice')}</button>
+      </div>${cnav('cearn')}`,
+    chelp: () => `${status()}${cbar(t('c_helpTitle'), t('c_helpVoice'))}<div class="body">
+      <button class="big" data-toast="${t('callDemo')}">📞 ${t('c_callOffice')}</button>
+      <button class="big ghost" data-toast="wa.me link">${t('wa')}</button>
+      <button class="big ghost" data-go="lang">${t('changeLang')}</button>
+      <div class="steps" style="gap:4px"><span class="on" style="background:var(--green);color:#fff">🟢</span><i></i><span class="on" style="background:var(--green);color:#fff">✅</span><i></i><span class="on" style="background:var(--green);color:#fff">🔢</span><i></i><span class="on" style="background:var(--green);color:#fff">💵</span></div>
+      <div class="voice" style="text-align:center;font-weight:700;color:var(--app-ink)">${t('c_how1')} → ${t('c_how2')} → ${t('c_how3')} → ${t('c_how4')}</div>
+      </div>${cnav('chelp')}`,
+  };
+  const CT = { ckyc: ['c_kycTitle','c_kycVoice'], chome: ['c_home','c_homeVoice'], creq: ['c_reqTitle','c_reqVoice'], cpick: ['c_pickTitle','c_pickVoice'], cotp: ['c_otpTitle','c_otpVoice'], ctrip: ['c_tripTitle','c_tripVoice'], ccollect: ['c_collectTitle','c_collectVoice'], cearn: ['c_earnTitle','c_earnVoice'], chelp: ['c_helpTitle','c_helpVoice'] };
+  let reqTimer, countTimer;
+  function scheduleRequest(ms) {
+    clearTimeout(reqTimer);
+    reqTimer = setTimeout(() => { if (state.mode === 'captain' && state.c.online && state.screen === 'chome') { state.c.otpOk = false; state.c.photo = false; go('creq'); toast(t('c_newReq')); speak(t('c_reqVoice')); } }, ms);
+  }
+
   function render() {
+    const isCap = !!CS[state.screen];
     const key = state.screen === 'pride' ? 'ride' : state.screen;
-    screen.innerHTML = S[key]();
+    screen.innerHTML = isCap ? CS[key]() : S[key]();
+    $('#mode-rider').setAttribute('aria-pressed', state.mode === 'rider');
+    $('#mode-captain').setAttribute('aria-pressed', state.mode === 'captain');
+    if (isCap) {
+      const n = NOTES[state.screen];
+      $('#n-eyebrow').textContent = n.en; $('#n-title').textContent = t(CT[state.screen][0]); $('#n-voice').textContent = t(CT[state.screen][1]);
+      $('#n-why').textContent = n.why; $('#n-rules').innerHTML = n.rules.map(r => `<li>${r}</li>`).join('');
+      $('#jump').innerHTML = CJUMPS.map(([k, l]) => `<button class="${state.screen === k ? 'on' : ''}" data-jump="${k}">${l}</button>`).join('');
+      $('#lang-te').setAttribute('aria-pressed', state.lang === 'te'); $('#lang-en').setAttribute('aria-pressed', state.lang === 'en');
+      const sl = $('#slide', screen);
+      if (sl) sl.addEventListener('input', e => { const v = +e.target.value; $('#thumb', screen).style.left = `calc(4px + ${v / 100} * (100% - 72px))`; if (v >= 85) { sl.disabled = true; setTimeout(() => go('ccollect'), 250); } });
+      return;
+    }
     const n = NOTES[state.screen === 'ride' && state.service === 'parcel' ? 'pride' : state.screen] || NOTES.home;
     $('#n-eyebrow').textContent = n.en;
     const titles = { splash: 'మన బండి', lang: t('chooseLang'), phone: t('phoneTitle'), otp: t('otpTitle'), home: t('navHome'), book: t('bookTitle'), finding: t('finding'), ride: state.service === 'parcel' ? t('pRideTitle') : t('rideTitle'), done: t('doneTitle'), parcel: t('pTitle'), rides: t('ridesTitle'), help: t('helpTitle') };
@@ -456,18 +642,26 @@
     if (s === 'pback') { state.parcelStep = Math.max(1, state.parcelStep - 1); state.screen = 'parcel'; render(); return; }
     if (s === 'parcel' && state.screen !== 'parcel') state.parcelStep = 1;
     if (s === 'home') { state.drop = ''; }
+    if (s === 'lang') state.mode = 'rider';
     state.screen = s; render();
+    if (s === 'creq') { clearTimeout(countTimer); countTimer = setTimeout(() => { if (state.screen === 'creq') { state.c.req++; go('chome'); } }, 15000); }
+    if (s === 'chome') scheduleRequest(state.c.online ? 6000 : 0);
     if (s === 'finding') setTimeout(() => { if (state.screen === 'finding') { go('ride'); speak(state.service === 'parcel' ? t('pRideVoice') : t('rideVoice')); } }, 3000);
   }
 
   document.addEventListener('click', e => {
-    const b = e.target.closest('[data-go],[data-say],[data-svc],[data-chip],[data-pay],[data-mic],[data-pstep],[data-size],[data-payer],[data-photo],[data-face],[data-toast],[data-lang],[data-jump]');
+    const b = e.target.closest('[data-go],[data-say],[data-svc],[data-chip],[data-pay],[data-mic],[data-pstep],[data-size],[data-payer],[data-photo],[data-face],[data-toast],[data-lang],[data-jump],[data-online],[data-creject],[data-key],[data-cphoto],[data-ccollect]');
     if (!b) return;
     const d = b.dataset;
     if (d.toast) toast(d.toast);
     if (d.say) { speak(d.say); return; }
     if (d.lang) { if (d.lang === 'te' || d.lang === 'en') { state.lang = d.lang; } else { state.lang = 'en'; toast('Prototype: ' + b.textContent + ' → English strings; the Android app has this language'); } speak(state.lang === 'te' ? 'నమస్తే! మన బండికి స్వాగతం' : 'Namaste! Welcome to Mana Bandi'); go('phone'); return; }
-    if (d.jump) { go(d.jump); return; }
+    if (d.jump) { state.mode = CS[d.jump] ? 'captain' : 'rider'; go(d.jump); return; }
+    if (d.online) { state.c.online = !state.c.online; render(); if (state.c.online) { speak(t('c_onlineSub')); scheduleRequest(4000); } else clearTimeout(reqTimer); return; }
+    if (d.creject) { clearTimeout(countTimer); state.c.req++; go('chome'); return; }
+    if (d.key) { state.c.otpOk = true; render(); return; }
+    if (d.cphoto) { state.c.photo = true; render(); return; }
+    if (d.ccollect) { clearTimeout(countTimer); state.c.earn += creq().amt; state.c.trips++; state.c.req++; go('chome'); speak(t('c_collected')); return; }
     if (d.svc) { state.service = d.svc; state.drop = ''; go(d.svc === 'parcel' ? 'parcel' : 'book'); return; }
     if (d.chip) { if (d.chip === '📞') { state.drop = t('tellCaptain'); } else { state.drop = d.chip; } if (state.screen === 'home') { state.service = 'bike'; go('book'); } else render(); return; }
     if (d.pay) { state.pay = d.pay; render(); return; }
@@ -477,9 +671,11 @@
     if (d.payer) { state.payer = d.payer; render(); return; }
     if (d.photo) { state.photo = true; render(); return; }
     if (d.face) { state.face = d.face; render(); return; }
-    if (d.go) go(d.go);
+    if (d.go) { if (d.go === 'cpick') clearTimeout(countTimer); go(d.go); }
   });
   document.addEventListener('input', e => { if (e.target.id === 'drop') state.drop = e.target.value; });
+  $('#mode-rider').addEventListener('click', () => { state.mode = 'rider'; clearTimeout(reqTimer); clearTimeout(countTimer); go('home'); });
+  $('#mode-captain').addEventListener('click', () => { state.mode = 'captain'; go('chome'); });
   $('#lang-te').addEventListener('click', () => { state.lang = 'te'; state.name = 'లక్ష్మి'; render(); });
   $('#lang-en').addEventListener('click', () => { state.lang = 'en'; state.name = 'Lakshmi'; render(); });
   if ('speechSynthesis' in window) { try { window.speechSynthesis.onvoiceschanged = () => {}; window.speechSynthesis.getVoices(); } catch (e) {} }
