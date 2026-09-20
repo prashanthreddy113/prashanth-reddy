@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mana Bandi Captain</string>
+
+    <!-- Non-translatable config -->
+    <string name="support_number" translatable="false">+919876543210</string>
+    <string name="support_number_display" translatable="false">98765 43210</string>
+    <string name="whatsapp_number" translatable="false">919876543210</string>
+    <string name="emergency_number" translatable="false">112</string>
+
+    <!-- Common -->
+    <string name="speak_cd">Read aloud</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="cancel">Cancel</string>
+    <string name="km">%1$d km</string>
+    <string name="take_photo">Take photo</string>
+    <string name="photo_taken">Photo added</string>
+    <string name="camera_unavailable">Camera not available</string>
+    <string name="call_office">Call office</string>
+    <string name="navigate">Show the way</string>
+    <string name="maps_unavailable">No maps app on this phone</string>
+    <string name="sos">SOS</string>
+    <string name="pay_cash">Cash</string>
+    <string name="pay_upi">UPI</string>
+    <string name="service_bike">Bike</string>
+    <string name="service_auto">Auto</string>
+    <string name="service_parcel">Parcel</string>
+
+    <!-- Places (fake dispatch) -->
+    <string name="place_bus">Bus stand</string>
+    <string name="place_hospital">Hospital</string>
+    <string name="place_market">Market</string>
+    <string name="place_college">College</string>
+    <string name="place_temple">Temple</string>
+
+    <!-- Language -->
+    <string name="lang_title">Choose your language</string>
+    <string name="lang_speech">Choose your language. Tap one.</string>
+
+    <!-- Phone -->
+    <string name="phone_title">Your mobile number</string>
+    <string name="phone_hint">10 digit number</string>
+    <string name="phone_next">Get OTP</string>
+    <string name="phone_speech">Enter your mobile number. You will get an OTP.</string>
+
+    <!-- OTP (login) -->
+    <string name="otp_title">Enter the 4 digit code</string>
+    <string name="otp_sub">Sent to %1$s</string>
+    <string name="otp_verify">Continue</string>
+    <string name="otp_call">Call me with OTP</string>
+    <string name="otp_call_stub">We will call you now</string>
+    <string name="otp_demo_hint">Demo: any code works</string>
+    <string name="otp_speech">Enter the 4 digit code sent to your phone.</string>
+
+    <!-- KYC -->
+    <string name="kyc_title">Register at the office</string>
+    <string name="kyc_speech">Take a photo of each paper. Enter your vehicle number. If in doubt, call the office.</string>
+    <string name="kyc_intro">Take these 5 photos</string>
+    <string name="kyc_aadhaar">Aadhaar card</string>
+    <string name="kyc_licence">Driving licence</string>
+    <string name="kyc_rc">Vehicle RC</string>
+    <string name="kyc_photo">Your photo</string>
+    <string name="kyc_bank">Bank / UPI</string>
+    <string name="kyc_vehicle_type">Which vehicle?</string>
+    <string name="kyc_vehicle_number">Vehicle number</string>
+    <string name="kyc_vehicle_hint">TS 32 A 1234</string>
+    <string name="kyc_done">Done</string>
+    <string name="vehicle_bike">Bike</string>
+    <string name="vehicle_auto">Auto</string>
+
+    <!-- Home -->
+    <string name="home_speech_offline">You are offline. Tap the big button to go online and get rides.</string>
+    <string name="home_speech_online">You are online. The phone will buzz when a ride comes.</string>
+    <string name="offline_label">Offline — tap to go online</string>
+    <string name="online_label">Online — looking for rides</string>
+    <string name="today_earnings">Today</string>
+    <string name="today_trips">%1$d rides</string>
+    <string name="btn_earnings">Earnings</string>
+    <string name="btn_office">Office</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_earnings">Earnings</string>
+    <string name="nav_help">Help</string>
+
+    <!-- Request -->
+    <string name="request_title">New ride</string>
+    <string name="request_speech">New ride: %1$s, %2$d km away, %3$d rupees.</string>
+    <string name="request_pickup">Pickup</string>
+    <string name="request_drop">Drop</string>
+    <string name="request_away">%1$d km away</string>
+    <string name="request_trip_km">Ride %1$d km</string>
+    <string name="accept">Accept</string>
+    <string name="reject">No</string>
+    <string name="seconds_left">%1$d sec</string>
+
+    <!-- To pickup -->
+    <string name="pickup_title">Go to pickup</string>
+    <string name="pickup_speech">Go to the rider. Tap Show the way for directions. When you reach, tap I have arrived.</string>
+    <string name="rider">Rider</string>
+    <string name="call_rider">Call rider</string>
+    <string name="arrived">I have arrived</string>
+
+    <!-- Enter OTP -->
+    <string name="enter_otp_title">Enter the 4 digits the rider says</string>
+    <string name="enter_otp_parcel_title">Enter the pickup OTP</string>
+    <string name="enter_otp_speech">Enter the four digits the rider tells you. Then start the ride.</string>
+    <string name="enter_otp_parcel_speech">Enter the four digits the sender tells you. Take a photo of the parcel.</string>
+    <string name="parcel_photo">Take photo of parcel</string>
+    <string name="start_trip">Start ride</string>
+
+    <!-- On trip -->
+    <string name="trip_title">Ride in progress</string>
+    <string name="trip_speech">Take the rider to the drop. When you reach, slide the button below.</string>
+    <string name="trip_drop_label">Take to</string>
+    <string name="slide_finish">Slide to finish</string>
+
+    <!-- Collect -->
+    <string name="collect_title">Collect the money</string>
+    <string name="collect_speech_cash">Take %1$d rupees cash from the rider. Then tap Collected.</string>
+    <string name="collect_speech_upi">Show the QR to the rider. When the money comes, tap Collected.</string>
+    <string name="collect_cash">Take cash</string>
+    <string name="collect_upi">Show QR</string>
+    <string name="collect_upi_sub">Rider scans and pays</string>
+    <string name="collected">Collected</string>
+    <string name="delivery_title">Deliver the parcel</string>
+    <string name="delivery_speech">Take a photo of the parcel. Enter the four digits the receiver tells you.</string>
+    <string name="delivery_photo">Delivery photo</string>
+    <string name="delivery_otp_label">Delivery OTP</string>
+    <string name="delivery_next">Delivered</string>
+
+    <!-- Earnings -->
+    <string name="earnings_title">My earnings</string>
+    <string name="earnings_speech">This is the money you earned today and this week. If in doubt, call the office.</string>
+    <string name="earn_today">Today</string>
+    <string name="earn_week">This week</string>
+    <string name="earn_settlement">Office owes you</string>
+    <string name="earn_trips_list">Rides today</string>
+    <string name="earn_no_trips">No rides yet today</string>
+    <string name="earn_commission">Commission 0% (first 3 months)</string>
+
+    <!-- Help -->
+    <string name="help_title">Help</string>
+    <string name="help_speech">For help, call the office or message us on WhatsApp.</string>
+    <string name="help_whatsapp">WhatsApp</string>
+    <string name="help_language">Change language</string>
+    <string name="help_how">How it works</string>
+    <string name="how1">Go online, a ride comes</string>
+    <string name="how2">Accept, enter the OTP the rider says</string>
+    <string name="how3">Drop the rider, take the cash</string>
+    <string name="whatsapp_msg">Hello, I am a Mana Bandi captain. I need help.</string>
+</resources>

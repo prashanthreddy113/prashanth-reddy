@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base app theme. Must be an AppCompat theme because MainActivity extends
+         AppCompatActivity (needed for per-app language on Android 12 and below). -->
+    <style name="Theme.ManaBandiCaptain" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+    </style>
+
+    <!-- Splash theme (androidx.core:core-splashscreen). Applied to MainActivity in the
+         manifest; installSplashScreen() swaps to postSplashScreenTheme. -->
+    <style name="Theme.ManaBandiCaptain.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.ManaBandiCaptain</item>
+    </style>
+</resources>

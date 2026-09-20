@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">మన బండి కెప్టెన్</string>
+
+    <!-- Common -->
+    <string name="speak_cd">చదివి వినిపించు</string>
+    <string name="back">వెనక్కి</string>
+    <string name="next">ముందుకు</string>
+    <string name="cancel">వద్దు</string>
+    <string name="km">%1$d కి.మీ.</string>
+    <string name="take_photo">ఫోటో తియ్యండి</string>
+    <string name="photo_taken">ఫోటో వచ్చింది</string>
+    <string name="camera_unavailable">కెమెరా లేదు</string>
+    <string name="call_office">ఆఫీసుకి కాల్ చెయ్యండి</string>
+    <string name="navigate">దారి చూపండి</string>
+    <string name="maps_unavailable">ఈ ఫోన్‌లో మ్యాప్ లేదు</string>
+    <string name="sos">SOS</string>
+    <string name="pay_cash">క్యాష్</string>
+    <string name="pay_upi">UPI</string>
+    <string name="service_bike">బైక్</string>
+    <string name="service_auto">ఆటో</string>
+    <string name="service_parcel">పార్సెల్</string>
+
+    <!-- Places (fake dispatch) -->
+    <string name="place_bus">బస్టాండ్</string>
+    <string name="place_hospital">దవాఖానా</string>
+    <string name="place_market">బజారు</string>
+    <string name="place_college">కాలేజీ</string>
+    <string name="place_temple">గుడి</string>
+
+    <!-- Language -->
+    <string name="lang_title">మీ భాష ఎంచుకోండి</string>
+    <string name="lang_speech">మీ భాష ఎంచుకోండి. ఒకదాన్ని నొక్కండి.</string>
+
+    <!-- Phone -->
+    <string name="phone_title">మీ ఫోన్ నంబర్</string>
+    <string name="phone_hint">10 అంకెల నంబర్</string>
+    <string name="phone_next">OTP పంపండి</string>
+    <string name="phone_speech">మీ ఫోన్ నంబర్ పెట్టండి. తర్వాత OTP వస్తుంది.</string>
+
+    <!-- OTP (login) -->
+    <string name="otp_title">4 అంకెల కోడ్ పెట్టండి</string>
+    <string name="otp_sub">%1$s కి పంపినం</string>
+    <string name="otp_verify">ముందుకు</string>
+    <string name="otp_call">కాల్ చేసి OTP చెప్పండి</string>
+    <string name="otp_call_stub">ఇప్పుడే మీకు కాల్ చేస్తాం</string>
+    <string name="otp_demo_hint">డెమో: ఏ కోడ్ అయినా సరే</string>
+    <string name="otp_speech">మీ ఫోన్‌కు వచ్చిన నాలుగు అంకెల కోడ్ పెట్టండి.</string>
+
+    <!-- KYC -->
+    <string name="kyc_title">ఆఫీసులో రిజిస్టర్ చెయ్యండి</string>
+    <string name="kyc_speech">ఈ కాగితాల ఫోటోలు తియ్యండి. బండి నంబర్ పెట్టండి. సందేహం ఉంటే ఆఫీసుకి కాల్ చెయ్యండి.</string>
+    <string name="kyc_intro">ఈ 5 ఫోటోలు తియ్యండి</string>
+    <string name="kyc_aadhaar">ఆధార్ కార్డు</string>
+    <string name="kyc_licence">డ్రైవింగ్ లైసెన్స్</string>
+    <string name="kyc_rc">బండి RC</string>
+    <string name="kyc_photo">మీ ఫోటో</string>
+    <string name="kyc_bank">బ్యాంకు / UPI</string>
+    <string name="kyc_vehicle_type">మీ బండి ఏది?</string>
+    <string name="kyc_vehicle_number">బండి నంబర్</string>
+    <string name="kyc_vehicle_hint">TS 32 A 1234</string>
+    <string name="kyc_done">అయిపోయింది</string>
+    <string name="vehicle_bike">బైక్</string>
+    <string name="vehicle_auto">ఆటో</string>
+
+    <!-- Home -->
+    <string name="home_speech_offline">మీరు ఆఫ్‌లైన్‌లో ఉన్నారు. రైడ్లు కావాలంటే పెద్ద బటన్ నొక్కి ఆన్ చెయ్యండి.</string>
+    <string name="home_speech_online">మీరు ఆన్‌లైన్‌లో ఉన్నారు. రైడ్ వస్తే ఫోన్ వైబ్రేట్ అవుతుంది.</string>
+    <string name="offline_label">ఆఫ్‌లైన్ — నొక్కి ఆన్ చెయ్యండి</string>
+    <string name="online_label">ఆన్‌లైన్ — రైడ్ల కోసం చూస్తున్నాం</string>
+    <string name="today_earnings">ఈరోజు</string>
+    <string name="today_trips">%1$d రైడ్లు</string>
+    <string name="btn_earnings">డబ్బులు</string>
+    <string name="btn_office">ఆఫీసు</string>
+    <string name="nav_home">హోమ్</string>
+    <string name="nav_earnings">డబ్బులు</string>
+    <string name="nav_help">సాయం</string>
+
+    <!-- Request -->
+    <string name="request_title">కొత్త రైడ్</string>
+    <string name="request_speech">కొత్త రైడ్: %1$s నుంచి %2$d కి.మీ, %3$d రూపాయలు.</string>
+    <string name="request_pickup">ఎక్కడి నుంచి</string>
+    <string name="request_drop">ఎక్కడికి</string>
+    <string name="request_away">%1$d కి.మీ దూరంలో</string>
+    <string name="request_trip_km">రైడ్ %1$d కి.మీ</string>
+    <string name="accept">ఒప్పుకోండి</string>
+    <string name="reject">వద్దు</string>
+    <string name="seconds_left">%1$d సెకన్లు</string>
+
+    <!-- To pickup -->
+    <string name="pickup_title">పికప్‌కి వెళ్ళండి</string>
+    <string name="pickup_speech">రైడర్ దగ్గరికి వెళ్ళండి. దారి కావాలంటే దారి చూపండి నొక్కండి. చేరాక వచ్చాను నొక్కండి.</string>
+    <string name="rider">రైడర్</string>
+    <string name="call_rider">రైడర్‌కి కాల్ చెయ్యండి</string>
+    <string name="arrived">వచ్చాను</string>
+
+    <!-- Enter OTP -->
+    <string name="enter_otp_title">రైడర్ చెప్పే 4 అంకెలు పెట్టండి</string>
+    <string name="enter_otp_parcel_title">పికప్ OTP పెట్టండి</string>
+    <string name="enter_otp_speech">రైడర్ చెప్పే నాలుగు అంకెలు పెట్టండి. తర్వాత రైడ్ మొదలు పెట్టండి.</string>
+    <string name="enter_otp_parcel_speech">పార్సెల్ ఇచ్చేవాళ్ళు చెప్పే నాలుగు అంకెలు పెట్టండి. పార్సెల్ ఫోటో తియ్యండి.</string>
+    <string name="parcel_photo">పార్సెల్ ఫోటో తియ్యండి</string>
+    <string name="start_trip">రైడ్ మొదలు పెట్టండి</string>
+
+    <!-- On trip -->
+    <string name="trip_title">రైడ్ నడుస్తోంది</string>
+    <string name="trip_speech">రైడర్‌ని దింపే చోటుకి తీసుకెళ్ళండి. చేరాక కింద బటన్ జరపండి.</string>
+    <string name="trip_drop_label">ఇక్కడికి తీసుకెళ్ళండి</string>
+    <string name="slide_finish">జరిపి రైడ్ ముగించండి</string>
+
+    <!-- Collect -->
+    <string name="collect_title">డబ్బులు తీసుకోండి</string>
+    <string name="collect_speech_cash">రైడర్ నుంచి %1$d రూపాయలు క్యాష్ తీసుకోండి. తర్వాత తీసుకున్నాను నొక్కండి.</string>
+    <string name="collect_speech_upi">రైడర్‌కి QR చూపించండి. డబ్బులు వచ్చాక తీసుకున్నాను నొక్కండి.</string>
+    <string name="collect_cash">క్యాష్ తీసుకోండి</string>
+    <string name="collect_upi">QR చూపించండి</string>
+    <string name="collect_upi_sub">రైడర్ స్కాన్ చేసి డబ్బులు పంపుతారు</string>
+    <string name="collected">తీసుకున్నాను</string>
+    <string name="delivery_title">పార్సెల్ ఇచ్చెయ్యండి</string>
+    <string name="delivery_speech">పార్సెల్ ఫోటో తియ్యండి. అందుకునేవాళ్ళు చెప్పే నాలుగు అంకెలు పెట్టండి.</string>
+    <string name="delivery_photo">డెలివరీ ఫోటో తియ్యండి</string>
+    <string name="delivery_otp_label">డెలివరీ OTP</string>
+    <string name="delivery_next">ఇచ్చేశాను</string>
+
+    <!-- Earnings -->
+    <string name="earnings_title">నా డబ్బులు</string>
+    <string name="earnings_speech">ఈరోజు, ఈ వారం మీకు వచ్చిన డబ్బులు ఇవి. సందేహం ఉంటే ఆఫీసుకి కాల్ చెయ్యండి.</string>
+    <string name="earn_today">ఈరోజు</string>
+    <string name="earn_week">ఈ వారం</string>
+    <string name="earn_settlement">ఆఫీసు ఇవ్వాల్సినవి</string>
+    <string name="earn_trips_list">ఈరోజు రైడ్లు</string>
+    <string name="earn_no_trips">ఈరోజు ఇంకా రైడ్లు లేవు</string>
+    <string name="earn_commission">కమీషన్ 0% (మొదటి 3 నెలలు)</string>
+
+    <!-- Help -->
+    <string name="help_title">సాయం</string>
+    <string name="help_speech">సాయం కావాలంటే ఆఫీసుకి కాల్ చెయ్యండి లేదా వాట్సాప్ చెయ్యండి.</string>
+    <string name="help_whatsapp">వాట్సాప్</string>
+    <string name="help_language">భాష మార్చండి</string>
+    <string name="help_how">ఇది ఎట్ల పని చేస్తుంది?</string>
+    <string name="how1">ఆన్ చెయ్యండి, రైడ్ వస్తుంది</string>
+    <string name="how2">ఒప్పుకోండి, రైడర్ చెప్పే OTP పెట్టండి</string>
+    <string name="how3">దింపండి, క్యాష్ తీసుకోండి</string>
+    <string name="whatsapp_msg">నమస్తే, నేను మన బండి కెప్టెన్. నాకు సాయం కావాలి.</string>
+</resources>

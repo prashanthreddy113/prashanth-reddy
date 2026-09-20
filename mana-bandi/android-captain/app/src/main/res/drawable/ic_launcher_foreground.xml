@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple yellow bike silhouette, kept inside the 66dp adaptive-icon safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- rear wheel -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFC72C"
+        android:strokeWidth="5"
+        android:pathData="M33,68 m-11,0 a11,11 0 1,1 22,0 a11,11 0 1,1 -22,0" />
+    <!-- front wheel -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFC72C"
+        android:strokeWidth="5"
+        android:pathData="M75,68 m-11,0 a11,11 0 1,1 22,0 a11,11 0 1,1 -22,0" />
+    <!-- frame -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFC72C"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M33,68 L46,46 L64,46 L75,68 M46,46 L54,68 L64,46 M54,68 L33,68 M62,38 L70,38 L64,46" />
+    <!-- seat -->
+    <path
+        android:fillColor="#FFC72C"
+        android:pathData="M40,41 L52,41 L50,46 L42,46 Z" />
+</vector>

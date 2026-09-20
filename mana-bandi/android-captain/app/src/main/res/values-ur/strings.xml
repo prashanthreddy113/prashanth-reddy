@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">منا بنڈی کیپٹن</string>
+
+    <!-- Common -->
+    <string name="speak_cd">پڑھ کر سنائیں</string>
+    <string name="back">پیچھے</string>
+    <string name="next">آگے</string>
+    <string name="cancel">منسوخ</string>
+    <string name="km">%1$d کلومیٹر</string>
+    <string name="take_photo">فوٹو لیں</string>
+    <string name="photo_taken">فوٹو آ گئی</string>
+    <string name="camera_unavailable">کیمرہ نہیں ہے</string>
+    <string name="call_office">آفس کو کال کریں</string>
+    <string name="navigate">راستہ دکھائیں</string>
+    <string name="maps_unavailable">اس فون میں میپ ایپ نہیں ہے</string>
+    <string name="sos">SOS</string>
+    <string name="pay_cash">نقد</string>
+    <string name="pay_upi">UPI</string>
+    <string name="service_bike">بائیک</string>
+    <string name="service_auto">آٹو</string>
+    <string name="service_parcel">پارسل</string>
+
+    <!-- Places (fake dispatch) -->
+    <string name="place_bus">بس اسٹینڈ</string>
+    <string name="place_hospital">ہسپتال</string>
+    <string name="place_market">بازار</string>
+    <string name="place_college">کالج</string>
+    <string name="place_temple">مندر</string>
+
+    <!-- Language -->
+    <string name="lang_title">اپنی زبان چنیں</string>
+    <string name="lang_speech">اپنی زبان چنیں۔ ایک پر دبائیں۔</string>
+
+    <!-- Phone -->
+    <string name="phone_title">آپ کا موبائل نمبر</string>
+    <string name="phone_hint">10 ہندسوں کا نمبر</string>
+    <string name="phone_next">OTP بھیجیں</string>
+    <string name="phone_speech">اپنا موبائل نمبر ڈالیں۔ آپ کو OTP ملے گا۔</string>
+
+    <!-- OTP (login) -->
+    <string name="otp_title">4 ہندسوں کا کوڈ ڈالیں</string>
+    <string name="otp_sub">%1$s پر بھیجا گیا</string>
+    <string name="otp_verify">آگے</string>
+    <string name="otp_call">OTP کے لیے کال کریں</string>
+    <string name="otp_call_stub">ہم ابھی آپ کو کال کریں گے</string>
+    <string name="otp_demo_hint">ڈیمو: کوئی بھی کوڈ چلے گا</string>
+    <string name="otp_speech">آپ کے فون پر آیا 4 ہندسوں کا کوڈ ڈالیں۔</string>
+
+    <!-- KYC -->
+    <string name="kyc_title">آفس میں رجسٹر کریں</string>
+    <string name="kyc_speech">ہر کاغذ کی فوٹو لیں۔ گاڑی نمبر ڈالیں۔ شک ہو تو آفس کو کال کریں۔</string>
+    <string name="kyc_intro">یہ 5 فوٹو لیں</string>
+    <string name="kyc_aadhaar">آدھار کارڈ</string>
+    <string name="kyc_licence">ڈرائیونگ لائسنس</string>
+    <string name="kyc_rc">گاڑی کی RC</string>
+    <string name="kyc_photo">آپ کی فوٹو</string>
+    <string name="kyc_bank">بینک / UPI</string>
+    <string name="kyc_vehicle_type">کون سی گاڑی؟</string>
+    <string name="kyc_vehicle_number">گاڑی نمبر</string>
+    <string name="kyc_vehicle_hint">TS 32 A 1234</string>
+    <string name="kyc_done">ہو گیا</string>
+    <string name="vehicle_bike">بائیک</string>
+    <string name="vehicle_auto">آٹو</string>
+
+    <!-- Home -->
+    <string name="home_speech_offline">آپ آف لائن ہیں۔ سواری چاہیے تو بڑا بٹن دبا کر آن لائن ہوں۔</string>
+    <string name="home_speech_online">آپ آن لائن ہیں۔ سواری آنے پر فون بجے گا۔</string>
+    <string name="offline_label">آف لائن — دبا کر آن لائن ہوں</string>
+    <string name="online_label">آن لائن — سواری ڈھونڈ رہے ہیں</string>
+    <string name="today_earnings">آج</string>
+    <string name="today_trips">%1$d سواریاں</string>
+    <string name="btn_earnings">کمائی</string>
+    <string name="btn_office">آفس</string>
+    <string name="nav_home">ہوم</string>
+    <string name="nav_earnings">کمائی</string>
+    <string name="nav_help">مدد</string>
+
+    <!-- Request -->
+    <string name="request_title">نئی سواری</string>
+    <string name="request_speech">نئی سواری: %1$s سے %2$d کلومیٹر، %3$d روپے۔</string>
+    <string name="request_pickup">کہاں سے</string>
+    <string name="request_drop">کہاں تک</string>
+    <string name="request_away">%1$d کلومیٹر دور</string>
+    <string name="request_trip_km">سواری %1$d کلومیٹر</string>
+    <string name="accept">منظور</string>
+    <string name="reject">نہیں</string>
+    <string name="seconds_left">%1$d سیکنڈ</string>
+
+    <!-- To pickup -->
+    <string name="pickup_title">پک اپ پر جائیں</string>
+    <string name="pickup_speech">سواری کے پاس جائیں۔ راستہ چاہیے تو راستہ دکھائیں دبائیں۔ پہنچنے پر پہنچ گیا دبائیں۔</string>
+    <string name="rider">سواری</string>
+    <string name="call_rider">سواری کو کال کریں</string>
+    <string name="arrived">پہنچ گیا</string>
+
+    <!-- Enter OTP -->
+    <string name="enter_otp_title">سواری کا بتایا 4 ہندسوں کا OTP ڈالیں</string>
+    <string name="enter_otp_parcel_title">پک اپ OTP ڈالیں</string>
+    <string name="enter_otp_speech">سواری جو چار ہندسے بتائے وہ ڈالیں۔ پھر سواری شروع کریں۔</string>
+    <string name="enter_otp_parcel_speech">بھیجنے والا جو چار ہندسے بتائے وہ ڈالیں۔ پارسل کی فوٹو لیں۔</string>
+    <string name="parcel_photo">پارسل کی فوٹو لیں</string>
+    <string name="start_trip">سواری شروع کریں</string>
+
+    <!-- On trip -->
+    <string name="trip_title">سواری چل رہی ہے</string>
+    <string name="trip_speech">سواری کو اترنے کی جگہ لے جائیں۔ پہنچنے پر نیچے کا بٹن کھسکائیں۔</string>
+    <string name="trip_drop_label">یہاں لے جائیں</string>
+    <string name="slide_finish">کھسکا کر سواری ختم کریں</string>
+
+    <!-- Collect -->
+    <string name="collect_title">پیسے لیں</string>
+    <string name="collect_speech_cash">سواری سے %1$d روپے نقد لیں۔ پھر لے لیا دبائیں۔</string>
+    <string name="collect_speech_upi">سواری کو QR دکھائیں۔ پیسے آنے پر لے لیا دبائیں۔</string>
+    <string name="collect_cash">نقد لیں</string>
+    <string name="collect_upi">QR دکھائیں</string>
+    <string name="collect_upi_sub">سواری اسکین کر کے پیسے بھیجے گی</string>
+    <string name="collected">لے لیا</string>
+    <string name="delivery_title">پارسل دیں</string>
+    <string name="delivery_speech">پارسل کی فوٹو لیں۔ لینے والا جو چار ہندسے بتائے وہ ڈالیں۔</string>
+    <string name="delivery_photo">ڈیلیوری فوٹو لیں</string>
+    <string name="delivery_otp_label">ڈیلیوری OTP</string>
+    <string name="delivery_next">دے دیا</string>
+
+    <!-- Earnings -->
+    <string name="earnings_title">میری کمائی</string>
+    <string name="earnings_speech">یہ آج اور اس ہفتے کی آپ کی کمائی ہے۔ شک ہو تو آفس کو کال کریں۔</string>
+    <string name="earn_today">آج</string>
+    <string name="earn_week">اس ہفتے</string>
+    <string name="earn_settlement">آفس سے ملنے ہیں</string>
+    <string name="earn_trips_list">آج کی سواریاں</string>
+    <string name="earn_no_trips">آج ابھی کوئی سواری نہیں</string>
+    <string name="earn_commission">کمیشن 0% (پہلے 3 مہینے)</string>
+
+    <!-- Help -->
+    <string name="help_title">مدد</string>
+    <string name="help_speech">مدد کے لیے آفس کو کال کریں یا واٹس ایپ کریں۔</string>
+    <string name="help_whatsapp">واٹس ایپ</string>
+    <string name="help_language">زبان بدلیں</string>
+    <string name="help_how">یہ کیسے چلتا ہے؟</string>
+    <string name="how1">آن لائن ہوں، سواری آئے گی</string>
+    <string name="how2">منظور کریں، سواری کا بتایا OTP ڈالیں</string>
+    <string name="how3">سواری اتاریں، نقد لیں</string>
+    <string name="whatsapp_msg">السلام علیکم، میں منا بنڈی کیپٹن ہوں۔ مجھے مدد چاہیے۔</string>
+</resources>
