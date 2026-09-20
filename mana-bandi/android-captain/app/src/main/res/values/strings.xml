@@ -137,7 +137,11 @@
     <string name="earn_settlement">Office owes you</string>
     <string name="earn_trips_list">Rides today</string>
     <string name="earn_no_trips">No rides yet today</string>
-    <string name="earn_commission">Commission 0% (first 3 months)</string>
+    <string name="earn_commission_rate">Commission %1$d%%</string>
+    <string name="earn_commission_offer">%1$d%% for the first %2$d months, then %3$d%%</string>
+    <string name="earn_commission_today">Commission today ₹%1$d</string>
+    <string name="commission_note">Set by the office. Call if you have a question.</string>
+    <string name="collect_commission_line">Commission ₹%1$d · you keep ₹%2$d</string>
 
     <!-- Help -->
     <string name="help_title">Help</string>

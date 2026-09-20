@@ -130,7 +130,11 @@
     <string name="earn_settlement">آفس سے ملنے ہیں</string>
     <string name="earn_trips_list">آج کی سواریاں</string>
     <string name="earn_no_trips">آج ابھی کوئی سواری نہیں</string>
-    <string name="earn_commission">کمیشن 0% (پہلے 3 مہینے)</string>
+    <string name="earn_commission_rate">کمیشن %1$d%%</string>
+    <string name="earn_commission_offer">پہلے %2$d مہینے %1$d%%، پھر %3$d%%</string>
+    <string name="earn_commission_today">آج کا کمیشن ₹%1$d</string>
+    <string name="commission_note">آفس نے طے کیا ہے۔ سوال ہو تو کال کریں۔</string>
+    <string name="collect_commission_line">کمیشن ₹%1$d · آپ کے ₹%2$d</string>
 
     <!-- Help -->
     <string name="help_title">مدد</string>

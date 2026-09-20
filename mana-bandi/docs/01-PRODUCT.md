@@ -117,7 +117,7 @@ All fares are **shown before booking as a single big number in ₹**, no surge a
 
 | Stream | When |
 | --- | --- |
-| Commission 10% per ride/parcel (0% during town launch) | Month 4 in each town |
+| Commission per ride/parcel — **set by the owner in the portal** (default 10%, 0% free months for new captains, overridable per town, per service or per captain, with an effective date; shown to captains on every trip) | Month 4 in each town |
 | Parcel B2B: shop subscription ₹499/month for unlimited bookings + statement | Month 3 |
 | Captain kit (jacket, sticker, helmet) at cost | Day 1 |
 | Town‑to‑town scheduled parcel: fixed ₹60–150 per parcel | Month 3 |

@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.manabandi.captain.data.CommissionConfig
 import com.manabandi.captain.data.FakeDispatch
 import com.manabandi.captain.data.KycDoc
 import com.manabandi.captain.data.LocalePrefs
@@ -61,6 +62,20 @@ class CaptainViewModel(app: Application) : AndroidViewModel(app) {
     /** UPI fares the office still has to pay out (T+1). Cash stays with the captain. */
     var settlementDue by mutableIntStateOf(0)
         private set
+    /** Commission owed to the office for today's trips, from the owner-configured rule. */
+    var commissionToday by mutableIntStateOf(0)
+        private set
+
+    /** Demo: this captain joined last month, so the launch offer (free months) still applies. */
+    val monthsSinceJoining: Int = 1
+
+    /** Commission % that applies to this captain right now. */
+    val commissionRate: Int
+        get() = CommissionConfig.rateFor(monthsSinceJoining)
+
+    /** Commission for the request being served, in rupees. */
+    val currentCommission: Int
+        get() = request?.let { CommissionConfig.commissionFor(it.fare, monthsSinceJoining) } ?: 0
     val tripLog = mutableStateListOf<TripLogEntry>()
 
     val earningsWeek: Int
@@ -99,9 +114,11 @@ class CaptainViewModel(app: Application) : AndroidViewModel(app) {
     /** Called from the Collect screen: adds the fare to today's numbers and clears the trip. */
     fun finishTrip() {
         val done = request ?: return
-        earningsToday += done.fare
+        val commission = CommissionConfig.commissionFor(done.fare, monthsSinceJoining)
+        earningsToday += done.fare - commission
+        commissionToday += commission
         tripsToday += 1
-        if (done.payment == Payment.UPI) settlementDue += done.fare
+        if (done.payment == Payment.UPI) settlementDue += done.fare - commission
         tripLog.add(
             0,
             TripLogEntry(

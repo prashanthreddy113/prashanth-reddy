@@ -38,6 +38,12 @@ parcels(id, ride_id, receiver_phone, receiver_name, size[s|m|l], photo_url, paye
         pickup_otp, delivery_otp, delivered_photo_url, cod_amount, status)
 ride_events(id, ride_id, type, at, lat, lng, meta jsonb)
 settlements(id, captain_id, period, cash_collected, upi_earned, commission, payout, status)
+commission_rules(id, scope[default|service|town|town_service|captain], town_id?, service?, captain_id?,
+                 percent, free_months, free_percent, effective_from, created_by, created_at)
+      -- configured only by the owner in the web portal (Commission page); the most specific
+      -- active rule wins: captain > town+service > town > service > default.
+      -- GET /config/commission?town=&service=&captainId= returns the resolved rule to the captain app,
+      -- which shows the commission on every Collect screen and on Earnings; every change is audited.
 ```
 
 ## Key flows

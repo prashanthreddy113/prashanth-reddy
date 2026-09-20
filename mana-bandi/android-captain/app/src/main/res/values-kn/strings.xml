@@ -130,7 +130,11 @@
     <string name="earn_settlement">ಆಫೀಸ್ ಕೊಡಬೇಕಾದದ್ದು</string>
     <string name="earn_trips_list">ಇವತ್ತಿನ ರೈಡ್</string>
     <string name="earn_no_trips">ಇವತ್ತು ಇನ್ನೂ ರೈಡ್ ಇಲ್ಲ</string>
-    <string name="earn_commission">ಕಮಿಷನ್ 0% (ಮೊದಲ 3 ತಿಂಗಳು)</string>
+    <string name="earn_commission_rate">ಕಮಿಷನ್ %1$d%%</string>
+    <string name="earn_commission_offer">ಮೊದಲ %2$d ತಿಂಗಳು %1$d%%, ನಂತರ %3$d%%</string>
+    <string name="earn_commission_today">ಇಂದಿನ ಕಮಿಷನ್ ₹%1$d</string>
+    <string name="commission_note">ಕಚೇರಿ ನಿರ್ಧರಿಸಿದೆ. ಪ್ರಶ್ನೆ ಇದ್ದರೆ ಕರೆ ಮಾಡಿ.</string>
+    <string name="collect_commission_line">ಕಮಿಷನ್ ₹%1$d · ನಿಮಗೆ ₹%2$d</string>
 
     <!-- Help -->
     <string name="help_title">ಸಹಾಯ</string>

@@ -91,7 +91,7 @@ fun CollectScreen(vm: CaptainViewModel, onDone: () -> Unit) {
                     onNext = { deliveryStep = false }
                 )
             } else {
-                CollectFare(fare = request.fare, isCash = isCash, onDone = onDone)
+                CollectFare(fare = request.fare, isCash = isCash, commission = vm.currentCommission, onDone = onDone)
             }
         }
     }
@@ -142,7 +142,7 @@ private fun DeliveryProof(
 }
 
 @Composable
-private fun CollectFare(fare: Int, isCash: Boolean, onDone: () -> Unit) {
+private fun CollectFare(fare: Int, isCash: Boolean, commission: Int, onDone: () -> Unit) {
     if (isCash) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -208,6 +208,14 @@ private fun CollectFare(fare: Int, isCash: Boolean, onDone: () -> Unit) {
             }
         }
     }
+
+    // Commission line on every trip, from the owner-configured rule (never a surprise at settlement).
+    Text(
+        text = "💸 " + stringResource(R.string.collect_commission_line, commission, fare - commission),
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center
+    )
 
     Spacer(modifier = Modifier.height(8.dp))
     BigButton(

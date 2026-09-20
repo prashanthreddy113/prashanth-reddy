@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.manabandi.captain.CaptainViewModel
 import com.manabandi.captain.R
+import com.manabandi.captain.data.CommissionConfig
 import com.manabandi.captain.data.Service
 import com.manabandi.captain.data.TripLogEntry
 import com.manabandi.captain.ui.components.BottomTab
@@ -97,14 +98,38 @@ fun EarningsScreen(vm: CaptainViewModel, onHome: () -> Unit, onHelp: () -> Unit)
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = Turmeric, contentColor = TextDark)
             ) {
-                Text(
-                    text = "🎁 " + stringResource(R.string.earn_commission),
-                    style = MaterialTheme.typography.titleLarge,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Rule set by the owner in the web portal (Commission page).
+                    val rule = CommissionConfig.rule
+                    Text(
+                        text = "🎁 " + stringResource(R.string.earn_commission_rate, vm.commissionRate),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    if (rule.freeMonths > 0) {
+                        Text(
+                            text = stringResource(R.string.earn_commission_offer, rule.freePercent, rule.freeMonths, rule.percent),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.earn_commission_today, vm.commissionToday),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = stringResource(R.string.commission_note),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(4.dp))

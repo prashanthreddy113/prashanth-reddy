@@ -99,6 +99,7 @@ app/src/main/java/com/manabandi/captain/
   ManaBandiCaptainApp.kt          NavHost + Routes
   CaptainViewModel.kt             online / request / earnings / KYC state shared by screens
   data/LocalePrefs.kt             DataStore (language, login, KYC done, vehicle) + locale helpers
+  data/CommissionConfig.kt  commission rule as configured by the owner portal (percent, free months); demo default 0 % for 3 months then 10 %
   data/FakeDispatch.kt            Service, Payment, VehicleType, KycDoc, RideRequest, TripLogEntry, fake requests
   speech/SpeechHelper.kt          TextToSpeech wrapper (queues until ready, silent if unsupported)
   ui/theme/                       Color.kt, Type.kt (20sp body / 28sp headings), Theme.kt
