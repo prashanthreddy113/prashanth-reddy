@@ -13,6 +13,7 @@ const protocolLeaders = [
   { name: "A. Revanth Reddy", role: "Chief Minister, Telangana", img: "images/leaders/revanth-reddy.jpg" },
   { name: "Mallu Bhatti Vikramarka", role: "Deputy Chief Minister", img: "images/leaders/bhatti-vikramarka.jpg" },
   { name: "B. Mahesh Kumar Goud", role: "TPCC President", img: "images/leaders/mahesh-kumar-goud.jpg" },
+  { name: "G. Vivek Venkatswamy", role: "In-charge Minister, Sangareddy District", img: "images/leaders/vivek-venkatswamy.jpg" },
   { name: "Damodar Raja Narasimha", role: "Minister, Health, Telangana", img: "images/leaders/damodar-raja-narasimha.jpg" },
   { name: "Patlolla Sanjeeva Reddy", role: "MLA, Narayankhed", img: "images/family/sanjeeva-reddy.jpg" },
   { name: "Late Patlolla Kishta Reddy", role: "Former MLA, Narayankhed", img: "images/family/kishta-reddy.jpg", late: true },

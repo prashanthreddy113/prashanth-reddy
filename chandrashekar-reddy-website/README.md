@@ -27,6 +27,7 @@ Save photos with these exact names. Until a photo is added, the site shows a tri
 | `images/leaders/revanth-reddy.jpg` | A. Revanth Reddy |
 | `images/leaders/bhatti-vikramarka.jpg` | Mallu Bhatti Vikramarka |
 | `images/leaders/mahesh-kumar-goud.jpg` | B. Mahesh Kumar Goud |
+| `images/leaders/vivek-venkatswamy.jpg` | G. Vivek Venkatswamy |
 | `images/leaders/damodar-raja-narasimha.jpg` | Damodar Raja Narasimha |
 | `images/family/kishta-reddy.jpg` | Late Patlolla Kishta Reddy |
 | `images/family/sanjeeva-reddy.jpg` | Patlolla Sanjeeva Reddy |
