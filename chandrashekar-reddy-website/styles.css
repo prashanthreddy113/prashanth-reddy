@@ -288,29 +288,24 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--navy); line-height: 1.2
   padding: 46px 0 40px;
 }
 .tribute-inner { display: grid; grid-template-columns: auto 1fr; gap: 56px; align-items: center; }
-.tribute-photo { position: relative; width: 250px; height: 250px; margin: 20px 20px 10px; }
+.tribute-photo { position: relative; width: 250px; height: 320px; margin: 24px 36px 40px; }
+/* Gold photo frame, like a portrait on a wall */
 .tribute-photo > img, .tribute-photo > .fallback {
-  position: relative; z-index: 1; width: 100%; height: 100%; border-radius: 50%;
-  object-fit: cover; background: #fff; border: 6px solid #fff3d6;
-  box-shadow: 0 0 0 4px #e0a526, 0 0 60px rgba(255, 190, 70, 0.55);
+  position: relative; z-index: 1; width: 100%; height: 100%; border-radius: 10px;
+  object-fit: cover; object-position: center top; background: #fff;
+  border: 10px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #f7d774, #b8860b 30%, #fff2b0 50%, #b8860b 70%, #f7d774) border-box;
+  box-shadow: 0 0 0 2px #7a4d00, 0 18px 40px rgba(0, 0, 0, 0.45), 0 0 70px rgba(255, 190, 70, 0.45);
 }
-/* Marigold garland: ring of orange/yellow beads */
-.garland {
-  position: absolute; inset: -18px; z-index: 2; border-radius: 50%; pointer-events: none;
-  background:
-    radial-gradient(circle, #ffb300 0 5px, transparent 6px) 0 0 / 22px 22px,
-    radial-gradient(circle, #ff6f00 0 6px, transparent 7px) 11px 11px / 22px 22px;
-  -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 17px), #000 calc(100% - 16px), #000 calc(100% - 2px), transparent calc(100% - 1px));
-          mask: radial-gradient(circle closest-side, transparent calc(100% - 17px), #000 calc(100% - 16px), #000 calc(100% - 2px), transparent calc(100% - 1px));
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
-  animation: garland-glow 3s ease-in-out infinite alternate;
-}
-@keyframes garland-glow { to { filter: drop-shadow(0 0 10px rgba(255, 200, 60, 0.8)); } }
+/* Real-flower garland (drawn in SVG by script.js) hanging over the portrait */
+.garland { position: absolute; z-index: 3; left: -40px; top: -22px; width: calc(100% + 80px); height: calc(100% + 110px); pointer-events: none; overflow: visible; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.45)); }
 .lamp {
-  position: absolute; z-index: 3; bottom: -26px; left: 50%; transform: translateX(-50%);
-  font-size: 2.4rem; filter: drop-shadow(0 0 12px rgba(255, 200, 80, 0.9));
+  position: absolute; z-index: 3; bottom: -44px; font-size: 2.2rem;
+  filter: drop-shadow(0 0 12px rgba(255, 200, 80, 0.9));
   animation: flicker 1.6s ease-in-out infinite alternate;
 }
+.lamp.left { left: -34px; }
+.lamp.right { right: -34px; }
 @keyframes flicker { to { filter: drop-shadow(0 0 22px rgba(255, 170, 40, 1)); } }
 
 /* Petals fall over the photo */
@@ -325,7 +320,7 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--navy); line-height: 1.2
   0% { transform: translateY(-30px); opacity: 0; }
   8% { opacity: 1; }
   85% { opacity: 1; }
-  100% { transform: translateY(400px); opacity: 0; }
+  100% { transform: translateY(470px); opacity: 0; }
 }
 @keyframes petal-sway {
   from { transform: translateX(-14px) rotate(-40deg); }
@@ -340,6 +335,6 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--navy); line-height: 1.2
 
 @media (max-width: 820px) {
   .tribute-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 36px; }
-  .tribute-photo { width: 210px; height: 210px; }
+  .tribute-photo { width: 210px; height: 270px; }
   .tribute-line { margin-inline: auto; }
 }

@@ -287,3 +287,60 @@ wire();
     box.appendChild(p);
   }
 })();
+
+// Real-flower garland (mala) draped over the father's portrait: roses, marigolds and jasmine
+(function drawGarland() {
+  const svg = document.getElementById("garland");
+  if (!svg) return;
+  const NS = "http://www.w3.org/2000/svg";
+  // Portrait sits at x 40–290, y 22–342 in this viewBox; the mala hangs from its top corners
+  svg.innerHTML = `
+    <defs>
+      <radialGradient id="gMari" cx="45%" cy="40%"><stop offset="0" stop-color="#ffe066"/><stop offset=".55" stop-color="#ffa000"/><stop offset="1" stop-color="#e65100"/></radialGradient>
+      <radialGradient id="gMariY" cx="45%" cy="40%"><stop offset="0" stop-color="#fff59d"/><stop offset=".6" stop-color="#ffca28"/><stop offset="1" stop-color="#f57f17"/></radialGradient>
+      <radialGradient id="gRose" cx="40%" cy="35%"><stop offset="0" stop-color="#ff4d6d"/><stop offset=".6" stop-color="#c9002b"/><stop offset="1" stop-color="#6d0016"/></radialGradient>
+      <g id="fMari"><circle r="11" fill="url(#gMari)"/><circle r="11" fill="none" stroke="#d84315" stroke-width="3" stroke-dasharray="2 2.2"/><circle r="6.5" fill="none" stroke="#ef6c00" stroke-width="2.5" stroke-dasharray="1.6 1.8"/><circle r="2.5" fill="#ffb300"/></g>
+      <g id="fMariY"><circle r="10" fill="url(#gMariY)"/><circle r="10" fill="none" stroke="#f9a825" stroke-width="3" stroke-dasharray="2 2"/><circle r="5.5" fill="none" stroke="#fbc02d" stroke-width="2.5" stroke-dasharray="1.5 1.7"/></g>
+      <g id="fRose"><circle r="10.5" fill="url(#gRose)"/><path d="M-5 -1 a5 5 0 1 1 7 5 a3.5 3.5 0 1 1 -4 -5 a2 2 0 1 1 2 2" fill="none" stroke="#5c0011" stroke-width="1.3"/><path d="M-9 4 q4 5 9 5" fill="none" stroke="#8e0020" stroke-width="1.2"/></g>
+      <g id="fJas">${[0, 72, 144, 216, 288].map((a) => `<ellipse rx="3.4" ry="6.2" cy="-5.2" fill="#fffef6" stroke="#dcd6c0" stroke-width=".6" transform="rotate(${a})"/>`).join("")}<circle r="2" fill="#f2e6a0"/></g>
+      <g id="fLeaf"><path d="M0 0 q7 -6 15 0 q-7 6 -15 0z" fill="#2e7d32" stroke="#1b5e20" stroke-width=".6"/></g>
+    </defs>`;
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", "M52 30 C22 175 72 300 165 306 C258 300 308 175 278 30");
+  path.setAttribute("fill", "none");
+  svg.appendChild(path);
+  const use = (id, x, y, rot = 0, s = 1) => {
+    const u = document.createElementNS(NS, "use");
+    u.setAttribute("href", "#" + id);
+    u.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(${s.toFixed(2)})`);
+    svg.appendChild(u);
+  };
+  const len = path.getTotalLength();
+  const step = 10;
+  // Back row: leaves peeking out, then two strands of flowers for a thick mala
+  for (let d = 0; d <= len; d += 16) {
+    const p = path.getPointAtLength(d), q = path.getPointAtLength(Math.min(len, d + 1));
+    const ang = (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI;
+    use("fLeaf", p.x, p.y, ang + (d % 32 ? 60 : -120), 1);
+  }
+  const pattern = ["fRose", "fMari", "fJas", "fMariY", "fRose", "fJas", "fMari", "fJas"];
+  let i = 0;
+  for (const off of [-6, 6]) {
+    for (let d = off < 0 ? 0 : step / 2; d <= len; d += step, i++) {
+      const p = path.getPointAtLength(d), q = path.getPointAtLength(Math.min(len, d + 1));
+      const nx = -(q.y - p.y), ny = q.x - p.x, n = Math.hypot(nx, ny) || 1;
+      use(pattern[i % pattern.length], p.x + (nx / n) * off, p.y + (ny / n) * off, (i * 47) % 360, 0.95 + ((i * 7) % 5) / 25);
+    }
+  }
+  // Pendant (kuchchu) hanging from the centre of the mala
+  const cx = 165;
+  ["fRose", "fMari", "fJas", "fRose", "fMariY"].forEach((id, k) => use(id, cx, 322 + k * 15, k * 40, 1.05 - k * 0.05));
+  const tassel = document.createElementNS(NS, "g");
+  tassel.innerHTML = [-6, -3, 0, 3, 6]
+    .map((dx) => `<path d="M${cx} 388 q${dx} 14 ${dx * 1.6} 30" stroke="${dx % 2 ? "#c9002b" : "#ffb300"}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`)
+    .join("") + `<circle cx="${cx}" cy="388" r="5" fill="#ffca28" stroke="#b8860b"/>`;
+  svg.appendChild(tassel);
+  // Small knots where the mala hangs on the frame
+  use("fMari", 52, 30, 0, 1.2);
+  use("fMari", 278, 30, 0, 1.2);
+})();
