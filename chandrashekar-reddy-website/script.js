@@ -190,12 +190,19 @@ function render() {
         : `<div class="video reveal"><video controls preload="metadata" src="${esc(v.file)}"></video><p>${esc(v.title)}</p></div>`
     )
     .join("");
-  // Hide local videos that are missing
+  // Drop videos whose file isn't there yet; hide the whole section if none remain
+  const hideVideosIfEmpty = () => {
+    const empty = !document.querySelector("#videoGrid .video");
+    $("#videos").hidden = empty;
+    document.querySelector('.nav-links a[href="#videos"]').hidden = empty;
+  };
   document.querySelectorAll(".video video").forEach((vid) =>
     vid.addEventListener("error", () => {
-      vid.parentElement.innerHTML = `<div class="fallback video-fallback">▶</div><p>${esc(vid.parentElement.querySelector("p").textContent)} — video coming soon</p>`;
+      vid.closest(".video").remove();
+      hideVideosIfEmpty();
     })
   );
+  hideVideosIfEmpty();
 
   // Instagram embeds
   if (instagramPosts.length) {
@@ -232,12 +239,20 @@ function wire() {
   // Shadow on scroll
   addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", scrollY > 40), { passive: true });
 
-  // Reveal on scroll
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((en) => en.isIntersecting && (en.target.classList.add("in"), io.unobserve(en.target))),
-    { threshold: 0.12 }
-  );
-  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  // Reveal on scroll. Content is visible by default; the fade-in is only an
+  // enhancement, and everything is shown after a moment even if the viewer
+  // (an embedded preview, an old browser) never reports scrolling.
+  const items = document.querySelectorAll(".reveal");
+  const showAll = () => items.forEach((el) => el.classList.add("in"));
+  if ("IntersectionObserver" in window) {
+    document.documentElement.classList.add("anim");
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((en) => en.isIntersecting && (en.target.classList.add("in"), io.unobserve(en.target))),
+      { threshold: 0.12 }
+    );
+    items.forEach((el) => io.observe(el));
+    setTimeout(showAll, 1500);
+  }
 
   // Lightbox
   const lb = $("#lightbox");
