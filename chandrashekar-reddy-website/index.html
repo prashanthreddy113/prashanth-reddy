@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patlolla Chandrashekar Reddy | DCC President, Sangareddy</title>
+  <meta name="description" content="Official website of Patlolla Chandrashekar Reddy, District Congress Committee President, Sangareddy, Telangana. Social service, public work and people's leader." />
+  <meta property="og:title" content="Patlolla Chandrashekar Reddy | DCC President, Sangareddy" />
+  <meta property="og:description" content="Serving the people of Sangareddy district. Indian National Congress." />
+  <meta property="og:image" content="images/hero.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Tricolour ribbon -->
+  <div class="tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <!-- PROTOCOL LEADERS STRIP (edit in script.js → protocolLeaders) -->
+  <section class="protocol" aria-label="Party leadership">
+    <div class="protocol-track" id="protocolTrack"></div>
+  </section>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#home" class="brand">
+        <span class="brand-mark">PCR</span>
+        <span class="brand-text">
+          <strong>Patlolla Chandrashekar Reddy</strong>
+          <small>DCC President · Sangareddy</small>
+        </span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#legacy">Legacy</a>
+        <a href="#service">Service</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#videos">Videos</a>
+        <a href="#contact" class="btn btn-sm">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Indian National Congress · Telangana</p>
+        <h1>
+          Patlolla<br /><span>Chandrashekar Reddy</span>
+        </h1>
+        <p class="telugu">పట్లోళ్ల చంద్రశేఖర్ రెడ్డి</p>
+        <p class="role">President, District Congress Committee (DCC) — Sangareddy</p>
+        <p class="tagline">“Service to people is the true service to the nation.”</p>
+        <div class="hero-cta">
+          <a href="#service" class="btn">See Our Work</a>
+          <a href="#contact" class="btn btn-ghost">Reach Out for Help</a>
+        </div>
+      </div>
+      <div class="hero-photo reveal">
+        <div class="photo-ring">
+          <img src="images/hero.jpg" alt="Patlolla Chandrashekar Reddy" data-fallback="PCR" />
+        </div>
+        <div class="badge-float">
+          <strong>DCC</strong><span>President</span>
+        </div>
+      </div>
+    </div>
+    <div class="container stats reveal" id="stats"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container about">
+      <div class="about-photo reveal">
+        <img src="images/about.jpg" alt="Patlolla Chandrashekar Reddy with people" data-fallback="PCR" />
+      </div>
+      <div class="about-copy reveal">
+        <p class="eyebrow">About</p>
+        <h2>A Leader Rooted in the People</h2>
+        <p>
+          Patlolla Chandrashekar Reddy comes from a family that has served the people of
+          Narayankhed and the Sangareddy (erstwhile Medak) region for decades. Son of the late
+          former MLA <strong>Patlolla Kishta Reddy</strong> and brother of Narayankhed MLA
+          <strong>Patlolla Sanjeeva Reddy</strong>, he carries forward a legacy of Congress
+          ideology, grassroots work and helping every family that knocks on the door.
+        </p>
+        <p>
+          Appointed by the AICC as <strong>President of the Sangareddy District Congress
+          Committee</strong>, he works to strengthen the party from the village level upward,
+          bring government welfare schemes to eligible families, and stand with people in times
+          of need.
+        </p>
+        <ul class="checks">
+          <li>Strengthening Congress at booth, mandal and district level</li>
+          <li>Taking Telangana government welfare schemes to every doorstep</li>
+          <li>Standing with farmers, youth, women and the poor</li>
+          <li>Open door for anyone who needs help</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGACY / FAMILY -->
+  <section class="section section-alt" id="legacy">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Family Legacy</p>
+        <h2>A Family of Public Service</h2>
+      </div>
+      <div class="legacy-grid" id="familyGrid"></div>
+    </div>
+  </section>
+
+  <!-- SOCIAL SERVICE -->
+  <section class="section" id="service">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Social Service</p>
+        <h2>Helping People, Every Day</h2>
+        <p class="lead">Some of the work carried out across Sangareddy district.</p>
+      </div>
+      <div class="service-grid" id="serviceGrid"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section section-alt" id="gallery">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Gallery</p>
+        <h2>Moments With the People</h2>
+      </div>
+      <div class="filters" id="galleryFilters"></div>
+      <div class="gallery" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="section" id="videos">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Videos</p>
+        <h2>On the Ground</h2>
+      </div>
+      <div class="video-grid" id="videoGrid"></div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section class="section section-alt" id="instagram">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Instagram</p>
+        <h2>Latest From Instagram</h2>
+      </div>
+      <div class="insta-grid" id="instaGrid"></div>
+      <div class="center reveal">
+        <a class="btn insta-btn" href="https://www.instagram.com/patlolla_chandrashekar_reddy/" target="_blank" rel="noopener">
+          Follow @patlolla_chandrashekar_reddy
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact" id="contact">
+    <div class="container contact-inner">
+      <div class="reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Need Help? Reach Out.</h2>
+        <p>
+          For grievances, welfare scheme assistance, medical help or party work,
+          contact the DCC office. Every request is heard.
+        </p>
+        <ul class="contact-list" id="contactList"></ul>
+      </div>
+      <form class="contact-form reveal" id="contactForm">
+        <label>Name<input name="name" required placeholder="Your name" /></label>
+        <label>Phone<input name="phone" required type="tel" placeholder="10-digit mobile number" /></label>
+        <label>Village / Mandal<input name="place" placeholder="e.g. Narayankhed" /></label>
+        <label>How can we help?<textarea name="message" rows="4" required placeholder="Describe your request"></textarea></label>
+        <button type="submit" class="btn">Send via WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="container footer-inner">
+      <p><strong>Patlolla Chandrashekar Reddy</strong> · President, DCC Sangareddy · Indian National Congress</p>
+      <p class="muted">© <span id="year"></span> All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+    <img id="lbImg" alt="" />
+    <p id="lbCaption"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
