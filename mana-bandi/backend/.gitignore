@@ -1,0 +1,6 @@
+bin/
+obj/
+ManaBandi.Api/data/
+*.user
+.vs/
+TestResults/

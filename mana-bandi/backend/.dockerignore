@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+**/data/
+ManaBandi.Api.Tests/
+scripts/
+*.md
