@@ -10,7 +10,7 @@
   <meta property="og:image" content="images/hero.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@1,500&family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -47,23 +47,42 @@
     </div>
   </header>
 
-  <!-- TRIBUTE TO LATE FATHER (flower shower) -->
+  <!-- TRIBUTE TO LATE FATHER: cinematic memorial -->
   <section class="tribute" aria-label="Tribute to Late Sri Patlolla Kishta Reddy">
+    <div class="t-rays" aria-hidden="true"></div>
+    <div class="t-vignette" aria-hidden="true"></div>
+    <div class="t-sparks" id="sparks" aria-hidden="true"></div>
+    <div class="t-petals" id="petals" aria-hidden="true"></div>
+
     <div class="container tribute-inner">
-      <div class="tribute-photo">
-        <div class="petals" id="petals" aria-hidden="true"></div>
-        <img src="images/family/kishta-reddy.jpg" alt="Late Sri Patlolla Kishta Reddy" data-fallback="PKR" />
-        <svg class="garland" id="garland" viewBox="0 0 330 500" preserveAspectRatio="xMidYMin meet" aria-hidden="true"></svg>
-        <div class="lamp left" aria-hidden="true">🪔</div>
-        <div class="lamp right" aria-hidden="true">🪔</div>
+      <div class="t-portrait">
+        <div class="t-halo" aria-hidden="true"></div>
+        <div class="t-frame">
+          <span class="t-corner tl" aria-hidden="true"></span><span class="t-corner tr" aria-hidden="true"></span>
+          <span class="t-corner bl" aria-hidden="true"></span><span class="t-corner br" aria-hidden="true"></span>
+          <div class="t-photo">
+            <img src="images/family/kishta-reddy.jpg" alt="Late Sri Patlolla Kishta Reddy" data-fallback="PKR" />
+          </div>
+          <span class="t-shine" aria-hidden="true"></span>
+        </div>
+        <div class="t-lamps" aria-hidden="true">
+          <div class="diya"><span class="flame"></span><span class="glow"></span><span class="bowl"></span></div>
+          <div class="diya"><span class="flame"></span><span class="glow"></span><span class="bowl"></span></div>
+        </div>
       </div>
-      <div class="tribute-copy">
+
+      <div class="t-copy">
         <p class="shraddhanjali">శ్రద్ధాంజలి</p>
-        <p class="eyebrow">Our Guiding Light · మా మార్గదర్శి</p>
-        <h2>Late Sri Patlolla Kishta Reddy Garu</h2>
-        <p class="telugu tribute-telugu">స్వర్గీయ శ్రీ పట్లోళ్ల కిష్టా రెడ్డి గారు</p>
-        <p class="tribute-dates">02 Oct 1942 – 25 Aug 2015 · Former MLA, Narayankhed</p>
-        <p class="tribute-line">“His dreams for Narayankhed are our mission. His values are our path.”</p>
+        <div class="t-divider" aria-hidden="true"><span></span>✦<span></span></div>
+        <h2 class="t-name">Late Sri Patlolla<br />Kishta Reddy Garu</h2>
+        <p class="telugu t-telugu">స్వర్గీయ శ్రీ పట్లోళ్ల కిష్టా రెడ్డి గారు</p>
+        <p class="t-dates">02 October 1942 &nbsp;—&nbsp; 25 August 2015</p>
+        <ul class="t-roles">
+          <li>Former MLA, Narayankhed</li>
+          <li>Chairman, Public Accounts Committee, Telangana Legislative Assembly</li>
+          <li>Senior Leader, Indian National Congress</li>
+        </ul>
+        <p class="t-quote">“A statesman who lived for his people. His vision is our mission; his values, our path.”</p>
       </div>
     </div>
   </section>

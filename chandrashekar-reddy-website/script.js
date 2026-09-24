@@ -267,103 +267,38 @@ function wire() {
 render();
 wire();
 
-// Continuous flower shower on the father's photo
-(function flowerShower() {
-  const box = document.getElementById("petals");
-  if (!box) return;
-  const kinds = ["marigold", "marigold", "marigold", "rose", "rose", "jasmine", "gold"];
-  const count = window.innerWidth < 600 ? 26 : 38;
-  for (let i = 0; i < count; i++) {
+// Cinematic tribute: rose petals drifting in 3D and golden embers rising
+(function tributeEffects() {
+  const petals = document.getElementById("petals");
+  const sparks = document.getElementById("sparks");
+  if (!petals || !sparks) return;
+  const small = window.innerWidth < 700;
+  const kinds = ["", "", "", "pink", "white", "gold"];
+  for (let i = 0; i < (small ? 22 : 36); i++) {
     const p = document.createElement("span");
-    p.className = "petal " + kinds[i % kinds.length];
-    const fall = 4 + Math.random() * 4;
+    p.className = "t-petal " + kinds[i % kinds.length];
+    const dur = 9 + Math.random() * 8;
     p.style.left = Math.random() * 100 + "%";
-    p.style.animationDuration = fall + "s";
-    p.style.animationDelay = -Math.random() * fall + "s"; // start mid-fall so the shower is full at once
-    p.style.scale = (0.7 + Math.random() * 0.7).toFixed(2);
-    const i2 = document.createElement("i");
-    i2.style.animationDuration = 1 + Math.random() * 1.5 + "s";
-    p.appendChild(i2);
-    box.appendChild(p);
+    p.style.animationDuration = dur + "s";
+    p.style.animationDelay = -Math.random() * dur + "s";
+    p.style.setProperty("--drift", (Math.random() * 160 - 40).toFixed(0) + "px");
+    p.style.scale = (0.6 + Math.random() * 0.7).toFixed(2);
+    p.style.opacity = (0.75 + Math.random() * 0.25).toFixed(2);
+    if (Math.random() < 0.25) p.style.filter = "blur(1.5px)"; // depth of field
+    const inner = document.createElement("i");
+    inner.style.animationDuration = 2 + Math.random() * 3 + "s";
+    p.appendChild(inner);
+    petals.appendChild(p);
   }
-})();
-
-// Real-flower garland (mala) draped over the father's portrait, Sakshi-style:
-// a long, dense jasmine mala banded with red roses, a flower heap at the base, and a pendant
-(function drawGarland() {
-  const svg = document.getElementById("garland");
-  if (!svg) return;
-  const NS = "http://www.w3.org/2000/svg";
-  // Portrait sits at x 40–290, y 22–342 in this viewBox (330 × 500)
-  svg.innerHTML = `
-    <defs>
-      <radialGradient id="gMari" cx="45%" cy="40%"><stop offset="0" stop-color="#ffe066"/><stop offset=".55" stop-color="#ffa000"/><stop offset="1" stop-color="#e65100"/></radialGradient>
-      <radialGradient id="gRose" cx="40%" cy="35%"><stop offset="0" stop-color="#ff3b5c"/><stop offset=".6" stop-color="#c4001f"/><stop offset="1" stop-color="#5e0010"/></radialGradient>
-      <radialGradient id="gJas" cx="45%" cy="40%"><stop offset="0" stop-color="#ffffff"/><stop offset=".75" stop-color="#fbf8ec"/><stop offset="1" stop-color="#d9d2b8"/></radialGradient>
-      <g id="fMari"><circle r="10" fill="url(#gMari)"/><circle r="10" fill="none" stroke="#d84315" stroke-width="3" stroke-dasharray="2 2.2"/><circle r="5.5" fill="none" stroke="#ef6c00" stroke-width="2.4" stroke-dasharray="1.5 1.8"/></g>
-      <g id="fRose"><circle r="9.5" fill="url(#gRose)"/><path d="M-4.5 -1 a4.5 4.5 0 1 1 6.3 4.5 a3.2 3.2 0 1 1 -3.6 -4.5 a1.8 1.8 0 1 1 1.8 1.8" fill="none" stroke="#4a000c" stroke-width="1.2"/><path d="M-8 4 q4 4.5 8 4.5" fill="none" stroke="#7d001a" stroke-width="1.1"/></g>
-      <g id="fJas">${[0, 72, 144, 216, 288].map((a) => `<ellipse rx="3" ry="5.6" cy="-4.6" fill="url(#gJas)" stroke="#cfc7aa" stroke-width=".5" transform="rotate(${a})"/>`).join("")}<circle r="1.8" fill="#efe2a0"/></g>
-      <g id="fBud"><ellipse rx="2.6" ry="5.5" fill="#fffdf3" stroke="#d6cfb4" stroke-width=".5"/></g>
-      <g id="fLeaf"><path d="M0 0 q7 -6 15 0 q-7 6 -15 0z" fill="#2e7d32" stroke="#1b5e20" stroke-width=".6"/></g>
-    </defs>`;
-  const use = (id, x, y, rot = 0, s = 1) => {
-    const u = document.createElementNS(NS, "use");
-    u.setAttribute("href", "#" + id);
-    u.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(${s.toFixed(2)})`);
-    svg.appendChild(u);
-  };
-  // Seeded random so the garland looks the same on every load
-  let seed = 7;
-  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-
-  // 1. Flower heap offered at the foot of the portrait
-  for (let k = 0; k < 150; k++) {
-    const x = 18 + rnd() * 294;
-    const h = 30 * Math.sqrt(Math.max(0, 1 - ((x - 165) / 150) ** 2));
-    const y = 356 - rnd() * h + 6;
-    const r = rnd();
-    use(r < 0.45 ? "fRose" : r < 0.8 ? "fMari" : "fJas", x, y, rnd() * 360, 0.8 + rnd() * 0.35);
+  for (let i = 0; i < (small ? 18 : 30); i++) {
+    const s = document.createElement("span");
+    s.className = "t-spark";
+    const dur = 6 + Math.random() * 7;
+    s.style.left = (small ? 10 + Math.random() * 80 : 5 + Math.random() * 50) + "%";
+    s.style.animationDuration = dur + "s";
+    s.style.animationDelay = -Math.random() * dur + "s";
+    s.style.setProperty("--sway", (Math.random() * 80 - 40).toFixed(0) + "px");
+    s.style.scale = (0.5 + Math.random()).toFixed(2);
+    sparks.appendChild(s);
   }
-
-  // 2. Long mala hanging from the top corners, below the frame
-  const path = document.createElementNS(NS, "path");
-  path.setAttribute("d", "M54 30 C8 230 58 398 165 402 C272 398 322 230 276 30");
-  path.setAttribute("fill", "none");
-  svg.appendChild(path);
-  const len = path.getTotalLength();
-  const at = (d) => {
-    const p = path.getPointAtLength(d), q = path.getPointAtLength(Math.min(len, d + 1));
-    const nx = -(q.y - p.y), ny = q.x - p.x, n = Math.hypot(nx, ny) || 1;
-    return { x: p.x, y: p.y, nx: nx / n, ny: ny / n, ang: (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI };
-  };
-  for (let d = 0; d <= len; d += 15) {
-    const p = at(d);
-    use("fLeaf", p.x + p.nx * 14, p.y + p.ny * 14, p.ang + 70, 1);
-    use("fLeaf", p.x - p.nx * 14, p.y - p.ny * 14, p.ang - 110, 1);
-  }
-  // Mostly jasmine, three strands thick, with a band of red roses every ~46px
-  const band = 46;
-  for (let d = 0; d <= len; d += 6.5) {
-    const p = at(d);
-    const inBand = d % band < 13;
-    for (const off of [-9, 0, 9]) {
-      const jx = p.x + p.nx * off, jy = p.y + p.ny * off;
-      if (inBand) use("fRose", jx, jy, rnd() * 360, 0.95 + rnd() * 0.15);
-      else use(rnd() < 0.25 ? "fBud" : "fJas", jx, jy, rnd() * 360, 0.95 + rnd() * 0.25);
-    }
-  }
-  // Marigold knots where the mala hangs on the frame
-  use("fMari", 54, 30, 0, 1.5);
-  use("fMari", 276, 30, 0, 1.5);
-
-  // 3. Pendant: rose cluster, jasmine string and a gold-red tassel
-  const cx = 165, cy = 404;
-  [[0, 0], [-10, 6], [10, 6], [0, 12], [-6, 20], [6, 20], [0, 28]].forEach(([dx, dy]) => use("fRose", cx + dx, cy + dy, rnd() * 360, 1.05));
-  for (let k = 0; k < 4; k++) use("fJas", cx, cy + 40 + k * 10, rnd() * 360, 1);
-  use("fMari", cx, cy + 82, 0, 1.2);
-  const tassel = document.createElementNS(NS, "g");
-  tassel.innerHTML = [-8, -5, -2, 1, 4, 7]
-    .map((dx, k) => `<path d="M${cx} ${cy + 92} q${dx} 12 ${dx * 1.4} 30" stroke="${k % 2 ? "#c4001f" : "#ffc107"}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`)
-    .join("") + `<circle cx="${cx}" cy="${cy + 92}" r="5.5" fill="#ffc107" stroke="#9c6b00"/>`;
-  svg.appendChild(tassel);
 })();
