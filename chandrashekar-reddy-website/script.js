@@ -66,15 +66,11 @@ const services = [
 
 // Gallery — add photos to images/gallery/ and list them here
 const gallery = [
-  { src: "images/gallery/01.jpg", caption: "With Rahul Gandhi", tag: "Leaders" },
-  { src: "images/gallery/02.jpg", caption: "With AICC President Mallikarjun Kharge", tag: "Leaders" },
-  { src: "images/gallery/03.jpg", caption: "With Chief Minister A. Revanth Reddy", tag: "Leaders" },
-  { src: "images/gallery/04.jpg", caption: "With TPCC President Mahesh Kumar Goud", tag: "Leaders" },
-  { src: "images/gallery/05.jpg", caption: "Medical assistance to a family", tag: "Service" },
-  { src: "images/gallery/06.jpg", caption: "Blood donation camp", tag: "Service" },
-  { src: "images/gallery/07.jpg", caption: "Meeting with farmers", tag: "People" },
-  { src: "images/gallery/08.jpg", caption: "DCC meeting, Sangareddy", tag: "Party" },
-  { src: "images/gallery/09.jpg", caption: "Festival celebrations", tag: "People" },
+  { src: "images/gallery/01.jpg", caption: "Appointed President, DCC Sangareddy", tag: "Party" },
+  // Add more like this (photo in images/gallery/, tag = filter button):
+  // { src: "images/gallery/02.jpg", caption: "With Rahul Gandhi", tag: "Leaders" },
+  // { src: "images/gallery/03.jpg", caption: "Medical assistance to a family", tag: "Service" },
+  // { src: "images/gallery/04.jpg", caption: "Meeting with farmers", tag: "People" },
 ];
 
 // Videos — either a local file in videos/ or a YouTube video id
@@ -167,6 +163,7 @@ function render() {
   $("#galleryFilters").innerHTML = tags
     .map((t, i) => `<button class="${i === 0 ? "active" : ""}" data-tag="${esc(t)}">${esc(t)}</button>`)
     .join("");
+  $("#galleryFilters").hidden = tags.length <= 2;
   $("#galleryGrid").innerHTML = gallery
     .map(
       (g) => `
