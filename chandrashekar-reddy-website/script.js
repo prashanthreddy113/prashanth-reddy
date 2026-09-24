@@ -265,3 +265,24 @@ function wire() {
 
 render();
 wire();
+
+// Continuous flower shower on the father's photo
+(function flowerShower() {
+  const box = document.getElementById("petals");
+  if (!box) return;
+  const kinds = ["marigold", "marigold", "marigold", "rose", "rose", "jasmine", "gold"];
+  const count = window.innerWidth < 600 ? 26 : 38;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement("span");
+    p.className = "petal " + kinds[i % kinds.length];
+    const fall = 4 + Math.random() * 4;
+    p.style.left = Math.random() * 100 + "%";
+    p.style.animationDuration = fall + "s";
+    p.style.animationDelay = -Math.random() * fall + "s"; // start mid-fall so the shower is full at once
+    p.style.scale = (0.7 + Math.random() * 0.7).toFixed(2);
+    const i2 = document.createElement("i");
+    i2.style.animationDuration = 1 + Math.random() * 1.5 + "s";
+    p.appendChild(i2);
+    box.appendChild(p);
+  }
+})();
