@@ -102,7 +102,7 @@ public sealed class TestApp : WebApplicationFactory<Program>, IAsyncDisposable
         var client = Authed(body.GetProperty("token").GetString()!);
         if (acceptTerms)
         {
-            var t = await client.PostAsJsonAsync("/api/me/terms", new { version = "1.2" });
+            var t = await client.PostAsJsonAsync("/api/me/terms", new { version = "1.0" });
             Assert.Equal(HttpStatusCode.OK, t.StatusCode);
         }
         return (client, body);

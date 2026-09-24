@@ -187,6 +187,11 @@ public class MeController : ControllerBase
         if (Roles.IsAdmin(u.Role)) throw ApiException.Forbidden("Terms are accepted in the apps");
         var version = (body.Version ?? "").Trim();
         if (!await _db.TermsVersions.AnyAsync(t => t.Version == version, ct)) throw ApiException.Validation($"Unknown terms version '{version}'");
+        // Consent must be for the version currently published, otherwise the rider would be
+        // recorded as agreeing to old terms and every booking would still say terms_required.
+        var current = await _accounts.CurrentTermsVersionAsync(ct);
+        if (current is not null && version != current)
+            throw new ApiException(409, "terms_required", $"Terms version {version} is outdated; please accept version {current}");
         var app = Request.Headers["X-App-Version"].FirstOrDefault();
         _db.Consents.Add(new Consent
         {

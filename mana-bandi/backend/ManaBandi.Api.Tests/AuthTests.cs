@@ -91,13 +91,13 @@ public class AuthTests
         var ride = new { clientId = Guid.NewGuid().ToString(), service = "bike", pickup = Nkd.Place(Nkd.BusStand), drop = Nkd.Place(Nkd.FarDrop), payment = "cash" };
         await rider.PostJson("/api/rides", ride).Problem(403, "terms_required");
         await rider.PostJson("/api/me/terms", new { version = "9.9" }).Problem(422, "validation");
-        await rider.PostJson("/api/me/terms", new { version = "1.2" }).Ok();
+        await rider.PostJson("/api/me/terms", new { version = "1.0" }).Ok();
         var created = await rider.PostJson("/api/rides", ride).Ok(HttpStatusCode.Created);
         Assert.Equal("searching", created.Str("status"));
 
         var consent = await app.WithDb(db => db.Consents.SingleAsync());
         Assert.Equal("terms_rider", consent.Kind);
-        Assert.Equal("1.2", consent.Version);
+        Assert.Equal("1.0", consent.Version);
         Assert.Equal("0.2.0-test", consent.AppVersion);
 
         // idempotent on clientId
@@ -105,7 +105,27 @@ public class AuthTests
         Assert.Equal(created.Str("id"), again.Str("id"));
 
         var me = await rider.GetAsync("/api/me").Ok();
-        Assert.Equal("1.2", me.Str("termsVersionAccepted"));
+        Assert.Equal("1.0", me.Str("termsVersionAccepted"));
         Assert.False(me.GetProperty("termsRequired").GetBoolean());
+    }
+
+    [Fact]
+    public async Task Publishing_new_terms_asks_everyone_again()
+    {
+        await using var app = TestApp.Create();
+        var (rider, _) = await app.LoginPhone("9848000002", "rider");          // accepted v1.0
+        var owner = await app.Owner();
+        await owner.PostJson("/api/admin/terms", new { version = "1.1", te = "కొత్త నియమాలు", en = "New terms" }).Ok();
+
+        var me = await rider.GetAsync("/api/me").Ok();
+        Assert.Equal("1.1", me.Str("termsCurrentVersion"));
+        Assert.True(me.GetProperty("termsRequired").GetBoolean());
+
+        var ride = new { clientId = Guid.NewGuid().ToString(), service = "bike", pickup = Nkd.Place(Nkd.BusStand), drop = Nkd.Place(Nkd.FarDrop), payment = "cash" };
+        await rider.PostJson("/api/rides", ride).Problem(403, "terms_required");
+        // an app that still sends the old version is told to accept the new one
+        await rider.PostJson("/api/me/terms", new { version = "1.0" }).Problem(409, "terms_required");
+        await rider.PostJson("/api/me/terms", new { version = "1.1" }).Ok();
+        await rider.PostJson("/api/rides", ride).Ok(HttpStatusCode.Created);
     }
 }

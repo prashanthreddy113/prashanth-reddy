@@ -84,9 +84,9 @@ public static class SeedData
 
     public static List<TermsVersion> Terms() => new()
     {
-        new TermsVersion { Version = "1.0", PublishedAt = new DateOnly(2026, 6, 28), By = "Prashanth Reddy", Te = TermsTe, En = TermsEn },
-        new TermsVersion { Version = "1.1", PublishedAt = new DateOnly(2026, 7, 20), By = "Prashanth Reddy", Te = TermsTe, En = TermsEn },
-        new TermsVersion { Version = "1.2", PublishedAt = new DateOnly(2026, 8, 10), By = "Prashanth Reddy", Te = TermsTe, En = TermsEn },
+        // A fresh installation starts at v1.0 (matches the apps' bundled version); the owner
+        // publishes later versions from the portal, and the apps then ask everyone again.
+        new TermsVersion { Version = "1.0", PublishedAt = new DateOnly(2026, 9, 1), By = "setup", Te = TermsTe, En = TermsEn },
     };
 
     public static List<MessageTemplate> Templates() => new()

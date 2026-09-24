@@ -157,8 +157,8 @@ public class AdminTests
         var company = await owner.GetAsync("/api/admin/settings/company").Ok();
         Assert.Equal("Mana Bandi Mobility Private Limited", company.Str("legalName"));
         var terms = await owner.GetAsync("/api/admin/terms").Ok();
-        Assert.Equal("1.2", terms.Str("currentVersion"));
-        Assert.Equal(3, terms.GetProperty("versions").GetArrayLength());
+        Assert.Equal("1.0", terms.Str("currentVersion"));
+        Assert.Equal(1, terms.GetProperty("versions").GetArrayLength());
         Assert.Equal(6, (await owner.GetAsync("/api/admin/templates").Ok()).GetArrayLength());
         var manager = await owner.PostJson("/api/admin/users", new { name = "Swapna", email = "nkd@test.manabandi.in", role = "town_manager", townId = "nkd" }).Ok();
         var tempPassword = manager.Str("tempPassword");
