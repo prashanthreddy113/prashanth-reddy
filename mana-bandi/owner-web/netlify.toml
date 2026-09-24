@@ -1,0 +1,21 @@
+# Netlify site for the Mana Bandi owner portal.
+# In Netlify: Add new site → Import from GitHub → this repo → Base directory: mana-bandi/owner-web
+# Then Site configuration → Environment variables → VITE_API_URL = https://api.manabandi.in
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

@@ -1,0 +1,57 @@
+# Mana Bandi production stack for one Ubuntu server (e.g. DigitalOcean Droplet, Bangalore).
+#   cp .env.example .env   # fill it in
+#   docker compose up -d --build
+# Caddy obtains and renews the HTTPS certificate for API_DOMAIN automatically.
+# Database: by default the managed PostgreSQL in DATABASE_URL. To run PostgreSQL on this
+# same server instead, start with:  docker compose --profile localdb up -d --build
+services:
+  api:
+    build: ../backend
+    image: manabandi-api:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ConnectionStrings__Default: ${DATABASE_URL}
+      Files__Root: /data/files
+      Public__BaseUrl: https://${API_DOMAIN}
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+    volumes:
+      - files:/data/files
+    expose:
+      - "8080"
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [api]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  db:
+    profiles: [localdb]
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: manabandi
+      POSTGRES_USER: manabandi
+      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD:-change-me}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+volumes:
+  files:
+  caddy_data:
+  caddy_config:
+  pgdata:
