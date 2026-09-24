@@ -38,11 +38,12 @@ import com.manabandi.captain.ui.components.SpeakTopBar
 /**
  * Terms & conditions, shown once after login and again whenever
  * [LocalePrefs.TERMS_VERSION] changes. Six short rules with a picture each;
- * the 🔊 button reads all of them aloud; one big "I agree" button.
+ * the 🔊 button reads all of them aloud; one big "I agree" button, which records the
+ * acceptance on the server (POST /api/me/terms) before continuing.
  * The full text lives at R.string.terms_url (owner portal → Settings → Terms).
  */
 @Composable
-fun TermsScreen(onAccept: () -> Unit) {
+fun TermsScreen(busy: Boolean, error: Int?, version: String = LocalePrefs.TERMS_VERSION, onAccept: () -> Unit) {
     val context = LocalContext.current
     val termsUrl = stringResource(R.string.terms_url)
     val rules = listOf(
@@ -79,7 +80,7 @@ fun TermsScreen(onAccept: () -> Unit) {
                 textAlign = TextAlign.Center
             )
             Text(
-                text = stringResource(R.string.terms_version_note, LocalePrefs.TERMS_VERSION),
+                text = stringResource(R.string.terms_version_note, version),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -113,9 +114,19 @@ fun TermsScreen(onAccept: () -> Unit) {
                     }
                 }
             )
+            if (error != null) {
+                Text(
+                    text = stringResource(error),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
             BigButton(
-                text = stringResource(R.string.terms_accept),
-                emoji = "✅",
+                text = stringResource(if (busy) R.string.please_wait else R.string.terms_accept),
+                emoji = if (busy) "⏳" else "✅",
+                enabled = !busy,
                 onClick = onAccept
             )
         }

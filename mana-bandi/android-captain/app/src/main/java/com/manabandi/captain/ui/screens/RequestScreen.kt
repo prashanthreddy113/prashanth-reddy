@@ -1,5 +1,7 @@
 package com.manabandi.captain.ui.screens
 
+import android.os.SystemClock
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -26,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.manabandi.captain.CaptainViewModel
 import com.manabandi.captain.R
-import com.manabandi.captain.data.FakeDispatch
 import com.manabandi.captain.data.Payment
 import com.manabandi.captain.data.Service
+import com.manabandi.captain.data.displayName
+import com.manabandi.captain.data.formatKm
+import com.manabandi.captain.location.TrackingRepository
 import com.manabandi.captain.ui.components.SpeakTopBar
+import com.manabandi.captain.ui.components.appLanguage
 import com.manabandi.captain.ui.theme.Green
 import com.manabandi.captain.ui.theme.GreenLight
 import com.manabandi.captain.ui.theme.ParcelOrange
@@ -57,66 +63,80 @@ import com.manabandi.captain.ui.theme.TurmericLight
 import kotlinx.coroutines.delay
 
 /**
- * New ride request. Whole screen tinted by service (yellow bike / green auto / orange parcel).
- * Lower half = one giant ✅ Accept with a 15 s countdown bar; small ❌ at the bottom.
- * Timeout or ❌ -> back to Home.
+ * The real ride offer from the heartbeat. Whole screen tinted by service; the countdown uses
+ * the server's `secondsLeft`. ✅ → POST /offers/{id}/accept (409 expired / taken → friendly
+ * message, back Home); ❌ → /reject. Timeout → Home.
  */
 @Composable
-fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> Unit) {
+fun RequestScreen(vm: CaptainViewModel, onDismiss: () -> Unit) {
     val currentOnDismiss by rememberUpdatedState(onDismiss)
-    val request = vm.request
-    if (request == null) {
-        // Nothing to show (e.g. restored after process death): go back to Home.
-        LaunchedEffect(Unit) { currentOnDismiss() }
+    val tracking by TrackingRepository.state.collectAsState()
+    val offer = tracking.offer
+    if (offer == null) {
+        // Accepted (the trip screen opens), rejected, expired or taken: back to Home.
+        LaunchedEffect(Unit) { if (TrackingRepository.state.value.trip == null) currentOnDismiss() }
         return
     }
 
-    var secondsLeft by remember { mutableIntStateOf(FakeDispatch.ACCEPT_SECONDS) }
-    val progress by animateFloatAsState(
-        targetValue = secondsLeft / FakeDispatch.ACCEPT_SECONDS.toFloat(),
-        animationSpec = tween(durationMillis = 1000, easing = LinearEasing),
-        label = "countdown"
-    )
-    LaunchedEffect(Unit) {
-        while (secondsLeft > 0) {
-            delay(1000)
-            secondsLeft--
-        }
-        currentOnDismiss()
+    // Back = "no" (otherwise Home would open this offer again right away).
+    BackHandler {
+        vm.rejectOffer(offer)
+        onDismiss()
     }
 
-    val strong = when (request.service) {
+    val totalSeconds = remember(offer.id) { offer.secondsLeft.coerceAtLeast(1) }
+    val deadline = tracking.offerDeadline
+    var secondsLeft by remember(offer.id) { mutableIntStateOf(offer.secondsLeft.coerceAtLeast(0)) }
+    LaunchedEffect(offer.id, deadline) {
+        while (true) {
+            val leftMs = deadline - SystemClock.elapsedRealtime()
+            secondsLeft = ((leftMs + 999) / 1000).toInt().coerceAtLeast(0)
+            if (leftMs <= 0) {
+                vm.offerTimedOut(offer)
+                break
+            }
+            delay(250)
+        }
+    }
+    val progress by animateFloatAsState(
+        targetValue = secondsLeft / totalSeconds.toFloat(),
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing),
+        label = "countdown"
+    )
+
+    val service = Service.fromApi(offer.service)
+    val payment = Payment.fromApi(offer.payment)
+    val strong = when (service) {
         Service.BIKE -> Turmeric
         Service.AUTO -> Green
         Service.PARCEL -> ParcelOrange
     }
-    val tint = when (request.service) {
+    val tint = when (service) {
         Service.BIKE -> TurmericLight
         Service.AUTO -> GreenLight
         Service.PARCEL -> ParcelOrangeLight
     }
-    val onStrong = if (request.service == Service.BIKE) TextDark else Color.White
+    val onStrong = if (service == Service.BIKE) TextDark else Color.White
     val serviceName = stringResource(
-        when (request.service) {
+        when (service) {
             Service.BIKE -> R.string.service_bike
             Service.AUTO -> R.string.service_auto
             Service.PARCEL -> R.string.service_parcel
         }
     )
-    val pickupName = stringResource(request.pickupNameRes)
-    val dropName = stringResource(request.dropNameRes)
-    val paymentName = stringResource(
-        if (request.payment == Payment.CASH) R.string.pay_cash else R.string.pay_upi
-    )
+    val language = appLanguage()
+    val pinLabel = stringResource(R.string.pin_rider)
+    val pickupName = offer.pickup.displayName(language, pinLabel)
+    val dropName = offer.drop.displayName(language, stringResource(R.string.pin_drop))
+    val paymentName = stringResource(if (payment == Payment.CASH) R.string.pay_cash else R.string.pay_upi)
+    val awayKm = formatKm(offer.distanceToPickupKm)
 
     Scaffold(
         containerColor = tint,
         topBar = {
             SpeakTopBar(
                 title = stringResource(R.string.request_title),
-                speechText = stringResource(
-                    R.string.request_speech, pickupName, request.distanceToPickupKm, request.fare
-                )
+                speechText = stringResource(R.string.request_speech, pickupName, awayKm, offer.fare)
             )
         }
     ) { padding ->
@@ -139,11 +159,11 @@ fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> U
                         .padding(horizontal = 20.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = request.service.emoji, fontSize = 44.sp)
+                    Text(text = service.emoji, fontSize = 44.sp)
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(text = serviceName, style = MaterialTheme.typography.headlineMedium)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(text = "${request.payment.emoji} $paymentName", style = MaterialTheme.typography.titleLarge)
+                    Text(text = "${payment.emoji} $paymentName", style = MaterialTheme.typography.titleLarge)
                 }
             }
 
@@ -166,7 +186,7 @@ fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> U
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "🛵 " + stringResource(R.string.request_away, request.distanceToPickupKm),
+                    text = "🛵 " + stringResource(R.string.request_away, awayKm),
                     fontSize = 34.sp,
                     lineHeight = 42.sp,
                     fontWeight = FontWeight.Bold,
@@ -180,13 +200,13 @@ fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> U
                 )
                 Text(text = dropName, style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    text = stringResource(R.string.request_trip_km, request.tripKm),
+                    text = stringResource(R.string.request_trip_km, formatKm(offer.tripKm)),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "₹${request.fare}",
+                    text = "₹${offer.fare}",
                     fontSize = 56.sp,
                     lineHeight = 64.sp,
                     fontWeight = FontWeight.Bold,
@@ -195,7 +215,7 @@ fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> U
                 )
             }
 
-            // Countdown
+            // Countdown (server secondsLeft)
             Text(
                 text = "⏱ " + stringResource(R.string.seconds_left, secondsLeft),
                 style = MaterialTheme.typography.titleLarge,
@@ -214,24 +234,29 @@ fun RequestScreen(vm: CaptainViewModel, onAccept: () -> Unit, onDismiss: () -> U
 
             // The giant ✅ Accept
             Button(
-                onClick = onAccept,
+                onClick = { vm.acceptOffer(offer) },
+                enabled = !vm.offerBusy && secondsLeft > 0,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Green, contentColor = Color.White)
             ) {
-                Text(text = "✅", fontSize = 44.sp)
+                Text(text = if (vm.offerBusy) "⏳" else "✅", fontSize = 44.sp)
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = stringResource(R.string.accept),
+                    text = stringResource(if (vm.offerBusy) R.string.please_wait else R.string.accept),
                     fontSize = 34.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
             TextButton(
-                onClick = onDismiss,
+                onClick = {
+                    vm.rejectOffer(offer)
+                    onDismiss()
+                },
+                enabled = !vm.offerBusy,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

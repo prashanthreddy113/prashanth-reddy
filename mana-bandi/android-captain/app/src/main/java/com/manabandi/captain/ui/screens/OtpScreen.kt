@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,9 +33,20 @@ import com.manabandi.captain.ui.components.OtpEntry
 import com.manabandi.captain.ui.components.SecondaryButton
 import com.manabandi.captain.ui.components.SpeakTopBar
 
-/** Login OTP. Demo: any 4 digits are accepted. */
+/**
+ * Login code (POST /api/auth/otp/verify). [devCode] is shown as a small grey hint only when
+ * the server runs in OTP dev mode (testing); production never sends it.
+ */
 @Composable
-fun OtpScreen(phone: String, onBack: () -> Unit, onVerified: () -> Unit) {
+fun OtpScreen(
+    phone: String,
+    devCode: String?,
+    busy: Boolean,
+    error: Int?,
+    onBack: () -> Unit,
+    onVerify: (String) -> Unit,
+    onCallMe: () -> Unit
+) {
     var otp by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val callStub = stringResource(R.string.otp_call_stub)
@@ -67,25 +79,40 @@ fun OtpScreen(phone: String, onBack: () -> Unit, onVerified: () -> Unit) {
 
             OtpEntry(otp = otp, onOtpChange = { otp = it })
 
-            Text(
-                text = stringResource(R.string.otp_demo_hint),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (!devCode.isNullOrBlank()) {
+                Text(
+                    text = stringResource(R.string.otp_dev_hint, devCode),
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+
+            if (error != null) {
+                Text(
+                    text = stringResource(error),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 
             BigButton(
-                text = stringResource(R.string.otp_verify),
-                emoji = "✅",
-                enabled = otp.length == OTP_LENGTH,
-                onClick = onVerified
+                text = stringResource(if (busy) R.string.please_wait else R.string.otp_verify),
+                emoji = if (busy) "⏳" else "✅",
+                enabled = otp.length == OTP_LENGTH && !busy,
+                onClick = { onVerify(otp) }
             )
 
             SecondaryButton(
                 text = stringResource(R.string.otp_call),
                 emoji = "📞",
-                onClick = { Toast.makeText(context, callStub, Toast.LENGTH_SHORT).show() }
+                enabled = !busy,
+                onClick = {
+                    Toast.makeText(context, callStub, Toast.LENGTH_SHORT).show()
+                    onCallMe()
+                }
             )
         }
     }

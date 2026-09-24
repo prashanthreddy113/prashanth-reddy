@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.manabandi.captain.CaptainViewModel
 import com.manabandi.captain.R
 import com.manabandi.captain.data.Service
+import com.manabandi.captain.location.TrackingRepository
 import com.manabandi.captain.ui.components.BigButton
 import com.manabandi.captain.ui.components.OTP_LENGTH
 import com.manabandi.captain.ui.components.OtpEntry
@@ -35,22 +38,35 @@ import com.manabandi.captain.ui.theme.Green
 import com.manabandi.captain.ui.theme.ParcelOrange
 
 /**
- * "Enter the 4 digits the rider says": four 56 sp boxes + numeric keyboard.
- * For a parcel it is the pickup OTP and there is a 📷 parcel photo button.
- * Demo: any 4 digits start the ride.
+ * "Enter the 4 digits the rider says" → POST /api/captain/trip/start {otp}; a wrong code
+ * (422 wrong_ride_otp) shows a clear message and clears the boxes. For a parcel it is the
+ * pickup OTP and a 📷 parcel photo is required (uploaded with stage=pickup).
  */
 @Composable
-fun EnterOtpScreen(vm: CaptainViewModel, onStarted: () -> Unit) {
-    val request = vm.request ?: return
-    val isParcel = request.service == Service.PARCEL
+fun EnterOtpScreen(vm: CaptainViewModel) {
+    val tracking by TrackingRepository.state.collectAsState()
+    val trip = tracking.trip ?: return
+    val service = Service.fromApi(trip.service)
+    val isParcel = service == Service.PARCEL
     var otp by rememberSaveable { mutableStateOf("") }
     val accent = if (isParcel) ParcelOrange else MaterialTheme.colorScheme.primary
+    val wrongOtp = vm.tripError == R.string.wrong_otp
+
+    LaunchedEffect(vm.tripError) {
+        if (vm.tripError == R.string.wrong_otp) otp = ""
+    }
 
     Scaffold(
         topBar = {
             SpeakTopBar(
                 title = stringResource(if (isParcel) R.string.enter_otp_parcel_title else R.string.enter_otp_title),
-                speechText = stringResource(if (isParcel) R.string.enter_otp_parcel_speech else R.string.enter_otp_speech)
+                speechText = stringResource(
+                    when {
+                        wrongOtp -> R.string.wrong_otp
+                        isParcel -> R.string.enter_otp_parcel_speech
+                        else -> R.string.enter_otp_speech
+                    }
+                )
             )
         }
     ) { padding ->
@@ -64,7 +80,7 @@ fun EnterOtpScreen(vm: CaptainViewModel, onStarted: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Text(text = "${request.service.emoji}  🔐", fontSize = 56.sp)
+            Text(text = "${service.emoji}  🔐", fontSize = 56.sp)
             Text(
                 text = stringResource(if (isParcel) R.string.enter_otp_parcel_title else R.string.enter_otp_title),
                 style = MaterialTheme.typography.headlineMedium,
@@ -73,42 +89,46 @@ fun EnterOtpScreen(vm: CaptainViewModel, onStarted: () -> Unit) {
 
             OtpEntry(
                 otp = otp,
-                onOtpChange = { otp = it },
+                onOtpChange = {
+                    otp = it
+                    if (vm.tripError != null) vm.clearTripError()
+                },
                 boxWidth = 76.dp,
                 boxHeight = 100.dp,
                 fontSize = 56.sp
             )
 
-            Text(
-                text = stringResource(R.string.otp_demo_hint),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            TripErrorText(vm.tripError)
 
+            val photoTaken = vm.tripPhotos.containsKey(STAGE_PICKUP)
             if (isParcel) {
-                val photo = vm.parcelPhoto
-                if (photo != null) {
+                if (photoTaken) {
                     Text(
-                        text = "✅ " + stringResource(R.string.photo_taken),
+                        text = "✅ " + stringResource(
+                            if (vm.tripPhotoUploaded[STAGE_PICKUP] == true) R.string.photo_sent else R.string.photo_taken
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         color = Green
                     )
                 }
                 PhotoButton(
                     label = stringResource(R.string.parcel_photo),
-                    onPhoto = { vm.parcelPhoto = it },
+                    onPhoto = { vm.uploadTripPhoto(STAGE_PICKUP, it) },
                     color = ParcelOrange
                 )
             }
 
             Spacer(modifier = Modifier.height(4.dp))
             BigButton(
-                text = stringResource(R.string.start_trip),
-                emoji = "▶️",
-                enabled = otp.length == OTP_LENGTH,
+                text = stringResource(if (vm.tripBusy) R.string.please_wait else R.string.start_trip),
+                emoji = if (vm.tripBusy) "⏳" else "▶️",
+                enabled = otp.length == OTP_LENGTH && !vm.tripBusy && (!isParcel || photoTaken),
                 containerColor = accent,
-                onClick = onStarted
+                onClick = { vm.startTrip(otp) }
             )
         }
     }
 }
+
+const val STAGE_PICKUP = "pickup"
+const val STAGE_DELIVERY = "delivery"

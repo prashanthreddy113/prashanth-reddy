@@ -8,7 +8,6 @@
     <string name="whatsapp_number" translatable="false">919876543210</string>
     <string name="emergency_number" translatable="false">112</string>
     <string name="terms_url" translatable="false">https://manabandi.in/terms</string>
-    <string name="track_url_base" translatable="false">https://manabandi.in/t/</string>
 
     <!-- Common -->
     <string name="speak_cd">Read aloud</string>
@@ -33,7 +32,6 @@
     <string name="otp_verify">Continue</string>
     <string name="otp_call">Call me with OTP</string>
     <string name="otp_call_stub">We will call you now</string>
-    <string name="otp_demo_hint">Demo: any code works</string>
     <string name="otp_speech">Enter the 4 digit code sent to your phone.</string>
 
     <!-- Home -->
@@ -47,10 +45,6 @@
     <string name="service_parcel">Parcel</string>
     <string name="service_parcel_sub">Send a bag or box</string>
     <string name="saved_places">Saved places</string>
-    <string name="place_home">Home</string>
-    <string name="place_bus">Bus stand</string>
-    <string name="place_hospital">Hospital</string>
-    <string name="place_market">Market</string>
     <string name="nav_home">Home</string>
     <string name="nav_rides">My rides</string>
     <string name="nav_help">Help</string>
@@ -60,7 +54,6 @@
     <string name="book_title_auto">Book an auto</string>
     <string name="book_speech">Say or type where you want to go. Then tap Book now.</string>
     <string name="pickup_label">Pickup</string>
-    <string name="pickup_current">Current location (Narayanakhed)</string>
     <string name="drop_label">Where to?</string>
     <string name="drop_hint">Say or type the place</string>
     <string name="mic_speak">Speak</string>
@@ -68,7 +61,7 @@
     <string name="mic_unavailable">Voice typing is not available on this phone</string>
     <string name="fare_distance">Distance</string>
     <string name="fare_amount">Fare</string>
-    <string name="km">%1$d km</string>
+    <string name="km">%1$s km</string>
     <string name="pay_title">How will you pay?</string>
     <string name="pay_cash">Cash</string>
     <string name="pay_upi">UPI</string>
@@ -140,4 +133,65 @@
     <string name="share_trip">Share trip with family</string>
     <string name="share_chooser">Share with</string>
     <string name="share_trip_text">I am travelling with Mana Bandi 🛺\nCaptain: %1$s\nVehicle: %2$s\nGoing to: %3$s\nLive tracking: %4$s</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">Please wait…</string>
+    <string name="retry">Try again</string>
+    <string name="err_network">No internet. Wait a little and try again.</string>
+    <string name="err_generic">Something went wrong. Please try again.</string>
+    <string name="err_invalid_otp">Wrong code. Check the SMS and enter it again.</string>
+    <string name="err_otp_rate">Too many tries. Wait 10 minutes and ask again.</string>
+    <string name="err_outside_area">Mana Bandi does not come to this place yet.</string>
+    <string name="err_terms">Please accept the rules first.</string>
+    <string name="err_session">Please log in again.</string>
+    <string name="err_cannot_cancel">This ride cannot be cancelled now. Call the captain.</string>
+    <string name="otp_dev_hint">Test code: %1$s</string>
+    <string name="perm_allow">OK, allow</string>
+    <string name="perm_denied">Permission not given. Allow location for this app in the phone settings.</string>
+    <string name="perm_open_settings">Open settings</string>
+    <string name="perm_try_again">Ask again</string>
+    <string name="perm_location_rider">To send the vehicle to you, we need to know where you are.</string>
+    <string name="locating">Finding where you are…</string>
+    <string name="gps_off">Location (GPS) is off on this phone. Please turn it on.</string>
+    <string name="gps_turn_on">Turn on location</string>
+    <string name="outside_area_title">Mana Bandi does not come here yet</string>
+    <string name="outside_area_body">We will reach your town soon. For help call %1$s.</string>
+    <string name="pickup_gps_pin">📍 Where you are</string>
+    <string name="drop_map_pin">📍 Place shown on the map</string>
+    <string name="drop_tap_map">Or tap the place on the map</string>
+    <string name="drop_not_found">Could not find that name. Pick a place below or tap the map.</string>
+    <string name="drop_outside_area">Mana Bandi does not go that far. Pick a nearer place.</string>
+    <string name="fare_night">🌙 Night fare</string>
+    <string name="eta_pickup">Captain comes in %1$d min</string>
+    <string name="eta_min">Arriving in %1$d min</string>
+    <string name="no_captain_title">No captain free right now</string>
+    <string name="no_captain_body">Sorry. Try again in a little while, or call us.</string>
+    <string name="no_captain_speech">No captain is free right now. Try again, or call us.</string>
+    <string name="network_weak">Weak network… checking again</string>
+    <string name="ride_cancelled">The ride was cancelled</string>
+    <string name="ride_arrived">Captain has arrived</string>
+    <string name="ride_started">Ride in progress</string>
+    <string name="ride_arrived_speech">Your captain has arrived. Check the vehicle number and tell the OTP before you get on.</string>
+    <string name="ride_started_speech">Your ride has started. Sit safely. In any danger, tap SOS.</string>
+    <string name="ride_pickup_otp">Pickup OTP – tell the captain</string>
+    <string name="sos_sent">SOS sent. Calling 112.</string>
+    <string name="cancel_confirm_title">Cancel this ride?</string>
+    <string name="cancel_confirm_yes">Yes, cancel</string>
+    <string name="cancel_confirm_no">No, keep the ride</string>
+    <string name="done_title">You have arrived</string>
+    <string name="done_speech">You have arrived. Pay %1$d rupees to the captain. Tell us how the ride was.</string>
+    <string name="done_pay">Pay ₹%1$d to the captain</string>
+    <string name="rate_title">How was the ride?</string>
+    <string name="rate_good">Good</string>
+    <string name="rate_ok">Okay</string>
+    <string name="rate_bad">Bad</string>
+    <string name="tip_title">A tip for the captain?</string>
+    <string name="tip_none">No</string>
+    <string name="rate_send">Send</string>
+    <string name="rate_skip">Go home</string>
+    <string name="rides_empty">No rides yet</string>
+    <string name="ride_status_cancelled">Cancelled</string>
+    <string name="ride_status_no_captain">No captain found</string>
+    <string name="parcel_receiver_name">Receiver\'s name</string>
+    <string name="parcel_receiver_name_hint">Name (optional)</string>
 </resources>

@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,17 +51,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.manabandi.rider.LocateState
 import com.manabandi.rider.R
 import com.manabandi.rider.RideViewModel
 import com.manabandi.rider.data.ParcelSize
 import com.manabandi.rider.data.Payer
 import com.manabandi.rider.data.Service
 import com.manabandi.rider.ui.components.BigButton
-import com.manabandi.rider.ui.components.SavedPlacesRow
+import com.manabandi.rider.ui.components.LocationPermissionGate
 import com.manabandi.rider.ui.components.SecondaryButton
 import com.manabandi.rider.ui.components.SpeakTopBar
 import com.manabandi.rider.ui.theme.Green
 import com.manabandi.rider.ui.theme.ParcelOrange
+import com.manabandi.rider.ui.theme.ParcelOrangeLight
 import com.manabandi.rider.ui.theme.SurfaceMuted
 import com.manabandi.rider.ui.theme.TextGrey
 
@@ -68,9 +71,13 @@ private const val STEP_WHERE = 1
 private const val STEP_WHAT = 2
 private const val STEP_PAY = 3
 
-/** Three-step parcel wizard: (1) where, (2) what, (3) who pays + confirm. */
+/**
+ * Three-step parcel wizard: (1) GPS pickup, receiver and drop, (2) size + 📷 photo,
+ * (3) who pays + server fare + confirm (POST /api/rides with the parcel fields; the photo is
+ * uploaded to /api/rides/{id}/parcel-photo right after).
+ */
 @Composable
-fun ParcelScreen(vm: RideViewModel, onBack: () -> Unit, onConfirm: () -> Unit) {
+fun ParcelScreen(vm: RideViewModel, onBack: () -> Unit, onConfirm: () -> Unit, onTermsRequired: () -> Unit) {
     var step by rememberSaveable { mutableIntStateOf(STEP_WHERE) }
 
     val speech = stringResource(
@@ -91,21 +98,31 @@ fun ParcelScreen(vm: RideViewModel, onBack: () -> Unit, onConfirm: () -> Unit) {
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            StepRow(current = step)
+        Box(modifier = Modifier.padding(padding)) {
+            LocationPermissionGate(
+                rationale = stringResource(R.string.perm_location_rider),
+                includeNotifications = false,
+                onCancel = onBack
+            ) {
+                LaunchedEffect(Unit) {
+                    if (vm.pickup == null && vm.locateState != LocateState.LOCATING) vm.locate()
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .imePadding()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    StepRow(current = step)
 
-            when (step) {
-                STEP_WHERE -> StepWhere(vm = vm, onNext = { step = STEP_WHAT })
-                STEP_WHAT -> StepWhat(vm = vm, onNext = { step = STEP_PAY })
-                else -> StepPay(vm = vm, onConfirm = onConfirm)
+                    when (step) {
+                        STEP_WHERE -> StepWhere(vm = vm, onNext = { step = STEP_WHAT })
+                        STEP_WHAT -> StepWhat(vm = vm, onNext = { step = STEP_PAY })
+                        else -> StepPay(vm = vm, onConfirm = onConfirm, onTermsRequired = onTermsRequired)
+                    }
+                }
             }
         }
     }
@@ -151,6 +168,30 @@ private fun StepRow(current: Int) {
 
 @Composable
 private fun StepWhere(vm: RideViewModel, onNext: () -> Unit) {
+    PickupSection(vm = vm, tint = ParcelOrangeLight)
+    if (vm.locateState != LocateState.READY) return
+
+    Text(
+        text = "🧑 " + stringResource(R.string.parcel_receiver_name),
+        style = MaterialTheme.typography.titleLarge
+    )
+    OutlinedTextField(
+        value = vm.receiverName,
+        onValueChange = { input -> vm.receiverName = input.take(40) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 72.dp),
+        textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.SemiBold),
+        placeholder = { Text(text = stringResource(R.string.parcel_receiver_name_hint), fontSize = 20.sp) },
+        singleLine = true,
+        shape = RoundedCornerShape(20.dp),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = ParcelOrange,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+        )
+    )
+
     Text(
         text = "📞 " + stringResource(R.string.parcel_receiver_phone),
         style = MaterialTheme.typography.titleLarge
@@ -179,19 +220,15 @@ private fun StepWhere(vm: RideViewModel, onNext: () -> Unit) {
         text = "📍 " + stringResource(R.string.parcel_drop),
         style = MaterialTheme.typography.titleLarge
     )
-    DropInput(
-        value = vm.drop,
-        onValueChange = { vm.drop = it },
-        placeholder = stringResource(R.string.drop_hint)
-    )
-    SavedPlacesRow(selectedLabel = vm.drop, onPick = { _, label -> vm.drop = label })
+    BookingMap(vm = vm)
+    DropSection(vm = vm)
 
     Spacer(modifier = Modifier.height(4.dp))
     BigButton(
         text = stringResource(R.string.next),
         emoji = "➡️",
         containerColor = ParcelOrange,
-        enabled = vm.receiverPhone.length == 10 && vm.drop.isNotBlank(),
+        enabled = vm.receiverPhone.length == 10 && vm.drop != null,
         onClick = onNext
     )
 }
@@ -225,7 +262,7 @@ private fun StepWhat(vm: RideViewModel, onNext: () -> Unit) {
             emoji = size.emoji,
             label = stringResource(size.labelRes),
             selected = vm.parcelSize == size,
-            onClick = { vm.parcelSize = size }
+            onClick = { vm.selectParcelSize(size) }
         )
     }
 
@@ -268,7 +305,7 @@ private fun StepWhat(vm: RideViewModel, onNext: () -> Unit) {
 }
 
 @Composable
-private fun StepPay(vm: RideViewModel, onConfirm: () -> Unit) {
+private fun StepPay(vm: RideViewModel, onConfirm: () -> Unit, onTermsRequired: () -> Unit) {
     Text(
         text = stringResource(R.string.parcel_step3),
         style = MaterialTheme.typography.headlineMedium
@@ -290,19 +327,22 @@ private fun StepPay(vm: RideViewModel, onConfirm: () -> Unit) {
         )
     }
 
-    FareCard(distanceKm = vm.distanceKm, fare = vm.fare, serviceEmoji = Service.PARCEL.emoji)
+    FareCard(quote = vm.quote, busy = vm.quoteBusy, serviceEmoji = Service.PARCEL.emoji)
+    ErrorText(vm.quoteError)
 
     if (vm.parcelPayer == Payer.ME) {
         Text(text = stringResource(R.string.pay_title), style = MaterialTheme.typography.titleLarge)
         PaymentSelector(selected = vm.payment, onSelect = { vm.payment = it })
     }
 
+    ErrorText(vm.bookError)
     Spacer(modifier = Modifier.height(4.dp))
     BigButton(
-        text = stringResource(R.string.confirm),
-        emoji = "📦",
+        text = stringResource(if (vm.bookBusy) R.string.please_wait else R.string.confirm),
+        emoji = if (vm.bookBusy) "⏳" else "📦",
         containerColor = ParcelOrange,
         contentColor = Color.White,
-        onClick = onConfirm
+        enabled = vm.quote != null && !vm.bookBusy,
+        onClick = { vm.book(onBooked = onConfirm, onTermsRequired = onTermsRequired) }
     )
 }

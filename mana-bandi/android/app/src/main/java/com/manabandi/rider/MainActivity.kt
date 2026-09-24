@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val startDestination = runBlocking {
             when {
                 !app.prefs.languageChosen.first() -> Routes.LANGUAGE
-                !app.prefs.loggedIn.first() -> Routes.PHONE
+                !app.session.isLoggedIn -> Routes.PHONE
                 !app.prefs.termsAccepted.first() -> Routes.TERMS
                 else -> Routes.HOME
             }
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ManaBandiTheme {
                 CompositionLocalProvider(LocalSpeech provides app.speech) {
-                    ManaBandiApp(startDestination = startDestination, prefs = app.prefs)
+                    ManaBandiApp(startDestination = startDestination, prefs = app.prefs, session = app.session)
                 }
             }
         }

@@ -37,7 +37,12 @@ import com.manabandi.captain.ui.theme.Turmeric
 import com.manabandi.captain.ui.theme.WhatsAppGreen
 
 @Composable
-fun HelpScreen(onHome: () -> Unit, onEarnings: () -> Unit, onChangeLanguage: () -> Unit) {
+fun HelpScreen(
+    onHome: () -> Unit,
+    onEarnings: () -> Unit,
+    onChangeLanguage: () -> Unit,
+    onLogout: () -> Unit
+) {
     val context = LocalContext.current
     val supportNumber = stringResource(R.string.support_number)
     val supportDisplay = stringResource(R.string.support_number_display)
@@ -94,6 +99,18 @@ fun HelpScreen(onHome: () -> Unit, onEarnings: () -> Unit, onChangeLanguage: () 
             HowRow(number = "1️⃣", pictos = "🟢 📳", text = stringResource(R.string.how1))
             HowRow(number = "2️⃣", pictos = "✅ 🔢", text = stringResource(R.string.how2))
             HowRow(number = "3️⃣", pictos = "🏁 💵", text = stringResource(R.string.how3))
+
+            // Phones that kill background apps: let the captain fix it any time.
+            Spacer(modifier = Modifier.height(8.dp))
+            BatteryCard(alwaysShow = true)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryButton(
+                text = stringResource(R.string.logout),
+                emoji = "🚪",
+                color = MaterialTheme.colorScheme.error,
+                onClick = onLogout
+            )
         }
     }
 }

@@ -7,7 +7,7 @@
     <string name="back">వెనక్కి</string>
     <string name="next">ముందుకు</string>
     <string name="cancel">వద్దు</string>
-    <string name="km">%1$d కి.మీ.</string>
+    <string name="km">%1$s కి.మీ.</string>
     <string name="take_photo">ఫోటో తియ్యండి</string>
     <string name="photo_taken">ఫోటో వచ్చింది</string>
     <string name="camera_unavailable">కెమెరా లేదు</string>
@@ -22,11 +22,6 @@
     <string name="service_parcel">పార్సెల్</string>
 
     <!-- Places (fake dispatch) -->
-    <string name="place_bus">బస్టాండ్</string>
-    <string name="place_hospital">దవాఖానా</string>
-    <string name="place_market">బజారు</string>
-    <string name="place_college">కాలేజీ</string>
-    <string name="place_temple">గుడి</string>
 
     <!-- Language -->
     <string name="lang_title">మీ భాష ఎంచుకోండి</string>
@@ -44,7 +39,6 @@
     <string name="otp_verify">ముందుకు</string>
     <string name="otp_call">కాల్ చేసి OTP చెప్పండి</string>
     <string name="otp_call_stub">ఇప్పుడే మీకు కాల్ చేస్తాం</string>
-    <string name="otp_demo_hint">డెమో: ఏ కోడ్ అయినా సరే</string>
     <string name="otp_speech">మీ ఫోన్‌కు వచ్చిన నాలుగు అంకెల కోడ్ పెట్టండి.</string>
 
     <!-- KYC -->
@@ -78,11 +72,11 @@
 
     <!-- Request -->
     <string name="request_title">కొత్త రైడ్</string>
-    <string name="request_speech">కొత్త రైడ్: %1$s నుంచి %2$d కి.మీ, %3$d రూపాయలు.</string>
+    <string name="request_speech">కొత్త రైడ్. %1$s దగ్గర, %2$s కి.మీ దూరం. %3$d రూపాయలు.</string>
     <string name="request_pickup">ఎక్కడి నుంచి</string>
     <string name="request_drop">ఎక్కడికి</string>
-    <string name="request_away">%1$d కి.మీ దూరంలో</string>
-    <string name="request_trip_km">రైడ్ %1$d కి.మీ</string>
+    <string name="request_away">%1$s కి.మీ దూరంలో</string>
+    <string name="request_trip_km">రైడ్ %1$s కి.మీ</string>
     <string name="accept">ఒప్పుకోండి</string>
     <string name="reject">వద్దు</string>
     <string name="seconds_left">%1$d సెకన్లు</string>
@@ -130,8 +124,8 @@
     <string name="earn_settlement">ఆఫీసు ఇవ్వాల్సినవి</string>
     <string name="earn_trips_list">ఈరోజు రైడ్లు</string>
     <string name="earn_no_trips">ఈరోజు ఇంకా రైడ్లు లేవు</string>
-    <string name="earn_commission_rate">కమీషన్ %1$d%%</string>
-    <string name="earn_commission_offer">మొదటి %2$d నెలలు %1$d%%, తర్వాత %3$d%%</string>
+    <string name="earn_commission_rate">కమీషన్ %1$s%%</string>
+    <string name="earn_commission_offer">మొదటి %2$d నెలలు %1$s%%, తర్వాత %3$s%%</string>
     <string name="earn_commission_today">ఈరోజు కమీషన్ ₹%1$d</string>
     <string name="commission_note">ఆఫీసు నిర్ణయించింది. సందేహం ఉంటే కాల్ చెయ్యండి.</string>
     <string name="collect_commission_line">కమీషన్ ₹%1$d · మీకు ₹%2$d</string>
@@ -159,4 +153,71 @@
     <string name="terms_4">హెల్మెట్, జాకెట్ తప్పనిసరి. మద్యం తాగి నడపకూడదు.</string>
     <string name="terms_5">OTP లేకుండా రైడ్ మొదలు పెట్టకూడదు. యాప్ బయట రైడ్లు తీసుకోకూడదు.</string>
     <string name="terms_6">ఆన్‌లైన్ ఉన్నప్పుడు లొకేషన్ ట్రాక్ అవుతుంది. దూషణ జరిగితే ఖాతా మూసేస్తాం.</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">కొంచెం ఆగండి…</string>
+    <string name="retry">మళ్ళీ ప్రయత్నించండి</string>
+    <string name="err_network">ఇంటర్నెట్ రావట్లేదు. కొంచెం ఆగి మళ్ళీ ప్రయత్నించండి.</string>
+    <string name="err_generic">ఏదో తప్పు జరిగింది. మళ్ళీ ప్రయత్నించండి.</string>
+    <string name="err_invalid_otp">కోడ్ తప్పు. మెసేజ్ చూసి మళ్ళీ పెట్టండి.</string>
+    <string name="err_otp_rate">చాలా సార్లు అడిగారు. 10 నిమిషాలు ఆగి మళ్ళీ అడగండి.</string>
+    <string name="err_terms">ముందు నియమాలు ఒప్పుకోండి.</string>
+    <string name="err_session">మళ్ళీ లాగిన్ అవ్వండి.</string>
+    <string name="err_kyc_required">ఆఫీసు వాళ్ళు మీ పేపర్లు ఇంకా చెక్ చేస్తున్నారు. చెక్ అయ్యాక ఆన్‌లైన్ అవ్వండి.</string>
+    <string name="err_not_online">మీరు ఆఫ్‌లైన్‌లో ఉన్నారు. పెద్ద బటన్ నొక్కి ఆన్ చెయ్యండి.</string>
+    <string name="err_trip_state">ఈ రైడ్ మారిపోయింది. స్క్రీన్ మళ్ళీ చూడండి.</string>
+    <string name="otp_dev_hint">టెస్ట్ కోడ్: %1$s</string>
+    <string name="perm_allow">సరే, అనుమతి ఇవ్వండి</string>
+    <string name="perm_denied">అనుమతి ఇవ్వలేదు. ఫోన్ సెట్టింగ్స్‌లో ఈ యాప్‌కు లొకేషన్ అనుమతి ఇవ్వండి.</string>
+    <string name="perm_open_settings">సెట్టింగ్స్ తెరవండి</string>
+    <string name="perm_try_again">మళ్ళీ అడగండి</string>
+    <string name="perm_location_captain">రైడ్లు రావాలంటే మీరు ఎక్కడున్నారో మాకు తెలియాలి. మీరు ఆన్‌లైన్‌లో ఉన్నప్పుడే చూస్తాం.</string>
+    <string name="gps_off">ఫోన్‌లో లొకేషన్ (GPS) ఆఫ్‌లో ఉంది. దాన్ని ఆన్ చెయ్యండి.</string>
+    <string name="offline_on_trip">రైడ్ నడుస్తున్నప్పుడు ఆఫ్‌లైన్ అవ్వలేరు. ముందు రైడ్ పూర్తి చెయ్యండి.</string>
+    <string name="no_network_buffering">నెట్ లేదు. మీ లొకేషన్ దాచి పెడుతున్నాం, నెట్ రాగానే పంపుతాం.</string>
+    <string name="offer_expired">సమయం అయిపోయింది. ఈ రైడ్ వేరే కెప్టెన్‌కు వెళ్ళింది.</string>
+    <string name="offer_taken">ఈ రైడ్‌ని వేరే కెప్టెన్ తీసుకున్నారు. తర్వాతి రైడ్ కోసం ఆగండి.</string>
+    <string name="wrong_otp">OTP తప్పు. రైడర్‌ని మళ్ళీ అడిగి పెట్టండి.</string>
+    <string name="pin_rider">రైడర్ ఉన్న చోటు</string>
+    <string name="pin_drop">మ్యాప్‌లో చూపిన చోటు</string>
+    <string name="photo_sent">ఫోటో పంపినం</string>
+    <string name="slide_deliver">జరిపి పార్సెల్ ఇవ్వండి</string>
+    <string name="trip_speech_parcel">పార్సెల్‌ని చెప్పిన చోటుకి తీసుకెళ్ళండి. చేరాక కింద బటన్ జరపండి.</string>
+    <string name="trip_cancel">ఈ రైడ్ రద్దు చెయ్యండి</string>
+    <string name="trip_cancel_confirm">నిజంగా ఈ రైడ్ రద్దు చెయ్యాలా?</string>
+    <string name="trip_cancel_yes">అవును, రద్దు చెయ్యండి</string>
+    <string name="trip_cancel_no">వద్దు, వెళ్తాను</string>
+    <string name="trip_ended_by_rider">రైడర్ ఈ రైడ్ రద్దు చేశారు.</string>
+    <string name="status_pending">ఆఫీసు వాళ్ళు చెక్ చేస్తున్నారు</string>
+    <string name="status_verified">మీ పేపర్లు సరిపోయాయి</string>
+    <string name="status_rejected">మీ పేపర్లు సరిపోలేదు. ఫోటోలు మళ్ళీ పంపండి.</string>
+    <string name="status_blocked">మీ ఖాతా ఆపేశారు. ఆఫీసుకి కాల్ చెయ్యండి.</string>
+    <string name="status_reason">కారణం: %1$s</string>
+    <string name="kyc_open">నా పేపర్లు చూడండి</string>
+    <string name="kyc_owner_consent">బండి యజమాని లేఖ</string>
+    <string name="kyc_retake">ఫోటో మళ్ళీ తియ్యండి</string>
+    <string name="kyc_sending">పంపుతున్నాం…</string>
+    <string name="kyc_failed">పంపలేదు. నెట్ చూసుకొని ఫోటో మళ్ళీ తియ్యండి.</string>
+    <string name="kyc_uploaded">పంపినం. ఆఫీసు వాళ్ళు చెక్ చేస్తారు.</string>
+    <string name="kyc_verified">చెక్ అయింది</string>
+    <string name="kyc_vehicle_model">బండి మోడల్ (తెలిస్తే)</string>
+    <string name="kyc_vehicle_model_hint">Hero Splendor+</string>
+    <string name="kyc_bank_upi">UPI ID (ఉంటే)</string>
+    <string name="kyc_bank_ifsc">బ్యాంకు IFSC కోడ్</string>
+    <string name="kyc_bank_last4">ఖాతా నంబర్‌లో చివరి 4 అంకెలు</string>
+    <string name="channel_tracking">ఆన్‌లైన్ స్టేటస్</string>
+    <string name="channel_offers">కొత్త రైడ్లు</string>
+    <string name="tracking_notif_title">🟢 ఆన్‌లైన్ — రైడ్ల కోసం చూస్తున్నాం</string>
+    <string name="tracking_notif_trip">🟢 రైడ్ నడుస్తోంది</string>
+    <string name="tracking_notif_text">ఆన్‌లైన్‌లో ఉన్నప్పుడు మీ లొకేషన్ ఆఫీసుకి వెళ్తుంది. తెరవాలంటే నొక్కండి.</string>
+    <string name="tracking_notif_offline">ఆఫ్‌లైన్ అవ్వండి</string>
+    <string name="battery_title">బ్యాటరీ సెట్టింగ్ మార్చండి</string>
+    <string name="battery_body">ఫోన్ లాక్ అయినా రైడ్లు రావాలంటే, మన బండిని బ్యాటరీ సేవింగ్ నుంచి తీసెయ్యండి.</string>
+    <string name="battery_allow">బ్యాటరీ అనుమతి ఇవ్వండి</string>
+    <string name="battery_autostart">ఆటో-స్టార్ట్ ఆన్ చెయ్యండి</string>
+    <string name="logout">లాగ్ అవుట్ అవ్వండి</string>
+
+    <!-- Vehicle checks (PUT /api/captain/vehicle) -->
+    <string name="kyc_vehicle_invalid">బండి నంబర్ సరిగ్గా లేదు. TS 15 AB 1234 లాగా రాయండి.</string>
+    <string name="kyc_vehicle_locked">ఆమోదం అయ్యాక బండి మార్చాలంటే ఆఫీసుకి రండి. ముందు కాల్ చెయ్యండి.</string>
 </resources>

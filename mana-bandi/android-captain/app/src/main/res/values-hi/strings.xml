@@ -7,7 +7,7 @@
     <string name="back">पीछे</string>
     <string name="next">आगे</string>
     <string name="cancel">रद्द करें</string>
-    <string name="km">%1$d कि.मी.</string>
+    <string name="km">%1$s कि.मी.</string>
     <string name="take_photo">फ़ोटो लें</string>
     <string name="photo_taken">फ़ोटो जुड़ गई</string>
     <string name="camera_unavailable">कैमरा नहीं मिला</string>
@@ -22,11 +22,6 @@
     <string name="service_parcel">पार्सल</string>
 
     <!-- Places (fake dispatch) -->
-    <string name="place_bus">बस स्टैंड</string>
-    <string name="place_hospital">अस्पताल</string>
-    <string name="place_market">बाज़ार</string>
-    <string name="place_college">कॉलेज</string>
-    <string name="place_temple">मंदिर</string>
 
     <!-- Language -->
     <string name="lang_title">अपनी भाषा चुनें</string>
@@ -44,7 +39,6 @@
     <string name="otp_verify">आगे बढ़ें</string>
     <string name="otp_call">OTP के लिए कॉल करें</string>
     <string name="otp_call_stub">हम अभी आपको कॉल करेंगे</string>
-    <string name="otp_demo_hint">डेमो: कोई भी कोड चलेगा</string>
     <string name="otp_speech">आपके फ़ोन पर आया 4 अंकों का कोड डालें।</string>
 
     <!-- KYC -->
@@ -78,11 +72,11 @@
 
     <!-- Request -->
     <string name="request_title">नई सवारी</string>
-    <string name="request_speech">नई सवारी: %1$s से %2$d कि.मी., %3$d रुपये।</string>
+    <string name="request_speech">नई सवारी: %1$s से %2$s कि.मी., %3$d रुपये।</string>
     <string name="request_pickup">कहाँ से</string>
     <string name="request_drop">कहाँ तक</string>
-    <string name="request_away">%1$d कि.मी. दूर</string>
-    <string name="request_trip_km">सवारी %1$d कि.मी.</string>
+    <string name="request_away">%1$s कि.मी. दूर</string>
+    <string name="request_trip_km">सवारी %1$s कि.मी.</string>
     <string name="accept">मंज़ूर</string>
     <string name="reject">नहीं</string>
     <string name="seconds_left">%1$d सेकंड</string>
@@ -130,8 +124,8 @@
     <string name="earn_settlement">ऑफ़िस से मिलने हैं</string>
     <string name="earn_trips_list">आज की सवारियाँ</string>
     <string name="earn_no_trips">आज अभी कोई सवारी नहीं</string>
-    <string name="earn_commission_rate">कमीशन %1$d%%</string>
-    <string name="earn_commission_offer">पहले %2$d महीने %1$d%%, फिर %3$d%%</string>
+    <string name="earn_commission_rate">कमीशन %1$s%%</string>
+    <string name="earn_commission_offer">पहले %2$d महीने %1$s%%, फिर %3$s%%</string>
     <string name="earn_commission_today">आज का कमीशन ₹%1$d</string>
     <string name="commission_note">ऑफ़िस ने तय किया है। सवाल हो तो कॉल करें।</string>
     <string name="collect_commission_line">कमीशन ₹%1$d · आपके ₹%2$d</string>
@@ -159,4 +153,71 @@
     <string name="terms_4">हेलमेट और जैकेट ज़रूरी। शराब पीकर न चलाएँ।</string>
     <string name="terms_5">OTP के बिना राइड शुरू न करें। ऐप के बाहर राइड नहीं।</string>
     <string name="terms_6">ऑनलाइन रहते लोकेशन ट्रैक होती है। बदसलूकी पर खाता बंद।</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">कृपया रुकिए…</string>
+    <string name="retry">फिर से कोशिश करें</string>
+    <string name="err_network">इंटरनेट नहीं है। थोड़ा रुककर फिर कोशिश करें।</string>
+    <string name="err_generic">कुछ गड़बड़ हुई। फिर से कोशिश करें।</string>
+    <string name="err_invalid_otp">कोड गलत है। SMS देखकर फिर डालें।</string>
+    <string name="err_otp_rate">बहुत बार कोशिश हुई। 10 मिनट रुककर फिर माँगें।</string>
+    <string name="err_terms">पहले नियम मानें।</string>
+    <string name="err_session">फिर से लॉग इन करें।</string>
+    <string name="err_kyc_required">ऑफ़िस अभी आपके कागज़ जाँच रहा है। उसके बाद ऑनलाइन हो सकेंगे।</string>
+    <string name="err_not_online">आप ऑफ़लाइन हैं। बड़ा बटन दबाकर ऑनलाइन हों।</string>
+    <string name="err_trip_state">यह सवारी बदल गई है। स्क्रीन फिर से देखें।</string>
+    <string name="otp_dev_hint">टेस्ट कोड: %1$s</string>
+    <string name="perm_allow">ठीक है, अनुमति दें</string>
+    <string name="perm_denied">अनुमति नहीं मिली। फ़ोन की सेटिंग में इस ऐप को लोकेशन की अनुमति दें।</string>
+    <string name="perm_open_settings">सेटिंग खोलें</string>
+    <string name="perm_try_again">फिर पूछें</string>
+    <string name="perm_location_captain">सवारी पाने के लिए हमें पता होना चाहिए कि आप कहाँ हैं। सिर्फ़ ऑनलाइन रहते समय देखते हैं।</string>
+    <string name="gps_off">फ़ोन में लोकेशन (GPS) बंद है। कृपया चालू करें।</string>
+    <string name="offline_on_trip">सवारी के दौरान ऑफ़लाइन नहीं हो सकते। पहले सवारी पूरी करें।</string>
+    <string name="no_network_buffering">इंटरनेट नहीं है। आपकी लोकेशन रख रहे हैं, नेटवर्क आते ही भेजेंगे।</string>
+    <string name="offer_expired">समय खत्म। यह सवारी दूसरे कैप्टन को गई।</string>
+    <string name="offer_taken">यह सवारी दूसरे कैप्टन ने ले ली। अगली का इंतज़ार करें।</string>
+    <string name="wrong_otp">OTP गलत है। सवारी से फिर पूछकर डालें।</string>
+    <string name="pin_rider">सवारी की जगह</string>
+    <string name="pin_drop">नक्शे पर चुनी जगह</string>
+    <string name="photo_sent">फ़ोटो भेज दी</string>
+    <string name="slide_deliver">खिसकाकर पार्सल दें</string>
+    <string name="trip_speech_parcel">पार्सल को बताई जगह तक ले जाएँ। पहुँचकर नीचे का बटन खिसकाएँ।</string>
+    <string name="trip_cancel">यह सवारी रद्द करें</string>
+    <string name="trip_cancel_confirm">सच में यह सवारी रद्द करें?</string>
+    <string name="trip_cancel_yes">हाँ, रद्द करें</string>
+    <string name="trip_cancel_no">नहीं, जा रहा हूँ</string>
+    <string name="trip_ended_by_rider">सवारी ने यह राइड रद्द कर दी।</string>
+    <string name="status_pending">ऑफ़िस आपके कागज़ जाँच रहा है</string>
+    <string name="status_verified">आपके कागज़ ठीक हैं</string>
+    <string name="status_rejected">आपके कागज़ ठीक नहीं थे। फ़ोटो फिर से भेजें।</string>
+    <string name="status_blocked">आपका खाता रोक दिया गया है। ऑफ़िस को कॉल करें।</string>
+    <string name="status_reason">कारण: %1$s</string>
+    <string name="kyc_open">मेरे कागज़ देखें</string>
+    <string name="kyc_owner_consent">गाड़ी मालिक का पत्र</string>
+    <string name="kyc_retake">फ़ोटो फिर से लें</string>
+    <string name="kyc_sending">भेज रहे हैं…</string>
+    <string name="kyc_failed">नहीं गया। इंटरनेट देखकर फ़ोटो फिर लें।</string>
+    <string name="kyc_uploaded">भेज दिया। ऑफ़िस जाँचेगा।</string>
+    <string name="kyc_verified">जाँच हो गई</string>
+    <string name="kyc_vehicle_model">गाड़ी का मॉडल (पता हो तो)</string>
+    <string name="kyc_vehicle_model_hint">Hero Splendor+</string>
+    <string name="kyc_bank_upi">UPI ID (हो तो)</string>
+    <string name="kyc_bank_ifsc">बैंक IFSC कोड</string>
+    <string name="kyc_bank_last4">खाता नंबर के आख़िरी 4 अंक</string>
+    <string name="channel_tracking">ऑनलाइन स्थिति</string>
+    <string name="channel_offers">नई सवारियाँ</string>
+    <string name="tracking_notif_title">🟢 ऑनलाइन — सवारी ढूँढ रहे हैं</string>
+    <string name="tracking_notif_trip">🟢 सवारी चल रही है</string>
+    <string name="tracking_notif_text">ऑनलाइन रहते हुए आपकी लोकेशन ऑफ़िस को जाती है। खोलने के लिए दबाएँ।</string>
+    <string name="tracking_notif_offline">ऑफ़लाइन हों</string>
+    <string name="battery_title">बैटरी सेटिंग बदलें</string>
+    <string name="battery_body">फ़ोन लॉक होने पर भी सवारी पाने के लिए मन बंडी को बैटरी सेविंग से हटाएँ।</string>
+    <string name="battery_allow">बैटरी की अनुमति दें</string>
+    <string name="battery_autostart">ऑटो-स्टार्ट चालू करें</string>
+    <string name="logout">लॉग आउट करें</string>
+
+    <!-- Vehicle checks (PUT /api/captain/vehicle) -->
+    <string name="kyc_vehicle_invalid">गाड़ी का नंबर सही नहीं लगता। TS 15 AB 1234 की तरह लिखें।</string>
+    <string name="kyc_vehicle_locked">मंज़ूरी के बाद गाड़ी सिर्फ़ ऑफ़िस में बदली जा सकती है। ऑफ़िस को कॉल करें।</string>
 </resources>

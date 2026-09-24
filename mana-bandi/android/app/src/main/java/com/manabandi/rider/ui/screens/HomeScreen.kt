@@ -18,9 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.manabandi.rider.R
 import com.manabandi.rider.data.Service
+import com.manabandi.rider.data.api.Landmark
 import com.manabandi.rider.ui.components.BottomTab
+import com.manabandi.rider.ui.components.LandmarkChipsRow
 import com.manabandi.rider.ui.components.ManaBandiBottomBar
-import com.manabandi.rider.ui.components.SavedPlacesRow
 import com.manabandi.rider.ui.components.ServiceCard
 import com.manabandi.rider.ui.components.SpeakTopBar
 import com.manabandi.rider.ui.theme.Green
@@ -28,14 +29,20 @@ import com.manabandi.rider.ui.theme.ParcelOrange
 import com.manabandi.rider.ui.theme.TextDark
 import com.manabandi.rider.ui.theme.Turmeric
 
+/**
+ * Service tiles + the town's landmark chips (bus stand, hospital, … from the backend; hidden
+ * until the town is known). Tapping a chip books a bike to that landmark.
+ */
 @Composable
 fun HomeScreen(
+    userName: String?,
+    landmarks: List<Landmark>,
     onService: (Service) -> Unit,
-    onPlace: (String) -> Unit,
+    onPlace: (Landmark) -> Unit,
     onRides: () -> Unit,
     onHelp: () -> Unit
 ) {
-    val name = stringResource(R.string.default_name)
+    val name = userName?.takeIf { it.isNotBlank() } ?: stringResource(R.string.default_name)
 
     Scaffold(
         topBar = {
@@ -96,12 +103,14 @@ fun HomeScreen(
                 onClick = { onService(Service.PARCEL) }
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = stringResource(R.string.saved_places),
-                style = MaterialTheme.typography.titleLarge
-            )
-            SavedPlacesRow(onPick = { _, label -> onPlace(label) })
+            if (landmarks.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.saved_places),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                LandmarkChipsRow(landmarks = landmarks, onPick = onPlace)
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
     }

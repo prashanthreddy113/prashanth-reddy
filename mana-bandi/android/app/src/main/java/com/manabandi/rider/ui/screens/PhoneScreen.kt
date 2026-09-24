@@ -38,7 +38,7 @@ import com.manabandi.rider.ui.components.BigButton
 import com.manabandi.rider.ui.components.SpeakTopBar
 
 @Composable
-fun PhoneScreen(onNext: (String) -> Unit) {
+fun PhoneScreen(busy: Boolean, error: Int?, onNext: (String) -> Unit) {
     var phone by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
@@ -94,12 +94,21 @@ fun PhoneScreen(onNext: (String) -> Unit) {
                 )
             )
 
+            if (error != null) {
+                Text(
+                    text = stringResource(error),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
 
             BigButton(
-                text = stringResource(R.string.phone_next),
-                emoji = "➡️",
-                enabled = phone.length == 10,
+                text = stringResource(if (busy) R.string.please_wait else R.string.phone_next),
+                emoji = if (busy) "⏳" else "➡️",
+                enabled = phone.length == 10 && !busy,
                 onClick = { onNext(phone) }
             )
         }

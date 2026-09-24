@@ -25,7 +25,6 @@
     <string name="otp_verify">ಮುಂದೆ</string>
     <string name="otp_call">OTP ಗಾಗಿ ಕಾಲ್ ಮಾಡಿ</string>
     <string name="otp_call_stub">ಈಗ ನಿಮಗೆ ಕಾಲ್ ಮಾಡುತ್ತೇವೆ</string>
-    <string name="otp_demo_hint">ಡೆಮೋ: ಯಾವ ಕೋಡ್ ಆದರೂ ಸರಿ</string>
     <string name="otp_speech">ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಬಂದ 4 ಅಂಕಿಯ ಕೋಡ್ ಹಾಕಿ.</string>
 
     <!-- Home -->
@@ -39,10 +38,6 @@
     <string name="service_parcel">ಪಾರ್ಸೆಲ್</string>
     <string name="service_parcel_sub">ಬ್ಯಾಗ್ ಅಥವಾ ಡಬ್ಬ ಕಳಿಸಿ</string>
     <string name="saved_places">ನನ್ನ ಜಾಗಗಳು</string>
-    <string name="place_home">ಮನೆ</string>
-    <string name="place_bus">ಬಸ್ ನಿಲ್ದಾಣ</string>
-    <string name="place_hospital">ಆಸ್ಪತ್ರೆ</string>
-    <string name="place_market">ಮಾರುಕಟ್ಟೆ</string>
     <string name="nav_home">ಹೋಮ್</string>
     <string name="nav_rides">ನನ್ನ ರೈಡ್‌ಗಳು</string>
     <string name="nav_help">ಸಹಾಯ</string>
@@ -52,7 +47,6 @@
     <string name="book_title_auto">ಆಟೋ ಕರೆಯಿರಿ</string>
     <string name="book_speech">ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕು ಹೇಳಿ ಅಥವಾ ಬರೆಯಿರಿ. ನಂತರ ಬಂಡಿ ಕರೆಯಿರಿ ಒತ್ತಿ.</string>
     <string name="pickup_label">ಎಲ್ಲಿಂದ</string>
-    <string name="pickup_current">ಈಗಿನ ಜಾಗ (ನಾರಾಯಣಖೇಡ್)</string>
     <string name="drop_label">ಎಲ್ಲಿಗೆ?</string>
     <string name="drop_hint">ಹೇಳಿ ಅಥವಾ ಬರೆಯಿರಿ</string>
     <string name="mic_speak">ಹೇಳಿ</string>
@@ -60,7 +54,7 @@
     <string name="mic_unavailable">ಈ ಫೋನ್‌ನಲ್ಲಿ ಮಾತಿನ ಸೌಲಭ್ಯ ಇಲ್ಲ</string>
     <string name="fare_distance">ದೂರ</string>
     <string name="fare_amount">ದುಡ್ಡು</string>
-    <string name="km">%1$d ಕಿ.ಮೀ.</string>
+    <string name="km">%1$s ಕಿ.ಮೀ.</string>
     <string name="pay_title">ದುಡ್ಡು ಹೇಗೆ ಕೊಡುತ್ತೀರಿ?</string>
     <string name="pay_cash">ಕ್ಯಾಶ್</string>
     <string name="pay_upi">UPI</string>
@@ -132,4 +126,65 @@
     <string name="share_trip">ಕುಟುಂಬಕ್ಕೆ ಟ್ರಿಪ್ ಕಳುಹಿಸಿ</string>
     <string name="share_chooser">ಯಾರಿಗೆ ಕಳುಹಿಸಬೇಕು?</string>
     <string name="share_trip_text">ನಾನು ಮನ ಬಂಡಿಯಲ್ಲಿ ಹೋಗುತ್ತಿದ್ದೇನೆ 🛺\nಕ್ಯಾಪ್ಟನ್: %1$s\nವಾಹನ: %2$s\nಎಲ್ಲಿಗೆ: %3$s\nಲೈವ್ ಟ್ರ್ಯಾಕಿಂಗ್: %4$s</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">ದಯವಿಟ್ಟು ಕಾಯಿರಿ…</string>
+    <string name="retry">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="err_network">ಇಂಟರ್ನೆಟ್ ಇಲ್ಲ. ಸ್ವಲ್ಪ ಕಾದು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="err_generic">ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="err_invalid_otp">ಕೋಡ್ ತಪ್ಪು. SMS ನೋಡಿ ಮತ್ತೆ ಹಾಕಿ.</string>
+    <string name="err_otp_rate">ತುಂಬಾ ಸಲ ಕೇಳಿದ್ದೀರಿ. 10 ನಿಮಿಷ ಕಾದು ಮತ್ತೆ ಕೇಳಿ.</string>
+    <string name="err_outside_area">ಮನ ಬಂಡಿ ಇನ್ನೂ ಈ ಜಾಗಕ್ಕೆ ಬರುವುದಿಲ್ಲ.</string>
+    <string name="err_terms">ಮೊದಲು ನಿಯಮಗಳನ್ನು ಒಪ್ಪಿ.</string>
+    <string name="err_session">ಮತ್ತೆ ಲಾಗಿನ್ ಆಗಿ.</string>
+    <string name="err_cannot_cancel">ಈಗ ಈ ರೈಡ್ ರದ್ದು ಮಾಡಲು ಆಗುವುದಿಲ್ಲ. ಕ್ಯಾಪ್ಟನ್‌ಗೆ ಕಾಲ್ ಮಾಡಿ.</string>
+    <string name="otp_dev_hint">ಟೆಸ್ಟ್ ಕೋಡ್: %1$s</string>
+    <string name="perm_allow">ಸರಿ, ಅನುಮತಿ ಕೊಡಿ</string>
+    <string name="perm_denied">ಅನುಮತಿ ಸಿಗಲಿಲ್ಲ. ಫೋನ್ ಸೆಟ್ಟಿಂಗ್ಸ್‌ನಲ್ಲಿ ಈ ಆ್ಯಪ್‌ಗೆ ಲೊಕೇಶನ್ ಅನುಮತಿ ಕೊಡಿ.</string>
+    <string name="perm_open_settings">ಸೆಟ್ಟಿಂಗ್ಸ್ ತೆರೆಯಿರಿ</string>
+    <string name="perm_try_again">ಮತ್ತೆ ಕೇಳಿ</string>
+    <string name="perm_location_rider">ಬಂಡಿಯನ್ನು ನಿಮ್ಮ ಬಳಿ ಕಳುಹಿಸಲು ನೀವು ಎಲ್ಲಿದ್ದೀರಿ ಎಂದು ನಮಗೆ ತಿಳಿಯಬೇಕು.</string>
+    <string name="locating">ನೀವು ಇರುವ ಜಾಗ ಹುಡುಕುತ್ತಿದ್ದೇವೆ…</string>
+    <string name="gps_off">ಫೋನ್‌ನಲ್ಲಿ ಲೊಕೇಶನ್ (GPS) ಆಫ್ ಆಗಿದೆ. ದಯವಿಟ್ಟು ಆನ್ ಮಾಡಿ.</string>
+    <string name="gps_turn_on">ಲೊಕೇಶನ್ ಆನ್ ಮಾಡಿ</string>
+    <string name="outside_area_title">ಮನ ಬಂಡಿ ಇನ್ನೂ ಇಲ್ಲಿಗೆ ಬರುವುದಿಲ್ಲ</string>
+    <string name="outside_area_body">ಬೇಗ ನಿಮ್ಮ ಊರಿಗೂ ಬರುತ್ತೇವೆ. ಸಹಾಯಕ್ಕೆ %1$s ಗೆ ಕಾಲ್ ಮಾಡಿ.</string>
+    <string name="pickup_gps_pin">📍 ನೀವು ಇರುವ ಜಾಗ</string>
+    <string name="drop_map_pin">📍 ನಕ್ಷೆಯಲ್ಲಿ ತೋರಿಸಿದ ಜಾಗ</string>
+    <string name="drop_tap_map">ಅಥವಾ ನಕ್ಷೆಯಲ್ಲಿ ಜಾಗದ ಮೇಲೆ ಒತ್ತಿ</string>
+    <string name="drop_not_found">ಆ ಹೆಸರು ಸಿಗಲಿಲ್ಲ. ಕೆಳಗಿನ ಜಾಗ ಆರಿಸಿ ಅಥವಾ ನಕ್ಷೆಯಲ್ಲಿ ಒತ್ತಿ.</string>
+    <string name="drop_outside_area">ಮನ ಬಂಡಿ ಅಷ್ಟು ದೂರ ಹೋಗುವುದಿಲ್ಲ. ಹತ್ತಿರದ ಜಾಗ ಆರಿಸಿ.</string>
+    <string name="fare_night">🌙 ರಾತ್ರಿ ದರ</string>
+    <string name="eta_pickup">ಕ್ಯಾಪ್ಟನ್ %1$d ನಿಮಿಷದಲ್ಲಿ ಬರುತ್ತಾರೆ</string>
+    <string name="eta_min">%1$d ನಿಮಿಷದಲ್ಲಿ ಬರುತ್ತಾರೆ</string>
+    <string name="no_captain_title">ಈಗ ಕ್ಯಾಪ್ಟನ್ ಸಿಗಲಿಲ್ಲ</string>
+    <string name="no_captain_body">ಕ್ಷಮಿಸಿ. ಸ್ವಲ್ಪ ಹೊತ್ತಿನ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ನಮಗೆ ಕಾಲ್ ಮಾಡಿ.</string>
+    <string name="no_captain_speech">ಈಗ ಯಾವ ಕ್ಯಾಪ್ಟನ್ ಕೂಡ ಸಿಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ನಮಗೆ ಕಾಲ್ ಮಾಡಿ.</string>
+    <string name="network_weak">ನೆಟ್‌ವರ್ಕ್ ಸರಿಯಿಲ್ಲ… ಮತ್ತೆ ನೋಡುತ್ತಿದ್ದೇವೆ</string>
+    <string name="ride_cancelled">ರೈಡ್ ರದ್ದಾಯಿತು</string>
+    <string name="ride_arrived">ಕ್ಯಾಪ್ಟನ್ ಬಂದಿದ್ದಾರೆ</string>
+    <string name="ride_started">ರೈಡ್ ನಡೆಯುತ್ತಿದೆ</string>
+    <string name="ride_arrived_speech">ನಿಮ್ಮ ಕ್ಯಾಪ್ಟನ್ ಬಂದಿದ್ದಾರೆ. ಬಂಡಿ ನಂಬರ್ ನೋಡಿ, ಹತ್ತುವ ಮೊದಲು OTP ಹೇಳಿ.</string>
+    <string name="ride_started_speech">ರೈಡ್ ಶುರುವಾಗಿದೆ. ಸುರಕ್ಷಿತವಾಗಿ ಕುಳಿತುಕೊಳ್ಳಿ. ಅಪಾಯವಾದರೆ SOS ಒತ್ತಿ.</string>
+    <string name="ride_pickup_otp">ಪಿಕಪ್ OTP – ಕ್ಯಾಪ್ಟನ್‌ಗೆ ಹೇಳಿ</string>
+    <string name="sos_sent">SOS ಕಳುಹಿಸಲಾಗಿದೆ. 112 ಗೆ ಕಾಲ್ ಮಾಡುತ್ತಿದ್ದೇವೆ.</string>
+    <string name="cancel_confirm_title">ಈ ರೈಡ್ ರದ್ದು ಮಾಡಬೇಕೇ?</string>
+    <string name="cancel_confirm_yes">ಹೌದು, ರದ್ದು ಮಾಡಿ</string>
+    <string name="cancel_confirm_no">ಬೇಡ, ರೈಡ್ ಬೇಕು</string>
+    <string name="done_title">ನೀವು ತಲುಪಿದ್ದೀರಿ</string>
+    <string name="done_speech">ನೀವು ತಲುಪಿದ್ದೀರಿ. ಕ್ಯಾಪ್ಟನ್‌ಗೆ %1$d ರೂಪಾಯಿ ಕೊಡಿ. ರೈಡ್ ಹೇಗಿತ್ತು ಹೇಳಿ.</string>
+    <string name="done_pay">ಕ್ಯಾಪ್ಟನ್‌ಗೆ ₹%1$d ಕೊಡಿ</string>
+    <string name="rate_title">ರೈಡ್ ಹೇಗಿತ್ತು?</string>
+    <string name="rate_good">ಚೆನ್ನಾಗಿತ್ತು</string>
+    <string name="rate_ok">ಪರವಾಗಿಲ್ಲ</string>
+    <string name="rate_bad">ಚೆನ್ನಾಗಿರಲಿಲ್ಲ</string>
+    <string name="tip_title">ಕ್ಯಾಪ್ಟನ್‌ಗೆ ಟಿಪ್ ಕೊಡುತ್ತೀರಾ?</string>
+    <string name="tip_none">ಬೇಡ</string>
+    <string name="rate_send">ಕಳುಹಿಸಿ</string>
+    <string name="rate_skip">ಹೋಮ್‌ಗೆ ಹೋಗಿ</string>
+    <string name="rides_empty">ಇನ್ನೂ ಯಾವ ರೈಡ್ ಇಲ್ಲ</string>
+    <string name="ride_status_cancelled">ರದ್ದಾಗಿದೆ</string>
+    <string name="ride_status_no_captain">ಕ್ಯಾಪ್ಟನ್ ಸಿಗಲಿಲ್ಲ</string>
+    <string name="parcel_receiver_name">ಪಡೆಯುವವರ ಹೆಸರು</string>
+    <string name="parcel_receiver_name_hint">ಹೆಸರು (ಇಲ್ಲದಿದ್ದರೂ ಸರಿ)</string>
 </resources>

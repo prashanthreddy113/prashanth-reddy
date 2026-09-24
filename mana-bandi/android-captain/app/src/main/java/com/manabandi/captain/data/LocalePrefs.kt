@@ -1,6 +1,7 @@
 package com.manabandi.captain.data
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
@@ -16,7 +17,8 @@ import java.util.Locale
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mana_bandi_captain_prefs")
 
 /**
- * Small DataStore wrapper for the chosen language, the demo login and the KYC status.
+ * Small DataStore wrapper for the chosen language, the accepted terms version and whether the
+ * KYC screen was completed once on this phone. (The login token lives in [SessionStore].)
  * The language is also applied through [AppCompatDelegate.setApplicationLocales]
  * so it works on every API level (see [applyLocale]).
  */
@@ -32,8 +34,6 @@ class LocalePrefs(private val context: Context) {
 
         private val KEY_LANGUAGE = stringPreferencesKey("language")
         private val KEY_LANGUAGE_CHOSEN = booleanPreferencesKey("language_chosen")
-        private val KEY_PHONE = stringPreferencesKey("phone")
-        private val KEY_LOGGED_IN = booleanPreferencesKey("logged_in")
         private val KEY_TERMS_VERSION = stringPreferencesKey("terms_version_accepted")
         private val KEY_KYC_DONE = booleanPreferencesKey("kyc_done")
         private val KEY_VEHICLE_TYPE = stringPreferencesKey("vehicle_type")
@@ -53,6 +53,16 @@ class LocalePrefs(private val context: Context) {
             return context.resources.configuration.locales.get(0) ?: Locale.getDefault()
         }
 
+        /**
+         * A context whose resources use the app language. Services and notifications need it:
+         * on Android 12 and below AppCompat only localises Activities.
+         */
+        fun localizedContext(context: Context): Context {
+            val config = Configuration(context.resources.configuration)
+            config.setLocale(currentLocale(context))
+            return context.createConfigurationContext(config)
+        }
+
         /** Region-qualified tag for speech recognition ("te" -> "te-IN"). */
         fun speechTag(locale: Locale): String = when (locale.language) {
             "te" -> "te-IN"
@@ -67,8 +77,6 @@ class LocalePrefs(private val context: Context) {
 
     val languageTag: Flow<String> = context.dataStore.data.map { it[KEY_LANGUAGE] ?: DEFAULT_LANGUAGE }
     val languageChosen: Flow<Boolean> = context.dataStore.data.map { it[KEY_LANGUAGE_CHOSEN] ?: false }
-    val phone: Flow<String> = context.dataStore.data.map { it[KEY_PHONE] ?: "" }
-    val loggedIn: Flow<Boolean> = context.dataStore.data.map { it[KEY_LOGGED_IN] ?: false }
     /** True only when the CURRENT terms version has been accepted. */
     val termsAccepted: Flow<Boolean> = context.dataStore.data.map { it[KEY_TERMS_VERSION] == TERMS_VERSION }
     val kycDone: Flow<Boolean> = context.dataStore.data.map { it[KEY_KYC_DONE] ?: false }
@@ -83,14 +91,18 @@ class LocalePrefs(private val context: Context) {
         }
     }
 
-    suspend fun setLoggedIn(phone: String) {
+    suspend fun acceptTerms() {
+        context.dataStore.edit { it[KEY_TERMS_VERSION] = TERMS_VERSION }
+    }
+
+    /** Mirrors the server's `user.termsVersionAccepted` after login. */
+    suspend fun setTermsAccepted(accepted: Boolean) {
         context.dataStore.edit {
-            it[KEY_PHONE] = phone
-            it[KEY_LOGGED_IN] = true
+            if (accepted) it[KEY_TERMS_VERSION] = TERMS_VERSION else it.remove(KEY_TERMS_VERSION)
         }
     }
 
-    /** Demo KYC: nothing is uploaded, we only remember that the captain finished the checklist. */
+    /** The KYC screen was completed (documents are uploaded one by one as photos are taken). */
     suspend fun setKycDone(vehicleType: String, vehicleNumber: String) {
         context.dataStore.edit {
             it[KEY_KYC_DONE] = true
@@ -99,10 +111,12 @@ class LocalePrefs(private val context: Context) {
         }
     }
 
-    suspend fun logout() {
+    /** On logout: the next captain on this phone starts from the KYC screen again. */
+    suspend fun resetKyc() {
         context.dataStore.edit {
-            it.remove(KEY_PHONE)
-            it[KEY_LOGGED_IN] = false
+            it.remove(KEY_KYC_DONE)
+            it.remove(KEY_VEHICLE_TYPE)
+            it.remove(KEY_VEHICLE_NUMBER)
         }
     }
 }

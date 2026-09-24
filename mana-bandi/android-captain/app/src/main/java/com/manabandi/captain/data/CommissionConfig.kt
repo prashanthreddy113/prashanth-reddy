@@ -3,42 +3,33 @@ package com.manabandi.captain.data
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.manabandi.captain.data.api.CommissionInfo
 import kotlin.math.roundToInt
 
 /**
- * A commission rule as configured by the owner in the web portal
- * (Commission page → GET /config/commission?town=&service=&captainId=).
- *
- * @param percent          commission after the free period, 0–30
- * @param freeMonths       months after joining during which [freePercent] applies
- * @param freePercent      commission during the free period (usually 0)
- */
-data class CommissionRule(
-    val percent: Int,
-    val freeMonths: Int,
-    val freePercent: Int = 0
-)
-
-/**
- * Holds the rule the app last received from the owner portal. Demo: a fixed default that
- * matches the launch offer (0 % for 3 months, then 10 %). Replace [refresh] with the real
- * API call; the rule is per town and per service, and per captain when the owner overrides it.
+ * The commission rule the owner configured in the web portal, as the server reports it in
+ * `CaptainMe.commission` / `Earnings.commission` (percent, free months, free percent and the
+ * percent that applies to this captain today). Nothing is hard-coded any more: every trip's
+ * real commission comes from the server in `Trip.commission`; [estimate] is only a fallback
+ * for an older trip object without it.
  */
 object CommissionConfig {
 
-    var rule by mutableStateOf(CommissionRule(percent = 10, freeMonths = 3))
+    var info by mutableStateOf<CommissionInfo?>(null)
         private set
 
-    /** Called after login and on every Home screen visit; the backend returns the current rule. */
-    fun refresh(fetched: CommissionRule?) {
-        if (fetched != null) rule = fetched
+    fun update(fetched: CommissionInfo?) {
+        if (fetched != null) info = fetched
     }
 
-    /** Percent that applies to this captain today. */
-    fun rateFor(monthsSinceJoining: Int): Int =
-        if (monthsSinceJoining < rule.freeMonths) rule.freePercent else rule.percent
+    /** Percent that applies to this captain right now (0 until the server has told us). */
+    val currentPct: Double
+        get() = info?.currentPct ?: 0.0
 
-    /** Commission in rupees for one trip (rounded to the nearest rupee). */
-    fun commissionFor(fare: Int, monthsSinceJoining: Int): Int =
-        (fare * rateFor(monthsSinceJoining) / 100.0).roundToInt()
+    /** Fallback commission in rupees for a fare, from [currentPct]. */
+    fun estimate(fare: Int): Int = (fare * currentPct / 100.0).roundToInt()
+
+    fun reset() {
+        info = null
+    }
 }

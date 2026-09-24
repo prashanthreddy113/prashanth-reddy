@@ -52,8 +52,20 @@ import com.manabandi.rider.ui.components.SpeakTopBar
 
 private const val OTP_LENGTH = 4
 
+/**
+ * Login code. [devCode] is shown as a small grey hint only when the server runs in OTP dev
+ * mode (testing); production never sends it.
+ */
 @Composable
-fun OtpScreen(phone: String, onBack: () -> Unit, onVerified: () -> Unit) {
+fun OtpScreen(
+    phone: String,
+    devCode: String?,
+    busy: Boolean,
+    error: Int?,
+    onBack: () -> Unit,
+    onVerify: (String) -> Unit,
+    onCallMe: () -> Unit
+) {
     var otp by rememberSaveable { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
@@ -122,25 +134,40 @@ fun OtpScreen(phone: String, onBack: () -> Unit, onVerified: () -> Unit) {
                 )
             }
 
-            Text(
-                text = stringResource(R.string.otp_demo_hint),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (!devCode.isNullOrBlank()) {
+                Text(
+                    text = stringResource(R.string.otp_dev_hint, devCode),
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+
+            if (error != null) {
+                Text(
+                    text = stringResource(error),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 
             BigButton(
-                text = stringResource(R.string.otp_verify),
-                emoji = "✅",
-                enabled = otp.length == OTP_LENGTH,
-                onClick = onVerified
+                text = stringResource(if (busy) R.string.please_wait else R.string.otp_verify),
+                emoji = if (busy) "⏳" else "✅",
+                enabled = otp.length == OTP_LENGTH && !busy,
+                onClick = { onVerify(otp) }
             )
 
             SecondaryButton(
                 text = stringResource(R.string.otp_call),
                 emoji = "📞",
-                onClick = { Toast.makeText(context, callStub, Toast.LENGTH_SHORT).show() }
+                enabled = !busy,
+                onClick = {
+                    Toast.makeText(context, callStub, Toast.LENGTH_SHORT).show()
+                    onCallMe()
+                }
             )
         }
     }

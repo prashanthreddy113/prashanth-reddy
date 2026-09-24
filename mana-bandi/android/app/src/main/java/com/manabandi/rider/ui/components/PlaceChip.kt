@@ -17,11 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.manabandi.rider.data.FakeRides
-import com.manabandi.rider.data.SavedPlace
+import com.manabandi.rider.data.LocalePrefs
+import com.manabandi.rider.data.api.Landmark
+import com.manabandi.rider.data.displayName
+import com.manabandi.rider.data.landmarkEmoji
 
 /** 64dp tall chip with an emoji and a short label. */
 @Composable
@@ -51,27 +53,36 @@ fun PlaceChip(
     }
 }
 
-/** Horizontally scrolling row of the saved places (🏠 🚌 🏥 🛒). */
+/**
+ * Horizontally scrolling row of the town's landmarks (bus stand, hospital, market, …) from
+ * GET /api/rider/towns/nearest. Nothing is shown until the town is known.
+ */
 @Composable
-fun SavedPlacesRow(
-    onPick: (SavedPlace, String) -> Unit,
+fun LandmarkChipsRow(
+    landmarks: List<Landmark>,
+    onPick: (Landmark) -> Unit,
     modifier: Modifier = Modifier,
-    selectedLabel: String? = null
+    selectedId: String? = null
 ) {
+    if (landmarks.isEmpty()) return
+    val language = appLanguage()
     Row(
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        FakeRides.savedPlaces.forEach { place ->
-            val label = stringResource(place.labelRes)
+        landmarks.forEach { landmark ->
             PlaceChip(
-                emoji = place.emoji,
-                label = label,
-                selected = selectedLabel == label,
-                onClick = { onPick(place, label) }
+                emoji = landmarkEmoji(landmark.kind),
+                label = landmark.displayName(language),
+                selected = selectedId == landmark.id,
+                onClick = { onPick(landmark) }
             )
         }
     }
 }
+
+/** The language the app is showing right now ("te", "en", "hi", …). */
+@Composable
+fun appLanguage(): String = LocalePrefs.currentLocale(LocalContext.current).language

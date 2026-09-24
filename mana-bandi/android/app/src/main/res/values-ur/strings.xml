@@ -25,7 +25,6 @@
     <string name="otp_verify">آگے</string>
     <string name="otp_call">OTP کے لیے کال کریں</string>
     <string name="otp_call_stub">ہم ابھی آپ کو کال کریں گے</string>
-    <string name="otp_demo_hint">ڈیمو: کوئی بھی کوڈ چلے گا</string>
     <string name="otp_speech">آپ کے فون پر آیا 4 ہندسوں کا کوڈ ڈالیں۔</string>
 
     <!-- Home -->
@@ -39,10 +38,6 @@
     <string name="service_parcel">پارسل</string>
     <string name="service_parcel_sub">بیگ یا ڈبہ بھیجیں</string>
     <string name="saved_places">میری جگہیں</string>
-    <string name="place_home">گھر</string>
-    <string name="place_bus">بس اسٹینڈ</string>
-    <string name="place_hospital">ہسپتال</string>
-    <string name="place_market">بازار</string>
     <string name="nav_home">ہوم</string>
     <string name="nav_rides">میری سواریاں</string>
     <string name="nav_help">مدد</string>
@@ -52,7 +47,6 @@
     <string name="book_title_auto">آٹو بلائیں</string>
     <string name="book_speech">بولیں یا لکھیں کہاں جانا ہے۔ پھر گاڑی بلاؤ دبائیں۔</string>
     <string name="pickup_label">کہاں سے</string>
-    <string name="pickup_current">موجودہ جگہ (نارائن کھیڑ)</string>
     <string name="drop_label">کہاں جانا ہے؟</string>
     <string name="drop_hint">بولیں یا لکھیں</string>
     <string name="mic_speak">بولیں</string>
@@ -60,7 +54,7 @@
     <string name="mic_unavailable">اس فون میں بول کر لکھنا نہیں ہے</string>
     <string name="fare_distance">فاصلہ</string>
     <string name="fare_amount">کرایہ</string>
-    <string name="km">%1$d کلومیٹر</string>
+    <string name="km">%1$s کلومیٹر</string>
     <string name="pay_title">پیسے کیسے دیں گے؟</string>
     <string name="pay_cash">نقد</string>
     <string name="pay_upi">UPI</string>
@@ -132,4 +126,65 @@
     <string name="share_trip">خاندان کو ٹرپ بھیجیں</string>
     <string name="share_chooser">کسے بھیجیں؟</string>
     <string name="share_trip_text">میں منا بنڈی سے جا رہا/رہی ہوں 🛺\nکیپٹن: %1$s\nگاڑی: %2$s\nکہاں: %3$s\nلائیو ٹریکنگ: %4$s</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">براہ کرم انتظار کریں…</string>
+    <string name="retry">دوبارہ کوشش کریں</string>
+    <string name="err_network">انٹرنیٹ نہیں ہے۔ تھوڑا رک کر دوبارہ کوشش کریں۔</string>
+    <string name="err_generic">کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔</string>
+    <string name="err_invalid_otp">کوڈ غلط ہے۔ SMS دیکھ کر دوبارہ ڈالیں۔</string>
+    <string name="err_otp_rate">بہت بار کوشش ہوئی۔ 10 منٹ رک کر دوبارہ مانگیں۔</string>
+    <string name="err_outside_area">منا بنڈی ابھی اس جگہ نہیں آتی۔</string>
+    <string name="err_terms">پہلے اصول مانیں۔</string>
+    <string name="err_session">دوبارہ لاگ ان کریں۔</string>
+    <string name="err_cannot_cancel">اب یہ سواری منسوخ نہیں ہو سکتی۔ کیپٹن کو کال کریں۔</string>
+    <string name="otp_dev_hint">ٹیسٹ کوڈ: %1$s</string>
+    <string name="perm_allow">ٹھیک ہے، اجازت دیں</string>
+    <string name="perm_denied">اجازت نہیں ملی۔ فون کی سیٹنگ میں اس ایپ کو لوکیشن کی اجازت دیں۔</string>
+    <string name="perm_open_settings">سیٹنگ کھولیں</string>
+    <string name="perm_try_again">دوبارہ پوچھیں</string>
+    <string name="perm_location_rider">گاڑی آپ تک بھیجنے کے لیے ہمیں معلوم ہونا چاہیے کہ آپ کہاں ہیں۔</string>
+    <string name="locating">آپ کی جگہ ڈھونڈ رہے ہیں…</string>
+    <string name="gps_off">فون میں لوکیشن (GPS) بند ہے۔ براہ کرم چالو کریں۔</string>
+    <string name="gps_turn_on">لوکیشن چالو کریں</string>
+    <string name="outside_area_title">منا بنڈی ابھی یہاں نہیں آتی</string>
+    <string name="outside_area_body">ہم جلد آپ کے شہر آئیں گے۔ مدد کے لیے %1$s پر کال کریں۔</string>
+    <string name="pickup_gps_pin">📍 آپ جہاں ہیں</string>
+    <string name="drop_map_pin">📍 نقشے پر چنی گئی جگہ</string>
+    <string name="drop_tap_map">یا نقشے پر جگہ دبائیں</string>
+    <string name="drop_not_found">یہ نام نہیں ملا۔ نیچے سے جگہ چنیں یا نقشے پر دبائیں۔</string>
+    <string name="drop_outside_area">منا بنڈی اتنی دور نہیں جاتی۔ قریب کی جگہ چنیں۔</string>
+    <string name="fare_night">🌙 رات کا کرایہ</string>
+    <string name="eta_pickup">کیپٹن %1$d منٹ میں آئیں گے</string>
+    <string name="eta_min">%1$d منٹ میں پہنچیں گے</string>
+    <string name="no_captain_title">ابھی کوئی کیپٹن خالی نہیں</string>
+    <string name="no_captain_body">معذرت۔ تھوڑی دیر بعد دوبارہ کوشش کریں یا ہمیں کال کریں۔</string>
+    <string name="no_captain_speech">ابھی کوئی کیپٹن خالی نہیں ہے۔ دوبارہ کوشش کریں یا ہمیں کال کریں۔</string>
+    <string name="network_weak">نیٹ ورک کمزور ہے… دوبارہ دیکھ رہے ہیں</string>
+    <string name="ride_cancelled">سواری منسوخ ہو گئی</string>
+    <string name="ride_arrived">کیپٹن آ گئے</string>
+    <string name="ride_started">سواری چل رہی ہے</string>
+    <string name="ride_arrived_speech">آپ کے کیپٹن آ گئے ہیں۔ گاڑی کا نمبر دیکھیں اور بیٹھنے سے پہلے OTP بتائیں۔</string>
+    <string name="ride_started_speech">سواری شروع ہو گئی۔ آرام سے بیٹھیں۔ کوئی خطرہ ہو تو SOS دبائیں۔</string>
+    <string name="ride_pickup_otp">پک اپ OTP – کیپٹن کو بتائیں</string>
+    <string name="sos_sent">SOS بھیج دیا۔ 112 پر کال کر رہے ہیں۔</string>
+    <string name="cancel_confirm_title">یہ سواری منسوخ کریں؟</string>
+    <string name="cancel_confirm_yes">ہاں، منسوخ کریں</string>
+    <string name="cancel_confirm_no">نہیں، سواری چاہیے</string>
+    <string name="done_title">آپ پہنچ گئے</string>
+    <string name="done_speech">آپ پہنچ گئے۔ کیپٹن کو %1$d روپے دیں۔ بتائیں سواری کیسی رہی۔</string>
+    <string name="done_pay">کیپٹن کو ₹%1$d دیں</string>
+    <string name="rate_title">سواری کیسی رہی؟</string>
+    <string name="rate_good">اچھی</string>
+    <string name="rate_ok">ٹھیک</string>
+    <string name="rate_bad">خراب</string>
+    <string name="tip_title">کیپٹن کو ٹپ دیں گے؟</string>
+    <string name="tip_none">نہیں</string>
+    <string name="rate_send">بھیجیں</string>
+    <string name="rate_skip">ہوم پر جائیں</string>
+    <string name="rides_empty">ابھی کوئی سواری نہیں</string>
+    <string name="ride_status_cancelled">منسوخ</string>
+    <string name="ride_status_no_captain">کیپٹن نہیں ملا</string>
+    <string name="parcel_receiver_name">لینے والے کا نام</string>
+    <string name="parcel_receiver_name_hint">نام (ضروری نہیں)</string>
 </resources>

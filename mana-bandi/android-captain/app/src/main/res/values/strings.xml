@@ -14,7 +14,7 @@
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="cancel">Cancel</string>
-    <string name="km">%1$d km</string>
+    <string name="km">%1$s km</string>
     <string name="take_photo">Take photo</string>
     <string name="photo_taken">Photo added</string>
     <string name="camera_unavailable">Camera not available</string>
@@ -29,11 +29,6 @@
     <string name="service_parcel">Parcel</string>
 
     <!-- Places (fake dispatch) -->
-    <string name="place_bus">Bus stand</string>
-    <string name="place_hospital">Hospital</string>
-    <string name="place_market">Market</string>
-    <string name="place_college">College</string>
-    <string name="place_temple">Temple</string>
 
     <!-- Language -->
     <string name="lang_title">Choose your language</string>
@@ -51,7 +46,6 @@
     <string name="otp_verify">Continue</string>
     <string name="otp_call">Call me with OTP</string>
     <string name="otp_call_stub">We will call you now</string>
-    <string name="otp_demo_hint">Demo: any code works</string>
     <string name="otp_speech">Enter the 4 digit code sent to your phone.</string>
 
     <!-- KYC -->
@@ -85,11 +79,11 @@
 
     <!-- Request -->
     <string name="request_title">New ride</string>
-    <string name="request_speech">New ride: %1$s, %2$d km away, %3$d rupees.</string>
+    <string name="request_speech">New ride: %1$s, %2$s km away, %3$d rupees.</string>
     <string name="request_pickup">Pickup</string>
     <string name="request_drop">Drop</string>
-    <string name="request_away">%1$d km away</string>
-    <string name="request_trip_km">Ride %1$d km</string>
+    <string name="request_away">%1$s km away</string>
+    <string name="request_trip_km">Ride %1$s km</string>
     <string name="accept">Accept</string>
     <string name="reject">No</string>
     <string name="seconds_left">%1$d sec</string>
@@ -137,8 +131,8 @@
     <string name="earn_settlement">Office owes you</string>
     <string name="earn_trips_list">Rides today</string>
     <string name="earn_no_trips">No rides yet today</string>
-    <string name="earn_commission_rate">Commission %1$d%%</string>
-    <string name="earn_commission_offer">%1$d%% for the first %2$d months, then %3$d%%</string>
+    <string name="earn_commission_rate">Commission %1$s%%</string>
+    <string name="earn_commission_offer">%1$s%% for the first %2$d months, then %3$s%%</string>
     <string name="earn_commission_today">Commission today ₹%1$d</string>
     <string name="commission_note">Set by the office. Call if you have a question.</string>
     <string name="collect_commission_line">Commission ₹%1$d · you keep ₹%2$d</string>
@@ -166,4 +160,71 @@
     <string name="terms_4">Helmet and jacket are mandatory. No drinking and driving.</string>
     <string name="terms_5">Never start a ride without the OTP. No off‑app rides.</string>
     <string name="terms_6">Location is tracked while online. Abuse closes the account.</string>
+
+    <!-- Backend, GPS and maps -->
+    <string name="please_wait">Please wait…</string>
+    <string name="retry">Try again</string>
+    <string name="err_network">No internet. Wait a little and try again.</string>
+    <string name="err_generic">Something went wrong. Please try again.</string>
+    <string name="err_invalid_otp">Wrong code. Check the SMS and enter it again.</string>
+    <string name="err_otp_rate">Too many tries. Wait 10 minutes and ask again.</string>
+    <string name="err_terms">Please accept the rules first.</string>
+    <string name="err_session">Please log in again.</string>
+    <string name="err_kyc_required">The office is still checking your papers. You can go online after that.</string>
+    <string name="err_not_online">You are offline. Tap the big button to go online.</string>
+    <string name="err_trip_state">This ride has changed. Please look at the screen again.</string>
+    <string name="otp_dev_hint">Test code: %1$s</string>
+    <string name="perm_allow">OK, allow</string>
+    <string name="perm_denied">Permission not given. Allow location for this app in the phone settings.</string>
+    <string name="perm_open_settings">Open settings</string>
+    <string name="perm_try_again">Ask again</string>
+    <string name="perm_location_captain">To get rides we need to know where you are. We check it only while you are online.</string>
+    <string name="gps_off">Location (GPS) is off on this phone. Please turn it on.</string>
+    <string name="offline_on_trip">You cannot go offline during a ride. Finish the ride first.</string>
+    <string name="no_network_buffering">No internet. We are keeping your location and will send it when the network is back.</string>
+    <string name="offer_expired">Time is up. This ride went to another captain.</string>
+    <string name="offer_taken">Another captain took this ride. Wait for the next one.</string>
+    <string name="wrong_otp">Wrong OTP. Ask the rider again and enter it.</string>
+    <string name="pin_rider">Rider\'s location</string>
+    <string name="pin_drop">Place shown on the map</string>
+    <string name="photo_sent">Photo sent</string>
+    <string name="slide_deliver">Slide to deliver</string>
+    <string name="trip_speech_parcel">Take the parcel to the drop. When you reach, slide the button below.</string>
+    <string name="trip_cancel">Cancel this ride</string>
+    <string name="trip_cancel_confirm">Really cancel this ride?</string>
+    <string name="trip_cancel_yes">Yes, cancel</string>
+    <string name="trip_cancel_no">No, I am going</string>
+    <string name="trip_ended_by_rider">The rider cancelled this ride.</string>
+    <string name="status_pending">The office is checking your papers</string>
+    <string name="status_verified">Your papers are OK</string>
+    <string name="status_rejected">Your papers were not OK. Please send the photos again.</string>
+    <string name="status_blocked">Your account is stopped. Please call the office.</string>
+    <string name="status_reason">Reason: %1$s</string>
+    <string name="kyc_open">See my papers</string>
+    <string name="kyc_owner_consent">Vehicle owner\'s letter</string>
+    <string name="kyc_retake">Take the photo again</string>
+    <string name="kyc_sending">Sending…</string>
+    <string name="kyc_failed">Not sent. Check the internet and take the photo again.</string>
+    <string name="kyc_uploaded">Sent. The office will check it.</string>
+    <string name="kyc_verified">Checked</string>
+    <string name="kyc_vehicle_model">Vehicle model (if you know)</string>
+    <string name="kyc_vehicle_model_hint">Hero Splendor+</string>
+    <string name="kyc_bank_upi">UPI ID (if any)</string>
+    <string name="kyc_bank_ifsc">Bank IFSC code</string>
+    <string name="kyc_bank_last4">Last 4 digits of the account number</string>
+    <string name="channel_tracking">Online status</string>
+    <string name="channel_offers">New rides</string>
+    <string name="tracking_notif_title">🟢 Online — looking for rides</string>
+    <string name="tracking_notif_trip">🟢 Ride in progress</string>
+    <string name="tracking_notif_text">Your location goes to the office while you are online. Tap to open.</string>
+    <string name="tracking_notif_offline">Go offline</string>
+    <string name="battery_title">Change the battery setting</string>
+    <string name="battery_body">To get rides even when the phone is locked, take Mana Bandi out of battery saving.</string>
+    <string name="battery_allow">Allow battery use</string>
+    <string name="battery_autostart">Turn on auto-start</string>
+    <string name="logout">Log out</string>
+
+    <!-- Vehicle checks (PUT /api/captain/vehicle) -->
+    <string name="kyc_vehicle_invalid">The vehicle number looks wrong. Write it like TS 15 AB 1234.</string>
+    <string name="kyc_vehicle_locked">After approval, the vehicle can only be changed at the office. Please call the office.</string>
 </resources>

@@ -16,7 +16,8 @@ import java.util.Locale
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mana_bandi_prefs")
 
 /**
- * Small DataStore wrapper for the chosen language and the demo login.
+ * Small DataStore wrapper for the chosen language and the accepted terms version.
+ * (The login token lives in [SessionStore].)
  * The language is also applied through [AppCompatDelegate.setApplicationLocales]
  * so it works on every API level (see [applyLocale]).
  */
@@ -32,9 +33,7 @@ class LocalePrefs(private val context: Context) {
 
         private val KEY_LANGUAGE = stringPreferencesKey("language")
         private val KEY_LANGUAGE_CHOSEN = booleanPreferencesKey("language_chosen")
-        private val KEY_PHONE = stringPreferencesKey("phone")
         private val KEY_NAME = stringPreferencesKey("name")
-        private val KEY_LOGGED_IN = booleanPreferencesKey("logged_in")
         private val KEY_TERMS_VERSION = stringPreferencesKey("terms_version_accepted")
 
         /** Applies a BCP-47 tag app-wide. Recreates activities on API < 33. */
@@ -65,9 +64,7 @@ class LocalePrefs(private val context: Context) {
 
     val languageTag: Flow<String> = context.dataStore.data.map { it[KEY_LANGUAGE] ?: DEFAULT_LANGUAGE }
     val languageChosen: Flow<Boolean> = context.dataStore.data.map { it[KEY_LANGUAGE_CHOSEN] ?: false }
-    val phone: Flow<String> = context.dataStore.data.map { it[KEY_PHONE] ?: "" }
     val name: Flow<String> = context.dataStore.data.map { it[KEY_NAME] ?: "" }
-    val loggedIn: Flow<Boolean> = context.dataStore.data.map { it[KEY_LOGGED_IN] ?: false }
     /** True only when the CURRENT terms version has been accepted. */
     val termsAccepted: Flow<Boolean> = context.dataStore.data.map { it[KEY_TERMS_VERSION] == TERMS_VERSION }
 
@@ -79,25 +76,18 @@ class LocalePrefs(private val context: Context) {
         }
     }
 
-    suspend fun setLoggedIn(phone: String) {
-        context.dataStore.edit {
-            it[KEY_PHONE] = phone
-            it[KEY_LOGGED_IN] = true
-        }
-    }
-
     suspend fun acceptTerms() {
         context.dataStore.edit { it[KEY_TERMS_VERSION] = TERMS_VERSION }
     }
 
-    suspend fun setName(name: String) {
-        context.dataStore.edit { it[KEY_NAME] = name }
+    /** Mirrors the server's `user.termsVersionAccepted` after login. */
+    suspend fun setTermsAccepted(accepted: Boolean) {
+        context.dataStore.edit {
+            if (accepted) it[KEY_TERMS_VERSION] = TERMS_VERSION else it.remove(KEY_TERMS_VERSION)
+        }
     }
 
-    suspend fun logout() {
-        context.dataStore.edit {
-            it.remove(KEY_PHONE)
-            it[KEY_LOGGED_IN] = false
-        }
+    suspend fun setName(name: String) {
+        context.dataStore.edit { it[KEY_NAME] = name }
     }
 }
