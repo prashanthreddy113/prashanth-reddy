@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { USING_BACKEND } from '../lib/api'
 
 export default function Login() {
   const { login, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState('owner@manabandi.in')
+  const [email, setEmail] = useState(USING_BACKEND ? '' : 'owner@manabandi.in')
   const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
@@ -57,12 +58,12 @@ export default function Login() {
         </label>
         {error && <div className="form-error">{error}</div>}
         <button className="btn primary block" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
-        <div className="login-hint">
+        {!USING_BACKEND && <div className="login-hint">
           <div>Mock accounts (any password):</div>
           <code>owner@manabandi.in</code> — owner, all towns<br />
           <code>nkd@manabandi.in</code> — town manager, Narayanakhed<br />
           <code>zhb@manabandi.in</code> — town manager, Zaheerabad
-        </div>
+        </div>}
       </form>
     </div>
   )

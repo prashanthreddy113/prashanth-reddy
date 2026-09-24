@@ -7,6 +7,7 @@
  */
 import { store, audit } from '../mock/store'
 import { rng } from '../mock/rng'
+import { createRemoteApi } from './remote'
 
 const TOKEN_KEY = 'manabandi.token'
 const USER_KEY = 'manabandi.user'
@@ -35,7 +36,7 @@ const day = (iso) => iso.slice(0, 10)
 const median = (arr) => { if (!arr.length) return 0; const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 const live = rng(11)
 
-export const api = {
+const mockApi = {
   // ---------------------------------------------------------------- auth
   /** POST /api/auth/login { email, password, otp? } → { token, user:{ id, name, email, role, townId } } */
   async login(email, password, otp) {
@@ -421,8 +422,8 @@ export const api = {
 function addMonths(iso, n) { const d = new Date(iso); d.setMonth(d.getMonth() + n); return d.toISOString().slice(0, 10) }
 
 /** Commission resolution. Order: town+service → town all → service override → default. */
-export function resolveCommission({ townId, service, fare = 0, joinedAt, on }) {
-  const cfg = store.commission
+export function resolveCommission({ townId, service, fare = 0, joinedAt, on }, rules) {
+  const cfg = rules || store.commission
   const date = on || today()
   const active = (o) => o.status !== 'disabled' && (!o.effectiveFrom || o.effectiveFrom <= date)
   let rule, ruleName
@@ -491,3 +492,9 @@ export function buildChecks(v) {
   c.push({ id: 'police', label: 'Police verification (manual)', state: v.police === 'done' ? 'pass' : v.police === 'requested' ? 'review' : 'pending', note: { done: 'certificate received', requested: 'applied at PS, awaiting', not_started: 'not started' }[v.police] || '' })
   return c
 }
+
+/** With VITE_API_URL set the portal talks to the real backend; without it, to the mock store above. */
+export const USING_BACKEND = !!BUILD_API_URL
+export const api = USING_BACKEND
+  ? createRemoteApi({ baseUrl: BUILD_API_URL, session, buildChecks, resolveCommission, ApiError })
+  : mockApi
