@@ -125,6 +125,7 @@ class Recorder {
   async frame() {
     await this.page.clock.runFor(DT); this.vt += DT
     await this.page.evaluate((vt) => window.__sync && window.__sync(vt), this.vt)
+    if (process.env.DEBUG_SCREENS) { const e = await this.page.evaluate(() => { const n = document.querySelector('#n-eyebrow'); return n ? n.textContent : '' }); if (e !== this.lastEb) { console.log((this.vt / 1000).toFixed(2), e); this.lastEb = e } }
     const buf = await this.page.screenshot({ type: 'jpeg', quality: 92 })
     if (!this.ff.stdin.write(buf)) await new Promise((r) => this.ff.stdin.once('drain', r))
     this.frames++
@@ -245,6 +246,8 @@ async function customer(r) {
 
 async function captain(r) {
   await r.card(titleCard('Captain app · కెప్టెన్ యాప్', 'మీ బండి — మీ సంపాదన'), 3600)
+  // Switch the prototype to the captain app, then open the registration screen.
+  await r.ev(() => document.querySelector('#mode-captain').click()); await r.hold(120)
   await r.ev(() => document.querySelector('[data-jump="ckyc"]').click()); await r.hold(200)
   await r.caption('1 · నమోదు', '10 నిమిషాల్లో నమోదు', 'Register in 10 minutes — no paper forms')
   await r.hold(2400)
@@ -332,6 +335,9 @@ async function owner(r) {
       __el('mb-note', note)
     }, [layout, CONFIG.sampleNote])
   }
+  // Stop the fake clock from also following real time: only frame() may move time forward,
+  // otherwise app timers fire early whenever rendering is slower than real time.
+  await page.clock.pauseAt(new Date('2026-09-25T09:41:01+05:30'))
   await page.clock.runFor(1500)
   await page.evaluate(() => document.fonts.ready)
   const r = new Recorder(page, out, size)
