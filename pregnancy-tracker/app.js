@@ -175,6 +175,7 @@
     o.innerHTML = `<div class="modal ${wide ? 'wide' : ''}" role="dialog" aria-modal="true">${html}</div>`;
     o.hidden = false;
     const f = $('input, select, textarea, button', o); if (f) f.focus();
+    Figures.start();
   }
   function closeModal() {
     const o = $('#overlay');
@@ -268,6 +269,7 @@
     const el = $(`#view-${view}`);
     el.innerHTML = VIEWS[view]();
     if (AFTER[view]) AFTER[view](el);
+    Figures.start();
   }
   function applyTheme() {
     const t = S.profile.theme;
@@ -727,13 +729,18 @@
         <ul class="warn-list small">${EXERCISE_SAFETY.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
       </div>
     </div>
-    <div class="grid g3">${STRETCHES.map(s => `<div class="card stretch">
+    <div class="grid g3">${STRETCHES.map(s => { const tip = STRETCH_TIPS[s.id] || {}; return `<div class="card stretch">
+      ${Figures.html(s.id)}
       <div class="card-head"><h3>${esc(s.name)}</h3><span class="chip ${s.tri.includes(info.tri) ? 'ok' : 'warn'}">${s.tri.includes(info.tri) ? esc(s.area) : 'Later trimesters'}</span></div>
       <p class="small muted">${esc(s.benefit)}</p>
-      <ol>${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
-      <div class="row"><button class="btn sm" data-act="stretch-one" data-id="${s.id}">Start · ${s.seconds}s</button>
-        <a class="btn sm ghost" href="https://www.youtube.com/results?search_query=${encodeURIComponent('pregnancy ' + s.name + ' stretch')}" target="_blank" rel="noopener">Watch how ↗</a></div>
-    </div>`).join('')}</div>`;
+      <details class="how" open><summary>How to do it</summary>
+        <ol>${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+        ${tip.reps ? `<p class="small"><b>Repeat:</b> ${esc(tip.reps)}</p>` : ''}
+        ${tip.avoid ? `<p class="small"><b>Take care:</b> ${esc(tip.avoid)}</p>` : ''}
+      </details>
+      <div class="row"><button class="btn sm primary" data-act="stretch-one" data-id="${s.id}">Guided · ${s.seconds}s</button>
+        <a class="btn sm ghost" href="https://www.youtube.com/results?search_query=${encodeURIComponent('pregnancy ' + s.name + ' stretch')}" target="_blank" rel="noopener">Real videos ↗</a></div>
+    </div>`; }).join('')}</div>`;
   };
 
   // Routine player
@@ -760,8 +767,10 @@
     openModal(`
       <div class="modal-head"><div class="eyebrow">Stretch ${routine.i + 1} of ${routine.list.length}</div><button class="btn sm ghost" data-act="close">Stop</button></div>
       <h2>${esc(s.name)}</h2>
+      ${Figures.html(s.id, true)}
       <div class="timer-big" id="rt-left">${fmtDur(routine.left * 1000)}</div>
       <ol class="small">${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+      ${STRETCH_TIPS[s.id] ? `<p class="small"><b>Repeat:</b> ${esc(STRETCH_TIPS[s.id].reps)}</p>` : ''}
       <div class="bar"><span style="width:${pct(routine.i / routine.list.length)}"></span></div>
       <div class="row"><button class="btn" data-act="rt-pause">${routine.paused ? 'Resume' : 'Pause'}</button><button class="btn" data-act="rt-next">Next stretch</button>
       ${routine.list[routine.i + 1] ? `<span class="tiny">Up next: ${esc(routine.list[routine.i + 1].name)}</span>` : ''}</div>`);
@@ -787,85 +796,153 @@
     } catch (e) { /* sound not available */ }
   }
 
-  // Mind games
+  // Mind games — every game climbs through six levels as you complete it.
+  const LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Pro', 'Master'];
+  const MEM_PAIRS = [4, 6, 8, 10, 12, 15], MEM_COLS = [4, 4, 4, 5, 6, 6];
+  const MATH_TARGET = [8, 10, 12, 12, 13, 14];
+  const SCR_LEN = [[3, 4], [5, 5], [6, 6], [7, 7], [8, 9], [10, 20]];
+  const BREATH = [
+    { name: 'Box breathing 4-4-4-4', ph: [4, 4, 4, 4], cycles: 3 },
+    { name: 'Box breathing 4-4-4-4', ph: [4, 4, 4, 4], cycles: 5 },
+    { name: '4-7-8 relaxing breath', ph: [4, 7, 8, 0], cycles: 4 },
+    { name: 'Box breathing 5-5-5-5', ph: [5, 5, 5, 5], cycles: 5 },
+    { name: '4-7-8 relaxing breath', ph: [4, 7, 8, 0], cycles: 6 },
+    { name: 'Slow box breathing 6-6-6-6', ph: [6, 6, 6, 6], cycles: 6 },
+  ];
+  const GAMES = {
+    memory: { name: 'Memory match', need: 2, goal: () => 'Finish 2 boards to unlock the next level.', level: l => `${MEM_PAIRS[l]} pairs` },
+    scramble: { name: 'Baby word scramble', need: 5, goal: () => 'Solve 5 words to unlock the next level.', level: l => `${SCR_LEN[l][0]}${SCR_LEN[l][1] > SCR_LEN[l][0] ? (SCR_LEN[l][1] > 12 ? '+' : '–' + SCR_LEN[l][1]) : ''} letters${l >= 3 ? ', no hints' : ''}` },
+    math: { name: 'Quick maths', need: 1, goal: l => `Score ${MATH_TARGET[l]} or more in 60 seconds to unlock the next level.`, level: l => ['Adding to 20', '+ and − to 50', 'Times tables', 'Two-digit sums', 'Division too', 'Three-step sums'][l] },
+    breath: { name: 'Calm breathing', need: 1, goal: () => 'Complete one full session to unlock the next level.', level: l => `${BREATH[l].name}, ${BREATH[l].cycles} rounds` },
+  };
   let game = 'memory';
+  let levelUp = null;
   const G = { mem: null, scr: null, math: null, breath: null };
+  function lv(g) {
+    const all = S.games.lv = S.games.lv || {};
+    return all[g] = all[g] || { unlocked: 0, sel: 0, prog: 0, wins: 0 };
+  }
+  // Records a completed round; returns true if it unlocked a new level.
+  function levelResult(g, ok) {
+    const l = lv(g);
+    if (!ok) { save(); return false; }
+    l.wins++;
+    markHabit('mind');
+    let up = false;
+    if (l.sel === l.unlocked && l.unlocked < LEVELS.length - 1) {
+      l.prog++;
+      if (l.prog >= GAMES[g].need) { l.unlocked++; l.sel = l.unlocked; l.prog = 0; up = true; }
+    }
+    save();
+    if (up) { levelUp = { g, l: l.unlocked }; beep(); toast(`Level up! ${GAMES[g].name}: ${LEVELS[l.unlocked]}`); }
+    return up;
+  }
+  function resetGame(g) { if (g === 'memory') G.mem = null; if (g === 'scramble') G.scr = null; if (g === 'math') { if (G.math) clearInterval(G.math.timer); G.math = null; } if (g === 'breath') { if (G.breath) clearTimeout(G.breath.timer); G.breath = null; } }
+
   VIEWS.mind = () => {
     const t = todayISO();
     const affirm = AFFIRMATIONS[(parse(t).getTime() / DAY | 0) % AFFIRMATIONS.length];
-    const best = S.games;
     return `
-    <div class="page-head"><div><h1>Mind games</h1><p>A few calm minutes for your brain. Finishing any game ticks today’s mind habit.</p></div></div>
+    <div class="page-head"><div><h1>Mind games</h1><p>A few calm minutes for your brain. Each game has six levels, from Beginner to Master. Complete a level to unlock the next. Finishing any round ticks today’s mind habit.</p></div></div>
     <div class="game-tabs">
-      ${[['memory', 'Memory match'], ['scramble', 'Baby word scramble'], ['breath', 'Calm breathing'], ['math', 'Quick maths']].map(([id, l]) => `<button class="btn" data-act="game" data-id="${id}" aria-pressed="${game === id}">${l}</button>`).join('')}
+      ${Object.entries(GAMES).map(([id, g]) => `<button class="btn" data-act="game" data-id="${id}" aria-pressed="${game === id}">${g.name} <span class="chip">${LEVELS[lv(id).unlocked]}</span></button>`).join('')}
     </div>
     <div class="grid g2">
       <div class="card" id="game-area"></div>
       <div class="stack" style="gap:16px">
-        <div class="card"><div class="eyebrow">Affirmation</div><p class="affirm">${esc(affirm)}</p></div>
-        <div class="card"><h3>Personal bests</h3>
-          <div class="list small">
-            <div class="row"><span style="flex:1">Memory match (fewest moves)</span><b class="num">${best.memory || '–'}</b></div>
-            <div class="row"><span style="flex:1">Word scramble (best streak)</span><b class="num">${best.scramble || '–'}</b></div>
-            <div class="row"><span style="flex:1">Quick maths (60 s score)</span><b class="num">${best.math || '–'}</b></div>
-            <div class="row"><span style="flex:1">Breathing cycles today</span><b class="num">${(best.breathDay === t && best.breath) || 0}</b></div>
-          </div>
+        <div class="card"><h3>Your levels</h3>
+          <div class="list small">${Object.entries(GAMES).map(([id, g]) => { const l = lv(id); return `<div class="stack" style="gap:6px">
+            <div class="row"><b style="flex:1">${g.name}</b><span class="chip accent">${LEVELS[l.unlocked]}</span></div>
+            <div class="lv-track" aria-label="${l.unlocked + 1} of ${LEVELS.length} levels unlocked">${LEVELS.map((_, i) => `<span class="${i <= l.unlocked ? 'on' : ''}"></span>`).join('')}</div>
+            <div class="tiny">${l.wins} round${l.wins === 1 ? '' : 's'} completed${id === 'memory' && S.games.memBests && S.games.memBests[l.sel] ? ` · best ${S.games.memBests[l.sel]} moves at ${LEVELS[l.sel]}` : ''}${id === 'math' && S.games.math ? ` · best score ${S.games.math}` : ''}${id === 'scramble' && S.games.scramble ? ` · best streak ${S.games.scramble}` : ''}</div>
+          </div>`; }).join('')}</div>
         </div>
+        <div class="card"><div class="eyebrow">Affirmation</div><p class="affirm">${esc(affirm)}</p></div>
       </div>
     </div>`;
   };
   AFTER.mind = () => drawGame();
-  function gameWon(kind, value, better) {
-    const b = S.games[kind];
-    if (value != null && (b == null || better(value, b))) S.games[kind] = value;
-    markHabit('mind');
-    save();
+
+  function levelBar(g) {
+    const l = lv(g), info = GAMES[g];
+    const atTop = l.unlocked === LEVELS.length - 1;
+    return `<div class="levels" role="group" aria-label="Choose level">${LEVELS.map((name, i) => `<button class="lv ${i === l.sel ? 'sel' : ''}" data-act="level" data-g="${g}" data-l="${i}" ${i > l.unlocked ? 'disabled' : ''} title="${esc(info.level(i))}">${i > l.unlocked ? '🔒 ' : ''}${name}</button>`).join('')}</div>
+      <div class="small"><b>${LEVELS[l.sel]}</b> · ${esc(info.level(l.sel))}</div>
+      ${l.sel < l.unlocked ? `<div class="tiny">Practice mode. Pick ${LEVELS[l.unlocked]} to keep progressing.</div>`
+        : atTop ? '<div class="tiny">You have reached the top level. Keep playing for fun!</div>'
+        : `<div class="row"><div class="bar" style="flex:1"><span style="width:${pct(l.prog / info.need)}"></span></div><span class="tiny num">${l.prog}/${info.need}</span></div><div class="tiny">${esc(info.goal(l.sel))}</div>`}
+      ${levelUp && levelUp.g === g ? `<div class="notice info"><div class="grow"><b>Level up! You unlocked ${LEVELS[levelUp.l]}.</b><span class="small">${esc(info.level(levelUp.l))}. Well done!</span></div></div>` : ''}`;
   }
+
   function drawGame() {
     const a = $('#game-area'); if (!a) return;
-    clearInterval(G.math && G.math.timer); clearTimeout(G.breath && G.breath.timer);
+    if (G.math) clearInterval(G.math.timer);
+    if (G.breath) clearTimeout(G.breath.timer);
+    const L = g => lv(g).sel;
     if (game === 'memory') {
-      if (!G.mem) G.mem = { cards: shuffle(MEMORY_EMOJI.concat(MEMORY_EMOJI)).map(e => ({ e, open: false, done: false })), open: [], moves: 0, done: false };
+      const sel = L('memory');
+      if (!G.mem || G.mem.level !== sel) {
+        const icons = shuffle(MEMORY_EMOJI).slice(0, MEM_PAIRS[sel]);
+        G.mem = { level: sel, cards: shuffle(icons.concat(icons)).map(e => ({ e, open: false, done: false })), open: [], moves: 0, done: false };
+      }
       const m = G.mem;
       a.innerHTML = `<div class="card-head"><h3>Memory match</h3><span class="chip">Moves: <b class="num">${m.moves}</b></span></div>
-        <p class="small muted">Find all 8 pairs with as few moves as you can.</p>
-        <div class="mem">${m.cards.map((c, i) => `<button class="${c.open ? 'open' : ''} ${c.done ? 'done' : ''}" data-act="mem" data-i="${i}" aria-label="${c.open || c.done ? c.e : 'Hidden card'}">${c.e}</button>`).join('')}</div>
-        <div><button class="btn sm" data-act="mem-new">New game</button></div>`;
+        ${levelBar('memory')}
+        ${m.done ? `<div class="notice info"><div class="grow"><b>All pairs found in ${m.moves} moves!</b></div><button class="btn sm primary" data-act="mem-new">Next board</button></div>` : ''}
+        <div class="mem" style="--cols:${MEM_COLS[sel]}">${m.cards.map((c, i) => `<button class="${c.open ? 'open' : ''} ${c.done ? 'done' : ''}" data-act="mem" data-i="${i}" aria-label="${c.open || c.done ? c.e : 'Hidden card'}">${c.e}</button>`).join('')}</div>
+        <div><button class="btn sm" data-act="mem-new">New board</button></div>`;
     } else if (game === 'scramble') {
-      if (!G.scr) G.scr = { streak: 0, hint: false };
+      const sel = L('scramble');
+      if (!G.scr || G.scr.level !== sel) G.scr = { level: sel, streak: 0 };
       const s = G.scr;
-      if (!s.word) { const [w, h] = SCRAMBLE_WORDS[Math.floor(Math.random() * SCRAMBLE_WORDS.length)]; let sc; do { sc = shuffle(w.split('')).join(''); } while (sc === w && w.length > 2); Object.assign(s, { word: w, clue: h, sc, hint: false }); }
+      if (!s.word) {
+        const [lo, hi] = SCR_LEN[sel];
+        const pool = SCRAMBLE_WORDS.filter(([w]) => w.length >= lo && w.length <= hi && w !== s.prev);
+        const [w, h] = pool[Math.floor(Math.random() * pool.length)];
+        let sc; do { sc = shuffle(w.split('')).join(''); } while (sc === w);
+        Object.assign(s, { word: w, clue: h, sc, hint: false, prev: w });
+      }
+      const hints = sel < 3;
       a.innerHTML = `<div class="card-head"><h3>Baby word scramble</h3><span class="chip">Streak: <b class="num">${s.streak}</b></span></div>
+        ${levelBar('scramble')}
         <div class="scramble-word">${s.sc}</div>
-        ${s.hint ? `<p class="small">Hint: ${esc(s.clue)} · starts with <b>${s.word[0]}</b></p>` : ''}
-        <form data-form="scramble" class="row"><input id="scr-in" name="guess" type="text" autocomplete="off" placeholder="Your answer" style="max-width:220px" aria-label="Your answer"><button class="btn primary" type="submit">Check</button></form>
-        <div class="row"><button class="btn sm" data-act="scr-hint">Hint</button><button class="btn sm ghost" data-act="scr-skip">Skip word</button></div>`;
+        ${s.hint ? `<p class="small">Hint: ${esc(s.clue)}${sel < 2 ? ` · starts with <b>${s.word[0]}</b>` : ''}</p>` : ''}
+        <form data-form="scramble" class="row"><input id="scr-in" name="guess" type="text" autocomplete="off" autocapitalize="characters" placeholder="Your answer" style="max-width:220px" aria-label="Your answer"><button class="btn primary" type="submit">Check</button></form>
+        <div class="row">${hints ? '<button class="btn sm" data-act="scr-hint">Hint</button>' : '<span class="tiny">No hints at this level.</span>'}<button class="btn sm ghost" data-act="scr-skip">Skip word</button></div>`;
     } else if (game === 'breath') {
-      if (!G.breath) G.breath = { on: false, cycles: 0 };
+      const sel = L('breath'), cfg = BREATH[sel];
+      if (!G.breath || G.breath.level !== sel) G.breath = { level: sel, on: false, cycles: 0 };
       const b = G.breath;
-      a.innerHTML = `<div class="card-head"><h3>Box breathing</h3><span class="chip">Cycles: <b class="num" id="br-c">${b.cycles}</b></span></div>
-        <p class="small muted">Breathe in for 4, hold for 4, out for 4, hold for 4. Four cycles take about a minute and calm the nervous system.</p>
-        <div class="breath"><div class="breath-stage"><div class="breath-circle" id="br-circle">Ready</div></div>
-        <button class="btn primary" data-act="breath">${b.on ? 'Stop' : 'Start breathing'}</button></div>`;
+      const [i1, h1, o1, h2] = cfg.ph;
+      a.innerHTML = `<div class="card-head"><h3>${cfg.name}</h3><span class="chip">Round <b class="num" id="br-c">${b.cycles}</b>/${cfg.cycles}</span></div>
+        ${levelBar('breath')}
+        <p class="small muted">Breathe in for ${i1}, hold for ${h1}, breathe out for ${o1}${h2 ? `, hold for ${h2}` : ''}. Follow the circle. Stop if you feel dizzy.</p>
+        <div class="breath"><div class="breath-stage"><div class="breath-circle" id="br-circle">${b.done ? 'Done' : 'Ready'}</div></div>
+        <button class="btn primary" data-act="breath">${b.on ? 'Stop' : b.done ? 'Go again' : 'Start breathing'}</button></div>`;
       if (b.on) runBreath();
     } else if (game === 'math') {
-      if (!G.math) G.math = { on: false, score: 0 };
+      const sel = L('math');
+      if (!G.math || G.math.level !== sel) G.math = { level: sel, on: false, score: 0, played: false };
       const m = G.math;
       a.innerHTML = `<div class="card-head"><h3>Quick maths</h3><span class="chip">Score: <b class="num" id="mt-s">${m.score}</b></span></div>
-        <p class="small muted">Answer as many sums as you can in 60 seconds.</p>
+        ${levelBar('math')}
         ${m.on ? `<div class="row"><span class="math-q" id="mt-q">${m.q}</span><span class="chip accent num" id="mt-t">${m.left}s</span></div>
           <form data-form="math" class="row"><input id="mt-in" name="a" type="number" inputmode="numeric" style="max-width:160px" aria-label="Answer" autocomplete="off"><button class="btn primary" type="submit">Enter</button></form>`
-          : `<div><button class="btn primary" data-act="math-start">${m.score ? 'Play again' : 'Start'}</button></div>${m.score ? `<p>You scored <b>${m.score}</b>.</p>` : ''}`}`;
+          : `${m.played ? `<p>You scored <b>${m.score}</b>${m.score >= MATH_TARGET[sel] ? '. Target reached!' : `. Reach ${MATH_TARGET[sel]} to level up.`}</p>` : ''}<div><button class="btn primary" data-act="math-start">${m.played ? 'Play again' : 'Start 60-second round'}</button></div>`}`;
       if (m.on) { const inp = $('#mt-in'); if (inp) inp.focus(); mathTimer(); }
     }
   }
-  function newSum() {
-    const op = ['+', '−', '×'][Math.floor(Math.random() * 3)];
-    let x, y, ans;
-    if (op === '+') { x = 5 + Math.floor(Math.random() * 45); y = 2 + Math.floor(Math.random() * 45); ans = x + y; }
-    else if (op === '−') { x = 10 + Math.floor(Math.random() * 60); y = 1 + Math.floor(Math.random() * x); ans = x - y; }
-    else { x = 2 + Math.floor(Math.random() * 11); y = 2 + Math.floor(Math.random() * 9); ans = x * y; }
-    return { q: `${x} ${op} ${y}`, ans };
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  function newSum(level) {
+    let q, ans;
+    const pick = ops => ops[Math.floor(Math.random() * ops.length)];
+    if (level === 0) { const x = rnd(1, 10), y = rnd(1, 10); q = `${x} + ${y}`; ans = x + y; }
+    else if (level === 1) { if (pick([0, 1])) { const x = rnd(5, 30), y = rnd(2, 20); q = `${x} + ${y}`; ans = x + y; } else { const x = rnd(10, 50), y = rnd(1, x); q = `${x} − ${y}`; ans = x - y; } }
+    else if (level === 2) { const op = pick(['+', '−', '×']); if (op === '×') { const x = rnd(2, 10), y = rnd(2, 10); q = `${x} × ${y}`; ans = x * y; } else if (op === '+') { const x = rnd(10, 50), y = rnd(5, 45); q = `${x} + ${y}`; ans = x + y; } else { const x = rnd(20, 90), y = rnd(5, x); q = `${x} − ${y}`; ans = x - y; } }
+    else if (level === 3) { const op = pick(['+', '−', '×']); if (op === '×') { const x = rnd(3, 12), y = rnd(6, 12); q = `${x} × ${y}`; ans = x * y; } else if (op === '+') { const x = rnd(25, 99), y = rnd(25, 99); q = `${x} + ${y}`; ans = x + y; } else { const x = rnd(50, 150), y = rnd(15, x); q = `${x} − ${y}`; ans = x - y; } }
+    else if (level === 4) { const op = pick(['×', '÷', '+', '−']); if (op === '÷') { const y = rnd(2, 12), a2 = rnd(2, 12); q = `${y * a2} ÷ ${y}`; ans = a2; } else if (op === '×') { const x = rnd(6, 15), y = rnd(3, 12); q = `${x} × ${y}`; ans = x * y; } else if (op === '+') { const x = rnd(50, 250), y = rnd(25, 150); q = `${x} + ${y}`; ans = x + y; } else { const x = rnd(100, 300), y = rnd(25, x); q = `${x} − ${y}`; ans = x - y; } }
+    else { const f = pick([0, 1, 2]); if (f === 0) { const x = rnd(3, 12), y = rnd(3, 12), z = rnd(5, 40); q = `${x} × ${y} + ${z}`; ans = x * y + z; } else if (f === 1) { const x = rnd(20, 90), y = rnd(10, 60), z = rnd(5, 40); q = `${x} + ${y} − ${z}`; ans = x + y - z; } else { const y = rnd(2, 9), a2 = rnd(3, 12), z = rnd(2, 20); q = `${y * a2} ÷ ${y} + ${z}`; ans = a2 + z; } }
+    return { q, ans };
   }
   function mathTimer() {
     const m = G.math;
@@ -873,32 +950,40 @@
     m.timer = setInterval(() => {
       m.left--;
       const t = $('#mt-t'); if (t) t.textContent = m.left + 's';
-      if (m.left <= 0) { clearInterval(m.timer); m.on = false; gameWon('math', m.score, (a, b) => a > b); drawGame(); }
+      if (m.left <= 0) {
+        clearInterval(m.timer); m.on = false; m.played = true;
+        if (S.games.math == null || m.score > S.games.math) S.games.math = m.score;
+        levelResult('math', m.score >= MATH_TARGET[m.level]);
+        if (m.score > 0) markHabit('mind');
+        save();
+        if (view === 'mind') render();
+      }
     }, 1000);
   }
   function runBreath() {
-    const b = G.breath;
-    const phases = [['Breathe in', true], ['Hold', true], ['Breathe out', false], ['Hold', false]];
-    let i = 0;
-    const step = () => {
-      const c = $('#br-circle');
-      if (!c || !b.on) return;
-      const [label, big] = phases[i % 4];
-      c.textContent = label;
-      c.classList.toggle('big', big);
-      if (i > 0 && i % 4 === 0) {
-        b.cycles++;
-        const t = todayISO();
-        if (S.games.breathDay !== t) { S.games.breathDay = t; S.games.breath = 0; }
-        S.games.breath++;
-        const cc = $('#br-c'); if (cc) cc.textContent = b.cycles;
-        if (b.cycles === 4) gameWon('breathDone', null);
-        else save();
+    const b = G.breath, cfg = BREATH[b.level];
+    const seq = [['Breathe in', cfg.ph[0], true], ['Hold', cfg.ph[1], true], ['Breathe out', cfg.ph[2], false], ['Hold', cfg.ph[3], false]].filter(x => x[1] > 0);
+    let i = 0, left = 0, cur = seq[0];
+    const c = $('#br-circle');
+    const tick = () => {
+      if (!b.on || !c || !c.isConnected) return;
+      if (left <= 0) {
+        if (i > 0 && i % seq.length === 0) {
+          b.cycles++;
+          const cc = $('#br-c'); if (cc) cc.textContent = b.cycles;
+          if (b.cycles >= cfg.cycles) { b.on = false; b.done = true; levelResult('breath', true); render(); return; }
+        }
+        cur = seq[i % seq.length];
+        c.style.transitionDuration = cur[1] + 's';
+        c.classList.toggle('big', cur[2]);
+        left = cur[1];
+        i++;
       }
-      i++;
-      b.timer = setTimeout(step, 4000);
+      c.innerHTML = `${cur[0]}<br><span class="num" style="font-size:22px">${left}</span>`;
+      left--;
+      b.timer = setTimeout(tick, 1000);
     };
-    step();
+    tick();
   }
 
   // Care tools
@@ -1093,28 +1178,36 @@
     'stretch-one': el => startRoutine([STRETCHES.find(s => s.id === el.dataset.id)]),
     'rt-pause': () => { routine.paused = !routine.paused; drawRoutine(); },
     'rt-next': () => { routine.left = 1; },
-    game: el => { game = el.dataset.id; if (G.breath) G.breath.on = false; if (G.math) G.math.on = false; render(); },
+    game: el => { game = el.dataset.id; levelUp = null; if (G.breath) G.breath.on = false; if (G.math) { G.math.on = false; clearInterval(G.math.timer); } render(); },
+    level: el => { const g = el.dataset.g, l = lv(g), n = Number(el.dataset.l); if (n > l.unlocked) return; l.sel = n; levelUp = null; resetGame(g); save(); drawGame(); },
     mem: el => {
       const m = G.mem, i = Number(el.dataset.i), c = m.cards[i];
-      if (c.open || c.done || m.open.length === 2) return;
+      if (m.done || c.open || c.done || m.open.length === 2) return;
       c.open = true; m.open.push(i);
       if (m.open.length === 2) {
         m.moves++;
         const [a, b] = m.open.map(k => m.cards[k]);
         if (a.e === b.e) {
           a.done = b.done = true; a.open = b.open = false; m.open = [];
-          if (m.cards.every(x => x.done)) { m.done = true; gameWon('memory', m.moves, (x, y) => x < y); drawGame(); $('#game-area').insertAdjacentHTML('afterbegin', `<div class="notice info"><div class="grow"><b>All pairs found in ${m.moves} moves!</b></div></div>`); return; }
+          if (m.cards.every(x => x.done)) {
+            m.done = true;
+            const bests = S.games.memBests = S.games.memBests || {};
+            if (!bests[m.level] || m.moves < bests[m.level]) bests[m.level] = m.moves;
+            levelResult('memory', true);
+            if (view === 'mind') render();
+            return;
+          }
         } else {
           setTimeout(() => { a.open = b.open = false; m.open = []; drawGame(); }, 750);
         }
       }
       drawGame();
     },
-    'mem-new': () => { G.mem = null; drawGame(); },
+    'mem-new': () => { G.mem = null; levelUp = null; drawGame(); },
     'scr-hint': () => { G.scr.hint = true; drawGame(); },
-    'scr-skip': () => { G.scr.word = null; G.scr.streak = 0; drawGame(); },
-    breath: () => { const b = G.breath; b.on = !b.on; if (!b.on) clearTimeout(b.timer); drawGame(); },
-    'math-start': () => { G.math = { on: true, score: 0, left: 60, ...newSum() }; drawGame(); },
+    'scr-skip': () => { G.scr.word = null; G.scr.streak = 0; levelUp = null; drawGame(); },
+    breath: () => { const b = G.breath; levelUp = null; if (!b.on && b.done) { b.done = false; b.cycles = 0; } b.on = !b.on; if (!b.on) clearTimeout(b.timer); drawGame(); },
+    'math-start': () => { const l = lv('math').sel; levelUp = null; G.math = { level: l, on: true, score: 0, left: 60, played: false, ...newSum(l) }; drawGame(); },
     'kick-start': () => { S.kickActive = { start: Date.now(), count: 0 }; save(); render(); },
     kick: () => { S.kickActive.count++; save(); if (S.kickActive.count === 10) { beep(); toast('10 movements counted. Well done, baby!'); } render(); },
     'kick-end': () => { const k = S.kickActive; if (k.count) S.kicks.push({ start: k.start, end: Date.now(), count: k.count }); S.kickActive = null; save(); render(); },
@@ -1218,17 +1311,17 @@
       if (!g) return false;
       if (g === s.word) {
         s.streak++; s.word = null;
-        gameWon('scramble', s.streak, (a, b) => a > b);
-        toast('Correct!');
-      } else toast('Not quite. Try again or take a hint.');
-      drawGame();
+        if (S.games.scramble == null || s.streak > S.games.scramble) S.games.scramble = s.streak;
+        if (!levelResult('scramble', true)) toast('Correct!');
+        levelUp ? render() : drawGame();
+      } else { toast('Not quite. Try again.'); drawGame(); }
       const inp = $('#scr-in'); if (inp) inp.focus();
       return false;
     },
     math: fd => {
       const m = G.math; if (!m.on) return false;
       if (Number(fd.get('a')) === m.ans) m.score++;
-      Object.assign(m, newSum());
+      Object.assign(m, newSum(m.level));
       $('#mt-q').textContent = m.q; $('#mt-s').textContent = m.score;
       const inp = $('#mt-in'); inp.value = ''; inp.focus();
       return false;

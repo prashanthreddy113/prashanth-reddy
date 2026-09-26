@@ -1,6 +1,6 @@
 /* Bloom service worker: offline cache + notification clicks. */
-const CACHE = 'bloom-v1';
-const ASSETS = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'icon.svg', 'manifest.webmanifest'];
+const CACHE = 'bloom-v2';
+const ASSETS = ['./', 'index.html', 'styles.css', 'data.js', 'figures.js', 'app.js', 'icon.svg', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

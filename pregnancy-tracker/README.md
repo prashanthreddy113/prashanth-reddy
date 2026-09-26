@@ -10,8 +10,8 @@ A private, installable web app for tracking a pregnancy. No server and no sign-i
 - **Habits**: water, fruit & veg, protein, walk, stretches, Kegels, breathing, bonding, side-sleeping, plus your own. Streaks and a 7-day view.
 - **Tablets**: daily doses with "taken" ticks, browser notifications, and an `.ics` export so the phone's calendar rings every day until the due date.
 - **Sleep**: nightly log, 14-night chart against the 7–9 h band, sleep tips.
-- **Stretch & move**: 12 pregnancy-safe stretches with steps, a guided timed routine for the current trimester, and an activity log against 150 min/week.
-- **Mind games**: memory match, baby word scramble, box breathing, quick maths, daily affirmation.
+- **Stretch & move**: 12 pregnancy-safe stretches, each with an animated demonstration that moves in time with breathing cues, step-by-step instructions, reps and safety notes, a link to real videos, a guided timed routine for the current trimester, and an activity log against 150 min/week.
+- **Mind games**: memory match, baby word scramble, calm breathing and quick maths. Each has six levels (Beginner, Intermediate, Advanced, Expert, Pro, Master) that unlock as she completes rounds, plus a daily affirmation.
 - **Care tools**: kick counter, contraction timer (5-1-1), weight chart, mood & symptom journal, appointments, hospital-bag checklist, baby names, warning signs and emergency contacts.
 - **Settings**: profile, doctor/hospital numbers, light/dark theme, JSON backup and restore.
 

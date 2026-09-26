@@ -161,13 +161,31 @@ const MOODS = [
 
 const SYMPTOMS = ['Nausea', 'Heartburn', 'Back pain', 'Headache', 'Swelling', 'Leg cramps', 'Constipation', 'Breathless', 'Can’t sleep', 'Baby kicks!'];
 
+// How long / how many, and what to watch out for, per stretch.
+const STRETCH_TIPS = {
+  catcow: { reps: '8–10 slow rounds', avoid: 'Keep the belly movement gentle. Pad your knees with a folded towel.' },
+  child: { reps: 'Hold 30–60 seconds, 2 times', avoid: 'Keep knees wide so the bump is not squashed. Use a pillow under your chest.' },
+  butterfly: { reps: 'Hold 30–45 seconds, 2–3 times', avoid: 'Never push your knees down or bounce. Sit on a cushion if your back rounds.' },
+  side: { reps: '3 times each side', avoid: 'Lengthen upwards before leaning. Do not twist deeply.' },
+  pelvictilt: { reps: '10–15 tilts, 2 sets', avoid: 'Keep your knees soft and move only the pelvis.' },
+  neck: { reps: '5 slow rolls each way', avoid: 'Do not roll the head backwards. Move within a comfortable range.' },
+  chest: { reps: 'Hold 20–30 seconds, 2 times', avoid: 'Stop if you feel tingling in the arms. Keep your belly soft.' },
+  calf: { reps: 'Hold 30 seconds each leg, 2 times', avoid: 'Keep the back heel on the floor and knee straight but not locked.' },
+  ankle: { reps: '10 circles each way, 10 point–flex', avoid: 'Great any time your feet feel swollen. Keep feet raised.' },
+  squat: { reps: 'Hold 20–30 seconds, 3 times', avoid: 'Skip deep squats if you have pelvic pain or your doctor says baby is low or breech.' },
+  hipflexor: { reps: 'Hold 30 seconds each side', avoid: 'Hold a chair for balance. Do not arch your lower back.' },
+  kegel: { reps: '10 squeezes, 3 times a day', avoid: 'Do not hold your breath or squeeze your tummy, thighs or bottom.' },
+};
+
+// [word, clue]. Word length decides the level (Beginner = short words … Master = long words).
 const SCRAMBLE_WORDS = [
-  ['CRADLE', 'Baby sleeps in it'], ['RATTLE', 'A noisy toy'], ['LULLABY', 'A bedtime song'], ['BLANKET', 'Keeps baby warm'],
-  ['STROLLER', 'Baby rides in it'], ['NURSERY', 'Baby’s room'], ['DIAPER', 'Changed many times a day'], ['CUDDLE', 'A warm hug'],
-  ['GIGGLE', 'A tiny laugh'], ['MOTHER', 'That’s you!'], ['FATHER', 'Your partner'], ['BOTTLE', 'Milk goes in it'],
-  ['TEDDY', 'A soft bear'], ['BONNET', 'A baby hat'], ['SWADDLE', 'Wrap baby snugly'], ['PACIFIER', 'A soother'],
-  ['BUMP', 'Growing every week'], ['KICKS', 'You feel them inside'], ['MIDWIFE', 'Helps at birth'], ['NEWBORN', 'Just arrived'],
-  ['TWINKLE', 'Little star'], ['MOBILE', 'Hangs above the crib'], ['BIB', 'Catches spills'], ['SLEEPY', 'Time for a nap'],
+  ['BIB', 'Catches spills'], ['HUG', 'Arms around someone'], ['NAP', 'A short sleep'], ['COT', 'A baby bed'], ['TOY', 'Something to play with'], ['CRY', 'Baby’s first sound'],
+  ['BUMP', 'Growing every week'], ['MILK', 'Baby’s first food'], ['BABY', 'Coming soon!'], ['CRIB', 'A bed with rails'], ['KISS', 'A sweet peck'], ['SOCK', 'Keeps tiny feet warm'], ['MOON', 'Shines at bedtime'], ['BATH', 'Splash time'], ['STAR', 'Twinkle, twinkle…'],
+  ['TEDDY', 'A soft bear'], ['KICKS', 'You feel them inside'], ['SLEEP', 'What new parents miss'], ['SMILE', 'Baby’s first one melts hearts'], ['TWINS', 'Two at once'], ['CRAWL', 'Before walking'], ['SWING', 'Goes back and forth'], ['TUMMY', 'Where baby is now'], ['BLOCK', 'Stack it up'], ['CHEEK', 'Chubby and kissable'],
+  ['CRADLE', 'Rocks baby to sleep'], ['RATTLE', 'A noisy toy'], ['DIAPER', 'Changed many times a day'], ['CUDDLE', 'A warm hug'], ['GIGGLE', 'A tiny laugh'], ['MOTHER', 'That’s you!'], ['FATHER', 'Your partner'], ['BOTTLE', 'Milk goes in it'], ['BONNET', 'A baby hat'], ['MOBILE', 'Hangs above the crib'], ['SLEEPY', 'Time for a nap'], ['INFANT', 'A baby under one'],
+  ['LULLABY', 'A bedtime song'], ['BLANKET', 'Keeps baby warm'], ['NURSERY', 'Baby’s room'], ['SWADDLE', 'Wrap baby snugly'], ['MIDWIFE', 'Helps at birth'], ['NEWBORN', 'Just arrived'], ['TWINKLE', 'Little star'], ['PLAYPEN', 'A safe play space'], ['BOOTIES', 'Knitted baby shoes'], ['TODDLER', 'Baby who has started walking'],
+  ['STROLLER', 'Baby rides in it'], ['PACIFIER', 'A soother'], ['BIRTHDAY', 'The big day'], ['DELIVERY', 'How baby arrives'], ['FOOTPRINT', 'Tiny ink souvenir'], ['MATERNITY', 'Leave, clothes, or ward'], ['TRIMESTER', 'One third of pregnancy'], ['HIGHCHAIR', 'Seat for mealtimes'],
+  ['PREGNANCY', 'Nine months of this'], ['ULTRASOUND', 'First peek at baby'], ['BABYSITTER', 'Helps on date night'], ['NIGHTLIGHT', 'Glows in the nursery'], ['GRANDPARENT', 'Baby’s nana or dada'], ['HEARTBEAT', 'Heard on the Doppler'], ['BREASTFEED', 'Nursing baby'], ['CONTRACTION', 'Labour tightening'],
 ];
 
-const MEMORY_EMOJI = ['👶', '🍼', '🧸', '🎀', '🦆', '🌙', '⭐', '🧦'];
+const MEMORY_EMOJI = ['👶', '🍼', '🧸', '🎀', '🦆', '🌙', '⭐', '🧦', '🍓', '🎈', '🐣', '🌸', '🧁', '🦋', '🐘'];
