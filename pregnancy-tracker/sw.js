@@ -1,5 +1,5 @@
 /* Bloom service worker: offline cache + notification clicks. */
-const CACHE = 'bloom-v2';
+const CACHE = 'bloom-v3';
 const ASSETS = ['./', 'index.html', 'styles.css', 'data.js', 'figures.js', 'app.js', 'icon.svg', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {

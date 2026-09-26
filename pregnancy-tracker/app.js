@@ -32,7 +32,7 @@
     const t = todayISO();
     return {
       profile: {
-        name: '', partner: '', doctor: '', doctorPhone: '', hospital: '', hospitalPhone: '',
+        name: 'Cherrys', partner: '', doctor: '', doctorPhone: '', hospital: '', hospitalPhone: '',
         dueSource: 'estimate', estimate: { date: t, weeks: 20, days: 0 }, lmp: '', edd: '', reportId: null,
         notify: false, bedtime: '22:00', bedtimeReminder: true, waterReminder: false, theme: '',
       },
@@ -50,6 +50,7 @@
     const f = fresh();
     for (const k in f) if (s[k] === undefined) s[k] = f[k];
     s.profile = { ...f.profile, ...s.profile };
+    if (!s.profile.name) s.profile.name = 'Cherrys';
     return s;
   }
   function load() {
@@ -262,8 +263,46 @@
     window.scrollTo({ top: 0 });
     const t = $(`.tab[data-id="${id}"]`); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
+  // Animated header: the mom-to-be's name with a breathing bump and a beating baby heart.
+  function renderHeader() {
+    const el = $('#hdr');
+    const name = (S.profile.name || 'Cherrys').trim();
+    const info = dueInfo();
+    const sub = info.left > 0 ? `& baby · ${info.weeks} weeks ${info.days} day${info.days === 1 ? '' : 's'} · ${info.left} days to go` : info.left === 0 ? '& baby · due today!' : `& baby · ${-info.left} days past the due date`;
+    if (el.dataset.name !== name) {
+      el.dataset.name = name;
+      el.innerHTML = `
+        <div class="mom-art" aria-hidden="true">
+          <svg viewBox="0 0 120 140">
+            <defs>
+              <linearGradient id="mom-dress" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--t1)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient>
+              <radialGradient id="mom-glow"><stop offset="0" stop-color="var(--apricot)" stop-opacity=".55"/><stop offset="1" stop-color="var(--apricot)" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="62" cy="128" rx="34" ry="5" fill="var(--line)"/>
+            <circle class="mom-aura" cx="78" cy="80" r="34" fill="url(#mom-glow)"/>
+            <circle cx="46" cy="19" r="8" fill="var(--t3)"/>
+            <circle cx="58" cy="27" r="13" fill="var(--apricot-soft)" stroke="var(--t3)" stroke-width="2"/>
+            <path d="M46 24 C46 12 62 10 70 20 C64 18 56 18 50 26 Z" fill="var(--t3)"/>
+            <path d="M52 40 C45 44 43 54 44 64 C45 78 40 98 36 124 L86 124 C80 108 74 96 71 84 C68 70 66 58 63 42 Z" fill="url(#mom-dress)"/>
+            <g class="mom-bump">
+              <ellipse cx="76" cy="82" rx="18" ry="19" fill="url(#mom-dress)"/>
+              <path class="mom-heart" d="M78 86 C71 81 70 76 74 74 C76 73 78 75 78 76 C78 75 80 73 82 74 C86 76 85 81 78 86 Z" fill="#fff" opacity=".9"/>
+            </g>
+            <path d="M55 46 C58 60 62 70 72 76 C76 78 82 76 84 72" fill="none" stroke="var(--apricot-soft)" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+          <span class="mom-float f1">♥</span><span class="mom-float f2">♥</span><span class="mom-float f3">✦</span>
+        </div>
+        <div class="mom-text">
+          <div class="mom-name" aria-label="${esc(name)}">${[...name].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('')}</div>
+          <div class="mom-sub" id="mom-sub"></div>
+        </div>`;
+    }
+    $('#mom-sub').textContent = sub;
+  }
+
   function render() {
     applyTheme();
+    renderHeader();
     renderTabs();
     for (const sec of $$('.view')) { sec.hidden = sec.dataset.view !== view; if (sec.hidden) sec.innerHTML = ''; }
     const el = $(`#view-${view}`);
@@ -367,7 +406,7 @@
       <div class="card-head"><div><div class="eyebrow">Welcome</div><h2>Let’s set up your journal</h2></div></div>
       <p class="muted">The countdown below assumes you are 20 weeks today (5th month). Add your name and the most accurate date you have. You can change it later or let a scan report set it.</p>
       <form data-form="onboard" class="stack" style="gap:12px">
-        <label class="field" style="max-width:320px">Your name<input id="ob-name" name="name" type="text" placeholder="e.g. Anjali" value="${esc(p.name)}"></label>
+        <label class="field" style="max-width:320px">Your name<input id="ob-name" name="name" type="text" placeholder="e.g. Cherrys" value="${esc(p.name)}"></label>
         ${dueDateFields(p)}
         <div class="row"><button class="btn primary" type="submit">Start my journal</button><button class="btn ghost" type="button" data-act="onboard-skip">Skip for now</button></div>
       </form>
