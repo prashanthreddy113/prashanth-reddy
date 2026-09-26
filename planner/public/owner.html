@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daybook Owner Console</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=Kalam:wght@400;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.owner-tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:var(--ink);color:var(--bg);padding:3px 8px;border-radius:6px}
+.who-cell b{display:block}
+.who-cell span{font-size:13px;color:var(--muted)}
+.counts{font-size:13px;color:var(--muted);white-space:nowrap}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="auth" class="auth" hidden></div>
+<div id="app" hidden>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Founder's Daybook <span class="owner-tag">Owner</span></div>
+    <span style="flex:1"></span>
+    <div class="acct">
+      <span class="who" id="who"></span>
+      <a class="btn" href="/">Open my daybook</a>
+      <button class="btn" data-act="logout">Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SITE = location.origin + "/";
+let ME = null, USERS = [], query = "", lastCred = null;
+
+async function api(method, path, body){
+  let r;
+  try {
+    r = await fetch("/api" + path, { method, credentials:"same-origin",
+      headers: body !== undefined ? {"content-type":"application/json"} : {},
+      body: body !== undefined ? JSON.stringify(body) : undefined });
+  } catch(e){ const err = new Error("Can't reach the server. Check your internet connection."); err.status = 0; throw err; }
+  let j = {}; try { j = await r.json(); } catch(e){}
+  if (!r.ok){ const err = new Error(j.error || "Something went wrong. Try again."); err.status = r.status; throw err; }
+  return j;
+}
+let toastT = null;
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 4500); }
+
+function ago(t){
+  if (!t) return "Never";
+  const s = (Date.now() - t) / 1000;
+  if (s < 90) return "Just now";
+  if (s < 3600) return Math.round(s/60) + " min ago";
+  if (s < 86400) return Math.round(s/3600) + " h ago";
+  if (s < 86400*30) return Math.round(s/86400) + " days ago";
+  return new Date(t).toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"});
+}
+const dateOf = t => new Date(t).toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"});
+function status(u){
+  if (u.role === "owner") return `<span class="pill own">Owner</span>`;
+  if (u.disabled) return `<span class="pill off">Switched off</span>`;
+  if (!u.lastLogin) return `<span class="pill wait">Not signed in yet</span>`;
+  if (u.mustChange) return `<span class="pill wait">Temp password</span>`;
+  return `<span class="pill ok">Active</span>`;
+}
+const slug = s => String(s).toLowerCase().normalize("NFKD").replace(/[^\w.\- ]/g, "").trim().replace(/\s+/g, ".").replace(/[^a-z0-9._-]/g, "").slice(0, 32);
+
+/* ---------- sign in / first-time setup ---------- */
+function authCard(inner){
+  $("#app").hidden = true;
+  const el = $("#auth"); el.hidden = false;
+  el.innerHTML = `<div class="auth-card"><div class="auth-notes" aria-hidden="true">${["lemon","mint","sky","coral","lilac","peach"].map((c,i) => `<i class="n-${c}" style="--tilt:${(i%2?1:-1)*(2+i)}deg"></i>`).join("")}</div>${inner}</div>`;
+  const first = el.querySelector("input"); if (first) first.focus();
+}
+function showLogin(message){
+  authCard(`<div><h1 style="font-size:26px">Owner console</h1><p class="muted small" style="margin-top:6px">Sign in with the owner account to manage logins.</p></div>
+    ${message ? `<p class="small" style="background:var(--accent-soft);padding:10px 12px;border-radius:10px">${esc(message)}</p>` : ""}
+    <form data-form="login">
+      <label class="field"><span>Username</span><input type="text" name="username" id="lg-user" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="field"><span>Password</span><input type="password" name="password" id="lg-pass" autocomplete="current-password" required></label>
+      <p class="form-error"></p>
+      <button class="btn primary">Sign in</button>
+    </form>`);
+}
+function showSetup(enabled){
+  if (!enabled){
+    authCard(`<div><h1 style="font-size:26px">Almost ready</h1><p class="small" style="margin-top:8px">This site has no owner yet, and owner setup is switched off. In Netlify, add an environment variable named <b>DAYBOOK_SETUP_CODE</b> with a secret code, redeploy, then come back to this page.</p></div>`);
+    return;
+  }
+  authCard(`<div><h1 style="font-size:26px">Create the owner account</h1><p class="muted small" style="margin-top:6px">This happens once. The owner can create logins for other people and manage them here.</p></div>
+    <form data-form="setup">
+      <label class="field"><span>Setup code</span><input type="password" name="code" id="su-code" autocomplete="off" required></label>
+      <label class="field"><span>Your name</span><input type="text" name="name" id="su-name" autocomplete="name" required></label>
+      <label class="field"><span>Username</span><input type="text" name="username" id="su-user" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="field"><span>Password (8+ characters)</span><input type="password" name="password" id="su-pass" autocomplete="new-password" minlength="8" required></label>
+      <label class="field"><span>Type it again</span><input type="password" name="again" id="su-again" autocomplete="new-password" minlength="8" required></label>
+      <p class="form-error"></p>
+      <button class="btn primary">Create owner account</button>
+    </form>`);
+}
+function notOwner(){
+  authCard(`<div><h1 style="font-size:26px">Owners only</h1><p class="small" style="margin-top:8px">You're signed in as <b>${esc(ME.username)}</b>, which isn't the owner account. This page is only for the site owner.</p></div>
+    <div class="row"><a class="btn primary" href="/">Go to my daybook</a><button class="btn" data-act="logout">Sign out</button></div>`);
+}
+
+/* ---------- console ---------- */
+function credBox(){
+  if (!lastCred) return "";
+  const {user, password, kind} = lastCred;
+  return `<div class="cred" id="cred">
+    <div class="row spread"><b>${kind === "reset" ? "New temporary password for " + esc(user.name) : "Login created for " + esc(user.name)}</b><button class="x" data-act="close-cred" aria-label="Close">×</button></div>
+    <dl><dt>Website</dt><dd>${esc(SITE)}</dd><dt>Username</dt><dd><code>${esc(user.username)}</code></dd><dt>Temporary password</dt><dd><code>${esc(password)}</code></dd></dl>
+    <p class="small muted">They'll be asked to choose their own password the first time they sign in. This password is shown only once.</p>
+    <div class="row"><button class="btn primary" data-act="copy-invite">Copy invite message</button></div>
+    <textarea id="invite" class="code" style="min-height:0;height:1px;opacity:0;position:absolute;left:-9999px" readonly tabindex="-1">${esc(invite())}</textarea>
+  </div>`;
+}
+function invite(){
+  if (!lastCred) return "";
+  const {user, password} = lastCred;
+  return `Hi ${user.name}, here's your login for Founder's Daybook, a planner for tasks, timetable, exercise, diet, startup goals and notes.\n\nWebsite: ${SITE}\nUsername: ${user.username}\nTemporary password: ${password}\n\nYou'll pick your own password the first time you sign in.`;
+}
+function render(){
+  const users = USERS.filter(u => !query || (u.name + " " + u.username).toLowerCase().includes(query.toLowerCase()));
+  const week = Date.now() - 7*86400e3;
+  const others = USERS.filter(u => u.role !== "owner");
+  const active = others.filter(u => !u.disabled && (u.lastSeen || u.lastLogin || 0) > week).length;
+  const waiting = others.filter(u => !u.disabled && !u.lastLogin).length;
+  const off = others.filter(u => u.disabled).length;
+  $("#main").innerHTML = `
+  <div><p class="eyebrow">Owner console</p><h1>People using your daybook</h1></div>
+  <div class="stats num">
+    <div class="stat"><b>${others.length}</b><span>logins you've created</span></div>
+    <div class="stat"><b>${active}</b><span>active in the last 7 days</span></div>
+    <div class="stat"><b>${waiting}</b><span>not signed in yet</span></div>
+    <div class="stat"><b>${off}</b><span>switched off</span></div>
+  </div>
+  <section class="card">
+    <div class="card-head"><h2>Create a login</h2><span class="muted small">Give the details to the person</span></div>
+    <form class="inline" data-form="create">
+      <label class="field grow"><span>Full name</span><input type="text" name="name" id="cr-name" placeholder="e.g. Ravi Kumar" required></label>
+      <label class="field grow"><span>Username</span><input type="text" name="username" id="cr-user" placeholder="e.g. ravi.kumar" autocapitalize="none" spellcheck="false" required></label>
+      <label class="field grow"><span>Password <span class="muted">(leave blank to generate)</span></span><input type="text" name="password" id="cr-pass" autocomplete="off" placeholder="Auto-generated"></label>
+      <button class="btn primary">Create login</button>
+    </form>
+    <p class="form-error" id="cr-error"></p>
+    ${credBox()}
+  </section>
+  <section class="card">
+    <div class="toolbar"><h2>All logins</h2><input type="search" id="q" placeholder="Search by name or username" value="${esc(query)}" aria-label="Search users"></div>
+    ${users.length ? `<div class="table-wrap"><table class="users">
+      <thead><tr><th>Person</th><th>Status</th><th>Last active</th><th>What they track</th><th>Created</th><th></th></tr></thead>
+      <tbody>${users.map(u => { const c = u.counts || {}; const self = u.username === ME.username; return `<tr>
+        <td class="who-cell"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></td>
+        <td>${status(u)}</td>
+        <td class="num">${ago(u.lastSeen || u.lastLogin)}</td>
+        <td class="counts num">${u.counts ? `${c.tasks||0} tasks · ${c.notes||0} notes · ${c.workouts||0} workouts · ${c.meals||0} meals` : "Nothing saved yet"}</td>
+        <td class="num">${dateOf(u.createdAt)}</td>
+        <td><div class="acts">${self ? `<span class="small muted">That's you</span>` : `
+          <button class="btn" data-act="reset" data-u="${esc(u.username)}">Reset password</button>
+          <button class="btn" data-act="toggle" data-u="${esc(u.username)}">${u.disabled ? "Turn on" : "Turn off"}</button>
+          <button class="btn danger" data-act="delete" data-u="${esc(u.username)}">Delete</button>`}</div></td>
+      </tr>`; }).join("")}</tbody></table></div>`
+      : `<p class="empty">${query ? "No one matches that search." : "No logins yet. Create one above."}</p>`}
+    <p class="small muted">You can see when people were last active and how much they've saved. What they write stays private to them.</p>
+  </section>`;
+}
+async function refresh(){ USERS = (await api("GET", "/admin/users")).users; render(); }
+
+const ACT = {
+  async logout(){ try { await api("POST", "/logout"); } catch(e){} ME = null; showLogin(); },
+  "close-cred"(){ lastCred = null; render(); },
+  "copy-invite"(){
+    const text = invite();
+    const fallback = () => { const ta = $("#invite"); ta.style.cssText = "width:100%;min-height:140px"; ta.focus(); ta.select(); toast("Selected. Press Ctrl+C / ⌘C to copy."); };
+    try { navigator.clipboard.writeText(text).then(() => toast("Invite copied. Paste it into WhatsApp or email."), fallback); } catch(e){ fallback(); }
+  },
+  async reset(d){
+    const r = await api("PATCH", "/admin/users/" + encodeURIComponent(d.u), {resetPassword:true});
+    lastCred = {user:r.user, password:r.password, kind:"reset"};
+    await refresh(); toast("Password reset. Share the new one with them."); $("#cred")?.scrollIntoView({block:"center"});
+  },
+  async toggle(d){
+    const u = USERS.find(x => x.username === d.u);
+    await api("PATCH", "/admin/users/" + encodeURIComponent(d.u), {disabled: !u.disabled});
+    await refresh(); toast(u.disabled ? `${u.name} can sign in again.` : `${u.name} can no longer sign in.`);
+  },
+  async delete(d, el){
+    if (!el.dataset.armed){ el.dataset.armed = "1"; el.textContent = "Click to confirm"; setTimeout(() => { if (el.isConnected){ delete el.dataset.armed; el.textContent = "Delete"; } }, 4000); return; }
+    const u = USERS.find(x => x.username === d.u);
+    await api("DELETE", "/admin/users/" + encodeURIComponent(d.u));
+    await refresh(); toast(`${u ? u.name : d.u} and their data were deleted.`);
+  },
+};
+const FORM = {
+  async login(f){
+    const r = await api("POST", "/login", {username:f.get("username"), password:f.get("password")});
+    ME = r.user; await enter();
+  },
+  async setup(f){
+    if (f.get("password") !== f.get("again")) throw new Error("The two passwords don't match.");
+    const r = await api("POST", "/setup", {code:f.get("code"), name:f.get("name"), username:f.get("username"), password:f.get("password")});
+    ME = r.user; await enter(); toast("Owner account created. Welcome!");
+  },
+  async create(f){
+    const body = {name:f.get("name").trim(), username:f.get("username").trim()};
+    if (f.get("password").trim()) body.password = f.get("password").trim();
+    const r = await api("POST", "/admin/users", body);
+    lastCred = {user:r.user, password:r.password, kind:"create"};
+    await refresh();
+  },
+};
+
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const fn = ACT[b.dataset.act]; if (!fn) return;
+  try { await fn(b.dataset, b); }
+  catch(err){ if (err.status === 401){ showLogin("Your session ended. Sign in again."); return; } toast(err.message); }
+});
+document.addEventListener("submit", async e => {
+  const form = e.target, fn = FORM[form.dataset.form]; if (!fn) return;
+  e.preventDefault();
+  const err = form.querySelector(".form-error") || $("#cr-error"), btn = form.querySelector("button");
+  if (err) err.textContent = "";
+  if (btn) btn.disabled = true;
+  try { await fn(new FormData(form)); }
+  catch(x){ if (x.status === 401 && form.dataset.form === "create"){ showLogin("Your session ended. Sign in again."); return; } const el = form.isConnected ? (form.querySelector(".form-error") || $("#cr-error")) : null; if (el) el.textContent = x.message; else toast(x.message); }
+  finally { if (btn && btn.isConnected) btn.disabled = false; }
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "q"){ query = e.target.value; const pos = e.target.selectionStart; render(); const q = $("#q"); q.focus(); q.setSelectionRange(pos, pos); }
+  if (e.target.id === "cr-name"){ const u = $("#cr-user"); if (u && !u.dataset.touched) u.value = slug(e.target.value); }
+  if (e.target.id === "cr-user") e.target.dataset.touched = "1";
+});
+
+async function enter(){
+  if (ME.role !== "owner"){ notOwner(); return; }
+  $("#auth").hidden = true; $("#auth").innerHTML = "";
+  $("#app").hidden = false; $("#who").textContent = ME.name;
+  await refresh();
+}
+async function boot(){
+  try {
+    const s = await api("GET", "/setup");
+    if (s.needsOwner){ showSetup(s.setupEnabled); return; }
+    try { ME = (await api("GET", "/me")).user; } catch(e){ if (e.status === 401){ showLogin(); return; } throw e; }
+    await enter();
+  } catch(e){ showLogin(e.message); }
+}
+try { const th = localStorage.getItem("daybook.pref.theme"); if (th === "dark" || th === "light") document.documentElement.setAttribute("data-theme", th); } catch(e){}
+boot();
+})();
+</script>
+</body>
+</html>
