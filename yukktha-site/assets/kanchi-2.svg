@@ -1,0 +1,20 @@
+<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kanchi Pattu silk saree in peacock blue with maroon and gold border">
+  <defs>
+    <pattern id="w2" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#12566B"/><line x1="0" y1="0" x2="0" y2="10" stroke="rgba(255,255,255,.06)" stroke-width="3"/></pattern>
+    <pattern id="z2" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#7A1F2B"/><rect x="5" y="5" width="9" height="9" fill="#E7C878" opacity=".92"/></pattern>
+    <pattern id="b2" width="100" height="100" patternUnits="userSpaceOnUse"><g fill="#E7C878" opacity=".8"><path d="M50 34 l7 16 -7 16 -7 -16 z"/><circle cx="50" cy="50" r="3"/></g></pattern>
+    <pattern id="t2" width="28" height="18" patternUnits="userSpaceOnUse"><path d="M3 16 L14 3 L25 16 Z" fill="#E7C878"/></pattern>
+  </defs>
+  <rect width="900" height="600" fill="url(#w2)"/>
+  <rect x="80" y="150" width="820" height="370" fill="url(#b2)"/>
+  <rect x="0" y="0" width="900" height="150" fill="#0E3F50"/>
+  <rect x="0" y="120" width="900" height="4" fill="#E7C878"/>
+  <rect x="0" y="132" width="900" height="2" fill="#E7C878" opacity=".7"/>
+  <rect x="80" y="150" width="820" height="18" fill="url(#t2)"/>
+  <g fill="none" stroke="#E7C878" stroke-width="3" opacity=".92"><circle cx="200" cy="62" r="15"/><circle cx="360" cy="62" r="15"/><circle cx="520" cy="62" r="15"/><circle cx="680" cy="62" r="15"/></g>
+  <g fill="#E7C878"><circle cx="200" cy="62" r="4"/><circle cx="360" cy="62" r="4"/><circle cx="520" cy="62" r="4"/><circle cx="680" cy="62" r="4"/></g>
+  <rect x="0" y="0" width="80" height="600" fill="url(#z2)"/>
+  <rect x="80" y="0" width="4" height="600" fill="#E7C878"/>
+  <rect x="0" y="520" width="900" height="80" fill="url(#z2)"/>
+  <rect x="0" y="516" width="900" height="4" fill="#E7C878"/>
+</svg>

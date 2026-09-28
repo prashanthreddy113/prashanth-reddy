@@ -1,0 +1,9 @@
+# Netlify configuration for the Yukktha Sarees website (static, no build step).
+# Link a Netlify project to this repository with base directory "yukktha-site".
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
