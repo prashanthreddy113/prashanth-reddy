@@ -5,6 +5,8 @@ import { api, cart } from './api'
 import Home from './pages/Home'
 import Product from './pages/Product'
 import Checkout from './pages/Checkout'
+import Collection from './pages/Collection'
+import Collections from './pages/Collections'
 import './styles.css'
 
 export const StoreCtx = createContext<any>(null)
@@ -24,12 +26,16 @@ function Shell() {
   return <StoreCtx.Provider value={store}>
     <header><div className="wrap">
       <Link to="/" className="logo">{store.logoUrl && <img src={store.logoUrl} alt="" />}{store.name}</Link>
+      <span className="spacer" />
+      <Link to="/collections/all" className="nav">{store.defaultLanguage === 1 ? 'షాప్' : 'Shop'}</Link>
       <Link to="/checkout" style={{ fontWeight: 700 }}>🛍 {n > 0 && <span className="badge">{n}</span>}</Link>
     </div></header>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/p/:slug" element={<Product />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/collections" element={<Collections />} />
+      <Route path="/collections/:slug" element={<Collection />} />
     </Routes>
     <footer className="wrap muted" style={{ padding: '30px 14px', textAlign: 'center' }}>
       {store.address && <div>{store.address}</div>}

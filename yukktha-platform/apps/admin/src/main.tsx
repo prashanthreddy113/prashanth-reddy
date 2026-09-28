@@ -12,6 +12,8 @@ import Orders from './pages/Orders'
 import Settings from './pages/Settings'
 import Billing from './pages/Billing'
 import Super from './pages/Super'
+import Collections from './pages/Collections'
+import CollectionEdit from './pages/CollectionEdit'
 import './styles.css'
 
 function TabBar() {
@@ -40,6 +42,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/products" element={<Private><Products /></Private>} />
           <Route path="/products/new" element={<Private><ProductEdit /></Private>} />
           <Route path="/products/:id" element={<Private><ProductEdit /></Private>} />
+          <Route path="/collections" element={<Private><Collections /></Private>} />
+          <Route path="/collections/new" element={<Private><CollectionEdit /></Private>} />
+          <Route path="/collections/:id" element={<Private><CollectionEdit /></Private>} />
           <Route path="/orders" element={<Private><Orders /></Private>} />
           <Route path="/settings" element={<Private><Settings /></Private>} />
           <Route path="/billing" element={<Private><Billing /></Private>} />

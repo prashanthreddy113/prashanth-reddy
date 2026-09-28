@@ -94,6 +94,7 @@ public class ProductsController(AppDbContext db, TenantContext tenant, MediaServ
     {
         p.Name = r.Name.Trim(); p.Description = r.Description; p.Price = r.Price; p.CompareAtPrice = r.CompareAtPrice;
         p.CategoryId = r.CategoryId; p.IsActive = r.IsActive;
+        p.Color = Clean(r.Color); p.Fabric = Clean(r.Fabric); p.Occasion = Clean(r.Occasion);
         p.Images.AddRange(r.ImageUrls.Select((u, i) => new ProductImage { StoreId = p.StoreId, ProductId = p.Id, Url = u, SortOrder = i }));
         if (r.Variants.Count == 0)
         {
@@ -108,18 +109,25 @@ public class ProductsController(AppDbContext db, TenantContext tenant, MediaServ
         }
     }
 
+    private static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
+
     private async Task<string> UniqueSlugAsync(string name)
     {
-        var basis = new string(name.ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray()).Trim('-');
-        if (string.IsNullOrEmpty(basis) || !basis.Any(c => c is >= 'a' and <= 'z' or >= '0' and <= '9')) basis = "item";
+        var basis = SlugBasis(name, "item");
         var slug = basis; var i = 2;
         while (await db.Products.AnyAsync(p => p.Slug == slug)) slug = $"{basis}-{i++}";
         return slug;
     }
 
+    public static string SlugBasis(string name, string fallback)
+    {
+        var basis = string.Join('-', new string(name.ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray()).Split('-', StringSplitOptions.RemoveEmptyEntries));
+        return string.IsNullOrEmpty(basis) || !basis.Any(c => c is >= 'a' and <= 'z' or >= '0' and <= '9') ? fallback : basis;
+    }
+
     public static object ToDto(Product p) => new
     {
-        p.Id, p.Slug, p.Name, p.Description, p.Price, p.CompareAtPrice, p.CategoryId, p.IsActive, p.CreatedAt,
+        p.Id, p.Slug, p.Name, p.Description, p.Price, p.CompareAtPrice, p.CategoryId, p.IsActive, p.CreatedAt, p.Color, p.Fabric, p.Occasion,
         images = p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url),
         variants = p.Variants.Select(v => new { v.Id, v.Color, v.Size, v.PriceOverride, v.Stock, v.Sku, v.IsDefault }),
         inStock = p.Variants.Any(v => v.Stock > 0)

@@ -11,7 +11,7 @@ export default function ProductEdit() {
   const back = sp.get('back') || '/products'
   const fileRef = useRef<HTMLInputElement>(null)
   const [cats, setCats] = useState<any[]>([])
-  const [f, setF] = useState({ name: '', description: '', price: '', compareAtPrice: '', categoryId: '', isActive: true, imageUrls: [] as string[] })
+  const [f, setF] = useState({ name: '', description: '', price: '', compareAtPrice: '', categoryId: '', isActive: true, imageUrls: [] as string[], color: '', fabric: '', occasion: '' })
   const [variants, setVariants] = useState<Variant[]>([])
   const [stock, setStock] = useState(1)
   const [busy, setBusy] = useState(false); const [err, setErr] = useState('')
@@ -20,7 +20,7 @@ export default function ProductEdit() {
   useEffect(() => {
     api('/api/admin/categories').then(setCats)
     if (id) api(`/api/admin/products/${id}`).then(p => {
-      setF({ name: p.name, description: p.description ?? '', price: String(p.price), compareAtPrice: p.compareAtPrice ? String(p.compareAtPrice) : '', categoryId: p.categoryId ?? '', isActive: p.isActive, imageUrls: p.images })
+      setF({ name: p.name, description: p.description ?? '', price: String(p.price), compareAtPrice: p.compareAtPrice ? String(p.compareAtPrice) : '', categoryId: p.categoryId ?? '', isActive: p.isActive, imageUrls: p.images, color: p.color ?? '', fabric: p.fabric ?? '', occasion: p.occasion ?? '' })
       const real = p.variants.filter((v: any) => !v.isDefault)
       if (real.length) setVariants(real.map((v: any) => ({ id: v.id, color: v.color ?? '', size: v.size ?? '', priceOverride: v.priceOverride, stock: v.stock })))
       else setStock(p.variants[0]?.stock ?? 1)
@@ -74,6 +74,14 @@ export default function ProductEdit() {
       <label>{t('category')}</label>
       <select value={f.categoryId} onChange={e => setF({ ...f, categoryId: e.target.value })}><option value="">—</option>{cats.map(c => <option key={c.id} value={c.id}>{c.nameTe ? `${c.nameTe} · ${c.nameEn}` : c.nameEn}</option>)}</select>
       <label>{t('description')}</label><textarea value={f.description} onChange={e => setF({ ...f, description: e.target.value })} />
+    </div>
+    <div className="card">
+      <p className="muted">{t('filtersHint')}</p>
+      <label>{t('fabric')}</label><input list="fabrics" value={f.fabric} onChange={e => setF({ ...f, fabric: e.target.value })} placeholder="Kanchi silk" />
+      <label>{t('occasion')}</label><input list="occasions" value={f.occasion} onChange={e => setF({ ...f, occasion: e.target.value })} placeholder="Wedding" />
+      {variants.length === 0 && <><label>{t('productColor')}</label><input value={f.color} onChange={e => setF({ ...f, color: e.target.value })} placeholder="Maroon" /></>}
+      <datalist id="fabrics">{['Kanchi silk', 'Banarasi silk', 'Pochampally ikat', 'Gadwal', 'Uppada', 'Mangalagiri cotton', 'Kora', 'Organza', 'Tussar', 'Cotton', 'Linen'].map(x => <option key={x} value={x} />)}</datalist>
+      <datalist id="occasions">{['Wedding', 'Festive', 'Party wear', 'Daily wear', 'Office wear'].map(x => <option key={x} value={x} />)}</datalist>
     </div>
     <div className="card">
       <div className="row between"><b>{t('variants')}</b><button className="btn sm secondary" onClick={() => setVariants([...variants, { color: '', size: '', priceOverride: null, stock: 1 }])}>+ {t('addVariant')}</button></div>

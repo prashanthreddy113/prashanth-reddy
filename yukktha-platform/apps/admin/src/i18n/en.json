@@ -133,5 +133,22 @@
  "refPaying": "Now paying",
  "freeMonths": "{n} free month(s) earned",
  "creditPending": "{n} will be refunded on your next payment.",
- "referralShareText": "Sell your sarees on WhatsApp with Angadi. Sign up with my link and get 30 extra free days: {link}"
+ "referralShareText": "Sell your sarees on WhatsApp with Angadi. Sign up with my link and get 30 extra free days: {link}",
+ "collections": "Collections",
+ "addCollection": "New collection",
+ "collectionTitle": "Collection name",
+ "collectionTitleTe": "Name in Telugu (optional)",
+ "banner": "Banner photo (optional)",
+ "collectionProducts": "Products in this collection",
+ "selectedCount": "{n} selected",
+ "showInShop": "Show in shop",
+ "noCollections": "No collections yet. Group sarees like \"Yanai Motif\" or \"Wedding silks\" so customers can filter and sort them.",
+ "fabric": "Fabric",
+ "occasion": "Occasion",
+ "filtersHint": "Customers can filter by these on collection pages",
+ "productColor": "Colour (for filters)",
+ "collectionOrderHint": "The order here is the \"Featured\" order in your shop.",
+ "displayOrder": "Display order",
+ "confirmDelete": "Remove this collection? Products are not deleted.",
+ "hiddenInShop": "Hidden"
 }

@@ -128,9 +128,38 @@ public class Product : ITenantEntity
     public decimal? CompareAtPrice { get; set; }
     public bool IsActive { get; set; } = true;
     public string? InstagramPostId { get; set; }         // CT-5
+    public string? Color { get; set; }                   // collection filters; variant colours are also used
+    public string? Fabric { get; set; }                  // e.g. Kanchi silk, Banarasi, Cotton
+    public string? Occasion { get; set; }                // e.g. Wedding, Festive, Daily wear
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<ProductImage> Images { get; set; } = [];
     public List<ProductVariant> Variants { get; set; } = [];
+}
+
+/// <summary>A curated, shareable shelf of products (e.g. "Yanai Motif Sarees") with its own page, filters and sort.</summary>
+public class Collection : ITenantEntity
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid StoreId { get; set; }
+    public string Slug { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string? TitleTe { get; set; }
+    public string? Description { get; set; }
+    public string? BannerUrl { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<CollectionProduct> Products { get; set; } = [];
+}
+
+/// <summary>Membership; SortOrder is the owner's "Featured" order.</summary>
+public class CollectionProduct : ITenantEntity
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid StoreId { get; set; }
+    public Guid CollectionId { get; set; }
+    public Guid ProductId { get; set; }
+    public int SortOrder { get; set; }
 }
 
 public class ProductImage : ITenantEntity

@@ -16,6 +16,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
     public DbSet<OtpCode> OtpCodes => Set<OtpCode>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Collection> Collections => Set<Collection>();
+    public DbSet<CollectionProduct> CollectionProducts => Set<CollectionProduct>();
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
     public DbSet<Customer> Customers => Set<Customer>();
@@ -33,6 +35,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
         mb.Entity<User>().HasIndex(u => new { u.StoreId, u.Phone }).IsUnique();
         mb.Entity<Product>().HasIndex(p => new { p.StoreId, p.Slug }).IsUnique();
         mb.Entity<Customer>().HasIndex(c => new { c.StoreId, c.Phone }).IsUnique();
+        mb.Entity<Collection>().HasIndex(c => new { c.StoreId, c.Slug }).IsUnique();
+        mb.Entity<CollectionProduct>().HasIndex(c => new { c.CollectionId, c.ProductId }).IsUnique();
+        mb.Entity<CollectionProduct>().HasIndex(c => c.ProductId);
+        mb.Entity<CollectionProduct>().HasOne<Product>().WithMany().HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.Cascade);
         mb.Entity<Order>().HasIndex(o => new { o.StoreId, o.Number }).IsUnique();
         mb.Entity<OtpCode>().HasIndex(o => o.Phone);
         mb.Entity<Referrer>().HasIndex(r => r.Code).IsUnique();
@@ -54,6 +60,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TenantContext 
         mb.Entity<User>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
         mb.Entity<Category>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
         mb.Entity<Product>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
+        mb.Entity<Collection>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
+        mb.Entity<CollectionProduct>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
         mb.Entity<ProductImage>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
         mb.Entity<ProductVariant>().HasQueryFilter(e => e.StoreId == tenant.StoreId);
         mb.Entity<Customer>().HasQueryFilter(e => e.StoreId == tenant.StoreId);

@@ -9,7 +9,8 @@ public record AuthResponse(string Token, Guid StoreId, string StoreSlug, string 
 
 public record VariantDto(Guid? Id, string? Color, string? Size, decimal? PriceOverride, int Stock, string? Sku);
 public record ProductUpsert(string Name, string? Description, decimal Price, decimal? CompareAtPrice, Guid? CategoryId,
-    bool IsActive, List<string> ImageUrls, List<VariantDto> Variants);
+    bool IsActive, List<string> ImageUrls, List<VariantDto> Variants, string? Color = null, string? Fabric = null, string? Occasion = null);
+public record CollectionUpsert(string Title, string? TitleTe, string? Description, string? BannerUrl, int SortOrder, bool IsActive, List<Guid> ProductIds);
 
 public record StoreSettingsUpdate(string Name, string? WhatsAppNumber, string? Address, string? Gstin, string? LogoUrl, string ThemeColor,
     Language DefaultLanguage, bool CodEnabled, bool LocalDeliveryEnabled, decimal LocalDeliveryCharge,

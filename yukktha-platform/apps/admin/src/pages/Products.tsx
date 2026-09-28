@@ -8,7 +8,7 @@ export default function Products() {
   const [items, setItems] = useState<any[]>([]); const [q, setQ] = useState('')
   useEffect(() => { const h = setTimeout(() => api(`/api/admin/products?q=${encodeURIComponent(q)}`).then(r => setItems(r.items)), 250); return () => clearTimeout(h) }, [q])
   return <div className="page">
-    <div className="topbar"><h1 style={{ margin: 0 }}>{t('products')}</h1><Link className="btn sm" to="/products/new">+ {t('addProduct')}</Link></div>
+    <div className="topbar"><h1 style={{ margin: 0 }}>{t('products')}</h1><div className="row"><Link className="btn sm secondary" to="/collections">{t('collections')}</Link><Link className="btn sm" to="/products/new">+ {t('addProduct')}</Link></div></div>
     <input placeholder={t('search')} value={q} onChange={e => setQ(e.target.value)} />
     <div className="card list" style={{ marginTop: 12 }}>
       {items.length === 0 && <p className="muted">{t('noProducts')}</p>}

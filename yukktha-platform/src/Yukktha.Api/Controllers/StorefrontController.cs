@@ -26,9 +26,80 @@ public class StorefrontController(AppDbContext db, TenantContext tenant, Subscri
     {
         var (s, err) = await LoadAsync(); if (err is not null) return err;
         var cats = await db.Categories.OrderBy(c => c.SortOrder).ToListAsync();
+        var collections = await CollectionCardsAsync();
         return Ok(new { s!.Name, s.Slug, s.LogoUrl, s.ThemeColor, s.City, s.Address, s.DefaultLanguage, s.InstagramHandle,
             whatsApp = s.WhatsAppNumber ?? s.OwnerPhone, s.CodEnabled, s.OnlinePaymentEnabled, s.LocalDeliveryEnabled, s.LocalDeliveryCharge, s.CourierEnabled, s.CourierCharge,
-            categories = cats.Select(c => new { c.Id, c.NameEn, c.NameTe }) });
+            categories = cats.Select(c => new { c.Id, c.NameEn, c.NameTe }), collections });
+    }
+
+    [HttpGet("collections")]
+    public async Task<IActionResult> Collections()
+    {
+        var (_, err) = await LoadAsync(); if (err is not null) return err;
+        return Ok(await CollectionCardsAsync());
+    }
+
+    /// <summary>
+    /// Collection page: filters (availability, price, colour, fabric, occasion, search), facet counts, sort and paging.
+    /// "all" is every active product. Multi-value filters are comma-separated: ?color=red,green&amp;fabric=kanchi%20silk
+    /// </summary>
+    [HttpGet("collections/{slug}")]
+    public async Task<IActionResult> Collection(string slug, [FromQuery] string? sort, [FromQuery] bool? inStock, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice,
+        [FromQuery] string? color, [FromQuery] string? fabric, [FromQuery] string? occasion, [FromQuery] string? q, [FromQuery] int page = 1, [FromQuery] int pageSize = CatalogQuery.DefaultPageSize)
+    {
+        var (s, err) = await LoadAsync(); if (err is not null) return err;
+        var products = db.Products.Include(p => p.Images).Include(p => p.Variants).Where(p => p.IsActive).AsNoTracking();
+        Dictionary<Guid, int> featured = [];
+        object info;
+        if (slug == "all")
+            info = new { slug, title = "All products", titleTe = "అన్ని ఉత్పత్తులు", description = (string?)null, bannerUrl = (string?)null };
+        else
+        {
+            var c = await db.Collections.AsNoTracking().FirstOrDefaultAsync(x => x.Slug == slug && x.IsActive);
+            if (c is null) return NotFound(new { error = "Collection not found" });
+            featured = await db.CollectionProducts.Where(x => x.CollectionId == c.Id).ToDictionaryAsync(x => x.ProductId, x => x.SortOrder);
+            var ids = featured.Keys.ToList();
+            products = products.Where(p => ids.Contains(p.Id));
+            info = new { c.Slug, c.Title, c.TitleTe, c.Description, c.BannerUrl };
+        }
+
+        var all = await products.ToListAsync();
+        var filter = CatalogQuery.Filter.Parse(inStock, minPrice, maxPrice, color, fabric, occasion, q);
+        var matched = CatalogQuery.Apply(all, filter);
+        sort = CatalogQuery.Sorts.Contains(sort) ? sort : "featured";
+        Dictionary<Guid, int> sold = [];
+        if (sort == "best-selling")
+        {
+            var ids = matched.Select(p => p.Id).ToList();
+            sold = await db.OrderItems.Where(i => ids.Contains(i.ProductId))
+                .Join(db.Orders.Where(o => o.Status != OrderStatus.Cancelled), i => i.OrderId, o => o.Id, (i, o) => i)
+                .GroupBy(i => i.ProductId).Select(g => new { g.Key, units = g.Sum(i => i.Quantity) })
+                .ToDictionaryAsync(x => x.Key, x => x.units);
+        }
+        pageSize = Math.Clamp(pageSize, 1, CatalogQuery.MaxPageSize);
+        page = Math.Max(1, page);
+        var items = CatalogQuery.Sort(matched, sort, featured, sold).Skip((page - 1) * pageSize).Take(pageSize).Select(p => PublicDto(s!, p));
+        return Ok(new { collection = info, sort, page, pageSize, total = matched.Count, items, facets = CatalogQuery.BuildFacets(all, filter) });
+    }
+
+    private async Task<List<object>> CollectionCardsAsync()
+    {
+        var cols = await db.Collections.AsNoTracking().Where(c => c.IsActive).OrderBy(c => c.SortOrder).ThenBy(c => c.Title).ToListAsync();
+        if (cols.Count == 0) return [];
+        var colIds = cols.Select(c => c.Id).ToList();
+        var members = await db.CollectionProducts.AsNoTracking().Where(x => colIds.Contains(x.CollectionId))
+            .Join(db.Products.Where(p => p.IsActive), x => x.ProductId, p => p.Id, (x, p) => new { x.CollectionId, x.SortOrder, p.Id })
+            .ToListAsync();
+        var firstIds = members.GroupBy(m => m.CollectionId).Select(g => g.OrderBy(m => m.SortOrder).First().Id).ToList();
+        var covers = await db.ProductImages.AsNoTracking().Where(i => firstIds.Contains(i.ProductId))
+            .GroupBy(i => i.ProductId).Select(g => new { g.Key, url = g.OrderBy(i => i.SortOrder).Select(i => i.Url).First() })
+            .ToDictionaryAsync(x => x.Key, x => x.url);
+        return cols.Select(c =>
+        {
+            var m = members.Where(x => x.CollectionId == c.Id).OrderBy(x => x.SortOrder).ToList();
+            var cover = c.BannerUrl ?? (m.Count > 0 ? covers.GetValueOrDefault(m[0].Id) : null);
+            return (object)new { c.Id, c.Slug, c.Title, c.TitleTe, c.Description, imageUrl = cover, productCount = m.Count };
+        }).ToList();
     }
 
     [HttpGet("products")]
@@ -77,7 +148,7 @@ public class StorefrontController(AppDbContext db, TenantContext tenant, Subscri
         var url = $"https://{s.Slug}.{cfg["Platform:RootDomain"]}/p/{p.Slug}";
         return new
         {
-            p.Id, p.Slug, p.Name, p.Description, p.Price, p.CompareAtPrice, p.CategoryId,
+            p.Id, p.Slug, p.Name, p.Description, p.Price, p.CompareAtPrice, p.CategoryId, p.Color, p.Fabric, p.Occasion,
             images = p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url),
             variants = p.Variants.Select(v => new { v.Id, v.Color, v.Size, price = v.PriceOverride ?? p.Price, inStock = v.Stock > 0, v.IsDefault,
                 whatsAppLink = wa.BuildOrderLink(s, p, v, url) }),

@@ -88,6 +88,13 @@ Open the admin, tap **Create your store**, enter shop name + phone, enter the de
 * Super-admin login: add your number to `Platform:SuperAdminPhones`; logging in with it issues a platform token (no store) and opens `/super`. Tenant endpoints reject that token.
 * Code: `ReferralService`, `ReferralsController` (`api/superadmin/referrals/*`), `StoreController.MyReferrals` (`api/admin/referrals/mine`), `AuthController.Referrer`, migration `Referrals`.
 
+## Collections (collection pages with filters and sort)
+
+* Owners create collections in the admin (**Products → Collections**): a name (plus an optional Telugu name), a description, an optional banner photo and an ordered list of products. That order is the shop's **Featured** sort.
+* Each collection has a storefront page at `/collections/{slug}` (e.g. `/collections/yanai-motif-sarees`), and `/collections/all` lists every product. The page has a banner, a breadcrumb, filters (availability, price range, colour with swatches, fabric, occasion) with live counts, sort (featured, best selling, price, newest, A–Z), a product count, a 2/3/4-column grid toggle, "% off" badges, a second photo on hover and "Load more". Filters are kept in the URL, so a filtered page can be shared on WhatsApp.
+* Filter values come from the product's **Fabric**, **Occasion** and **Colour** fields (in the product form), plus the colours of its variants.
+* Code: `CollectionsController` (`api/admin/collections`), `StorefrontController.Collection` (`api/store/collections/{slug}`), `Services/CatalogQuery.cs`, storefront `pages/Collection.tsx`, migration `Collections`.
+
 ## Not built yet (next)
 
 1. **Razorpay subscription checkout** in Settings → Upgrade (webhook handling is done; the create-subscription call and the Razorpay Route onboarding for store payouts are not).
