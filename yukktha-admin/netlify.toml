@@ -1,0 +1,10 @@
+# Yukktha admin — static site, no build step. Base directory: yukktha-admin
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "same-origin"

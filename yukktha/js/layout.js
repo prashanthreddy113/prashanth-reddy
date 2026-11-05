@@ -232,7 +232,7 @@
 
     // sticky header shadow
     const hdr = document.getElementById('siteHeader');
-    const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 40);
+    const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 33);
     window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
     document.getElementById('menuBtn').addEventListener('click', () => openDrawer('menu'));

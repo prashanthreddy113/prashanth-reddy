@@ -1,0 +1,154 @@
+{
+ "project": {
+  "stores": [
+   {
+    "label": "New Nallakunta",
+    "address": "2-2, 1159/111, Brahmin Hostel Ln, Prashanti Nagar, Tilak Nagar, New Nallakunta, Hyderabad, Telangana 500044",
+    "mapsQuery": "2-2, 1159/111 Brahmin Hostel Ln Prashanti Nagar Tilak Nagar New Nallakunta Hyderabad Telangana 500044"
+   },
+   {
+    "label": "Jubilee Hills",
+    "address": "Jubilee Hills, Hyderabad, Telangana",
+    "mapsQuery": "Yukktha Sarees Jubilee Hills Hyderabad Telangana"
+   }
+  ],
+  "categoryLabel": "Category",
+  "heroTitle": "",
+  "firstOrderDiscount": {
+   "value": 10,
+   "enabled": true,
+   "type": "percent"
+  },
+  "heroPhotos": [],
+  "paymentMethods": {
+   "cod": true,
+   "gpay": true,
+   "card": true,
+   "netbanking": true,
+   "phonepe": true
+  },
+  "footerQuote": "A saree draped with love is a story worth telling.",
+  "name": "Yukktha",
+  "heroTitleAccent": "",
+  "contactSub": "Call or message us to browse the latest arrivals, check availability, and place your order.",
+  "aboutPara2": "",
+  "aboutHeading": "",
+  "contactHeading": "Order your saree today",
+  "industry": "boutique",
+  "customerAccountsEnabled": true,
+  "moduleLabel": "Silk Sarees",
+  "extraFields": [],
+  "addresses": [
+   "2-2, 1159/111, Brahmin Hostel Ln, Prashanti Nagar, Tilak Nagar, New Nallakunta, Hyderabad, Telangana 500044",
+   "Jubilee Hills, Hyderabad, Telangana"
+  ],
+  "whatsappNumber": "918341448340",
+  "categories": [
+   "Kanjivaram Silk",
+   "Banarasi",
+   "Kuppadam Pattu",
+   "Soft Silk",
+   "Soft Cotton",
+   "Designer / Party",
+   "Other"
+  ],
+  "createdAt": "2026-09-01T10:41:26.868Z",
+  "showPrices": true,
+  "gst": {
+   "enabled": true,
+   "gstin": "",
+   "rate": 5
+  },
+  "aboutPara1": "",
+  "tagline": "Timeless Royal Weaves",
+  "moduleIcon": "🥻",
+  "theme": {
+   "accent": "#c9a15c",
+   "primary": "#1e2a63"
+  },
+  "enabledPlugins": [
+   "ordering"
+  ],
+  "addToCartEnabled": true,
+  "instagramHandle": "yukkthasareestuddio",
+  "whyUs": [
+   {
+    "icon": "✦",
+    "title": "Authentic Weaves",
+    "text": "Directly sourced, genuine handloom sarees you can trust."
+   },
+   {
+    "icon": "❧",
+    "title": "Curated Selection",
+    "text": "Every drape handpicked for quality, colour, and craft."
+   },
+   {
+    "icon": "✿",
+    "title": "Personal Service",
+    "text": "Call us and we'll help you choose the perfect saree."
+   },
+   {
+    "icon": "➤",
+    "title": "Pan-India Delivery",
+    "text": "Safe, quick delivery right to your doorstep."
+   }
+  ],
+  "itemLabel": "Saree"
+ },
+ "banners": [
+  {
+   "ctaLink": "",
+   "message": "2nd & 3rd September, 📍Kaliika Weaves, Jubilee Hills.",
+   "ctaLabel": "",
+   "active": false,
+   "createdAt": "2026-08-31T07:20:03.716Z",
+   "title": "Kaliika Weaves x Alankara Pret✨",
+   "_id": "Kkh71BhybAT8imoatesr"
+  },
+  {
+   "createdAt": "2026-08-31T08:41:09.685Z",
+   "message": "Please visit your nearby store or reach out to us to check the collection.",
+   "ctaLabel": "",
+   "ctaLink": "",
+   "title": "New stock has been received 🛍️",
+   "active": false,
+   "_id": "Kqne9db6HC07tQ7Hy9yp"
+  },
+  {
+   "title": "New stock arrived 🛒",
+   "ctaLink": "8341448340",
+   "message": "Flat 20% off 🛍️",
+   "ctaLabel": "Call now",
+   "active": false,
+   "createdAt": "2026-09-01T22:05:00.484Z",
+   "_id": "R3mDsYMkryRHeIZpzMAG"
+  },
+  {
+   "createdAt": "2026-08-31T08:18:21.004Z",
+   "ctaLabel": "",
+   "active": false,
+   "title": "Tomorrow Store will be closed, will be opened on Wednesday.",
+   "message": "Thanks for your reaching out here.",
+   "ctaLink": "",
+   "_id": "XdJQ0fz54PEOH8CXsRFg"
+  },
+  {
+   "ctaLink": "",
+   "message": "please visit tomorrow",
+   "active": false,
+   "ctaLabel": "",
+   "title": "Today store is closed 🛍️",
+   "createdAt": "2026-09-02T06:49:42.783Z",
+   "_id": "YsGMH5ji64HeoPro55Wh"
+  },
+  {
+   "title": "Kaliika Weaves x Alankara Pret✨",
+   "ctaLink": "",
+   "message": "2nd & 3rd September, 📍Kaliika Weaves, Jubilee Hills.",
+   "active": false,
+   "createdAt": "2026-08-31T07:27:23.136Z",
+   "ctaLabel": "",
+   "_id": "tE1Zb3Yn6OHKjpuBOyOl"
+  }
+ ]
+}

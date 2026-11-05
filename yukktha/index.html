@@ -8,86 +8,135 @@
   <meta name="theme-color" content="#6b1b4e" />
   <meta property="og:title" content="Yukktha — Timeless Royal Weaves" />
   <meta property="og:description" content="Handwoven silk sarees from Hyderabad. Order on WhatsApp." />
-  <meta property="og:image" content="assets/img/kanjivaram-peacock.jpg" />
+  <meta property="og:image" content="assets/video/hero-poster.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=DM+Sans:wght@400;500&family=Noto+Serif:wght@400;500&family=Open+Sans:wght@400;500;600&family=Poppins:wght@300&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="assets/video/hero-poster.jpg" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="home">
   <main id="main">
-    <!-- Hero -->
-    <section class="hero" aria-label="Yukktha">
-      <div class="hero-panel"><img src="assets/img/kanjivaram-model.jpg" alt="Model draped in a red and gold Kanjivaram silk saree" /></div>
-      <div class="hero-panel"><img src="assets/img/kanjivaram-peacock.jpg" alt="Red Kanjivaram silk saree with gold zari jaal" /></div>
-      <div class="hero-panel"><img src="assets/img/banarasi-red-butta.jpg" alt="Red silk saree with gold butta and zari border" /></div>
-      <div class="hero-copy">
-        <p class="hero-kicker">Timeless · Royal · Weaves</p>
-        <h1>Elegance woven<br />into every drape</h1>
-        <p class="lede">Kanjivaram, Banarasi and Kuppadam silks — handpicked from master weavers for weddings, festivals and everyday grace.</p>
-        <div class="btns">
-          <a class="btn btn-light" href="collection.html?c=all">Shop the collection</a>
-          <a class="btn btn-outline" href="collection.html?c=new-arrivals">What’s new</a>
+    <!-- Hero film -->
+    <section class="film" aria-label="Yukktha collections">
+      <video class="film-video" id="film" muted loop playsinline autoplay preload="auto" poster="assets/video/hero-poster.jpg"
+             data-desktop="assets/video/hero.mp4" data-mobile="assets/video/hero-mobile.mp4" data-mobile-poster="assets/video/hero-mobile-poster.jpg"></video>
+      <div class="film-shade"></div>
+      <div class="film-copy">
+        <div class="film-slides" id="filmSlides">
+          <div class="film-slide on"><p class="hero-kicker">Signature range</p><h1>Kanchi Pattu</h1><a class="btn btn-light" href="collection.html?c=kanjivaram-silk">Shop the collection</a></div>
+          <div class="film-slide"><p class="hero-kicker">For the muhurtham</p><h2 class="h1">Kalyanam</h2><a class="btn btn-light" href="collection.html?c=occasion-wedding">Shop bridal</a></div>
+          <div class="film-slide"><p class="hero-kicker">From the looms of Varanasi</p><h2 class="h1">Banarasi</h2><a class="btn btn-light" href="collection.html?c=banarasi">Shop Banarasi</a></div>
+          <div class="film-slide"><p class="hero-kicker">Fresh off the loom</p><h2 class="h1">New Arrivals</h2><a class="btn btn-light" href="collection.html?c=new-arrivals">See what’s new</a></div>
         </div>
+        <div class="film-dots" id="filmDots" role="tablist" aria-label="Choose slide"></div>
+      </div>
+      <button class="film-pause" id="filmPause" aria-label="Pause video"><span></span></button>
+      <a class="film-scroll" href="#trust" aria-label="Scroll down"><i></i></a>
+    </section>
+
+    <!-- Trust strip -->
+    <section class="trust" id="trust">
+      <div class="container trust-row">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l2.6 5.6 6 .6-4.5 4 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.5-4 6-.6z"/></svg><span><strong>Handpicked weaves</strong>Sourced from master weavers</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 20c6-1 11-6 13-14M17 6c-4 1-8 4-10 9M17 6l3-3"/></svg><span><strong>Pure silks & zari</strong>Kanjivaram, Banarasi, Kuppadam</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span><strong>2 stores · Hyderabad</strong>Shop in person or on video call</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span><strong>Pan-India delivery</strong>Safe & quick to your door</span></div>
       </div>
     </section>
 
-    <!-- Shop by weave -->
-    <section class="section">
-      <div class="container">
-        <div class="sec-head">
-          <h2>Shop by weave</h2>
-          <svg class="ornament" viewBox="0 0 90 12" fill="none" stroke="currentColor"><path d="M0 6h34M56 6h34"/><path d="M45 1l5 5-5 5-5-5z" fill="currentColor" stroke="none"/></svg>
-        </div>
-        <div class="cat-grid" id="cats"></div>
-      </div>
-    </section>
-
-    <!-- New arrivals -->
+    <!-- Trending -->
     <section class="section blush">
       <div class="container">
-        <div class="sec-head">
-          <h2>New arrivals</h2>
-          <p>Fresh off the loom — the latest sarees in our stores.</p>
-        </div>
+        <div class="sec-head"><p class="sec-kicker">This week</p><h2>Trending now</h2></div>
         <div class="tabs" id="tabs" role="tablist"></div>
         <div class="rail-wrap">
           <button class="rail-btn prev" data-rail="-1" aria-label="Scroll left"></button>
           <div class="rail" id="rail"></div>
           <button class="rail-btn next" data-rail="1" aria-label="Scroll right"></button>
         </div>
-        <div class="sec-head" style="margin:34px 0 0"><a class="sec-link" href="collection.html?c=new-arrivals">View all</a></div>
+        <div class="sec-head" style="margin:34px 0 0"><a class="sec-link" href="collection.html?c=new-arrivals">View all new arrivals →</a></div>
       </div>
     </section>
 
-    <!-- Signature feature -->
-    <section class="feature" id="kanchi">
-      <div class="feature-media">
-        <img src="assets/img/saree-1.jpg" alt="Silk pattu sarees with gold zari borders stacked in the Yukktha store" loading="lazy" />
-        <img src="assets/img/saree-4.jpg" alt="Orange silk saree with purple pallu and peacock zari border" loading="lazy" />
+    <!-- Discover mosaic -->
+    <section class="section">
+      <div class="container">
+        <div class="sec-head"><p class="sec-kicker">Collections, weaves & more</p><h2>Discover Yukktha</h2></div>
+        <div class="mosaic" id="mosaic">
+          <a class="tile t-a" href="collection.html?c=kanjivaram-silk"><img src="assets/img/kanjivaram-peacock.jpg" alt="" loading="lazy" style="object-position:50% 30%"><span><b>Kanjivaram</b><em>Shop now</em></span></a>
+          <a class="tile t-b" href="collection.html?c=banarasi"><img src="assets/img/banarasi-red-butta.jpg" alt="" loading="lazy"><span><b>Banarasi</b><em>Shop now</em></span></a>
+          <a class="tile t-c" href="collection.html?c=occasion-wedding"><img src="assets/img/kanjivaram-model.jpg" alt="" loading="lazy" style="object-position:50% 20%"><span><b>Wedding</b><em>Shop now</em></span></a>
+          <a class="tile t-d" href="collection.html?c=soft-silk"><img src="assets/img/saree-2.jpg" alt="" loading="lazy"><span><b>Soft Silk</b><em>Shop now</em></span></a>
+          <a class="tile t-e" href="collection.html?c=kuppadam-pattu"><img src="assets/img/saree-4.jpg" alt="" loading="lazy"><span><b>Kuppadam Pattu</b><em>Shop now</em></span></a>
+          <a class="tile t-f" href="collection.html?c=under-10000"><img src="assets/img/saree-1.jpg" alt="" loading="lazy"><span><b>Under ₹10,000</b><em>Shop now</em></span></a>
+          <a class="tile t-g" href="collection.html?c=designer-party"><img src="assets/img/saree-3.jpg" alt="" loading="lazy"><span><b>Designer & Party</b><em>Shop now</em></span></a>
+        </div>
       </div>
-      <div class="feature-copy">
-        <p class="kicker">Signature range</p>
-        <h2>The Kanchi Pattu edit</h2>
-        <p>Pure Kanchipuram silk, handwoven with rich zari borders, temple motifs and contrast pallus — heirlooms made for the muhurtham and every celebration after.</p>
-        <a class="btn btn-light" href="collection.html?c=kanjivaram-silk">Explore Kanjivaram</a>
+    </section>
+
+    <!-- Featured weave -->
+    <section class="section blush">
+      <div class="container">
+        <div class="feat-head"><h2>Kanjivaram</h2><div><button class="rail-btn-s" data-rail="-1" data-target="kanRail" aria-label="Scroll left"></button><button class="rail-btn-s" data-rail="1" data-target="kanRail" aria-label="Scroll right"></button></div></div>
+        <div class="rail rail-5" id="kanRail"></div>
+        <div class="feat-foot"><div class="rail-progress"><span id="kanProg"></span></div><a class="btn btn-solid" href="collection.html?c=kanjivaram-silk">View all</a></div>
       </div>
     </section>
 
     <!-- Occasion -->
     <section class="section">
       <div class="container">
-        <div class="sec-head">
-          <h2>Dressed for the occasion</h2>
-          <svg class="ornament" viewBox="0 0 90 12" fill="none" stroke="currentColor"><path d="M0 6h34M56 6h34"/><path d="M45 1l5 5-5 5-5-5z" fill="currentColor" stroke="none"/></svg>
+        <div class="sec-head"><p class="sec-kicker">Dressed for the day</p><h2>Shop by occasion</h2></div>
+        <div class="occasions">
+          <a href="collection.html?c=occasion-wedding"><img src="assets/img/kanjivaram-model.jpg" alt="" loading="lazy" style="object-position:50% 15%"><span>Wedding</span></a>
+          <a href="collection.html?c=occasion-reception"><img src="assets/img/kanjivaram-peacock.jpg" alt="" loading="lazy"><span>Reception</span></a>
+          <a href="collection.html?c=occasion-festive"><img src="assets/img/saree-4.jpg" alt="" loading="lazy"><span>Festive</span></a>
+          <a href="collection.html?c=occasion-puja"><img src="assets/img/banarasi-red-butta.jpg" alt="" loading="lazy"><span>Puja</span></a>
+          <a href="collection.html?c=occasion-daily-wear"><img src="assets/img/saree-2.jpg" alt="" loading="lazy"><span>Daily wear</span></a>
         </div>
-        <div class="tabs" id="occTabs" role="tablist"></div>
-        <div class="rail-wrap">
-          <button class="rail-btn prev" data-rail="-1" data-target="occRail" aria-label="Scroll left"></button>
-          <div class="rail" id="occRail"></div>
-          <button class="rail-btn next" data-rail="1" data-target="occRail" aria-label="Scroll right"></button>
+      </div>
+    </section>
+
+    <!-- Heirloom weaves (hover showcase) -->
+    <section class="heirloom">
+      <div class="heir-list">
+        <p class="sec-kicker light">Heirloom weaves</p>
+        <h2>Made to be handed down</h2>
+        <p class="heir-sub">Hover a weave to see it.</p>
+        <ol id="heirList">
+          <li class="on" data-img="assets/img/kanjivaram-peacock.jpg" data-href="collection.html?c=kanjivaram-silk"><span>01</span><div><b>Kanjivaram Silk</b><em>Pure mulberry silk with real zari jaal and temple borders.</em></div></li>
+          <li data-img="assets/img/banarasi-red-butta.jpg" data-href="collection.html?c=banarasi"><span>02</span><div><b>Banarasi Brocade</b><em>Butta and brocade from Varanasi’s handlooms.</em></div></li>
+          <li data-img="assets/img/saree-4.jpg" data-href="collection.html?c=kuppadam-pattu"><span>03</span><div><b>Kuppadam Pattu</b><em>Interlocked borders that gleam with every pleat.</em></div></li>
+          <li data-img="assets/img/kanjivaram-model.jpg" data-href="collection.html?c=occasion-wedding"><span>04</span><div><b>Bridal Edit</b><em>Muhurtham silks in reds, golds and greens.</em></div></li>
+        </ol>
+        <a class="btn btn-gold" href="collection.html?c=all">View all weaves</a>
+      </div>
+      <div class="heir-stage" id="heirStage"><img src="assets/img/kanjivaram-peacock.jpg" alt="" class="on"><span class="heir-cap" id="heirCap">01 · Kanjivaram Silk</span></div>
+    </section>
+
+    <!-- Story -->
+    <section class="story" id="about">
+      <div class="container story-in">
+        <div class="story-art"><img class="s1" src="assets/img/saree-1.jpg" alt="Silk sarees stacked in the Yukktha store" loading="lazy"><img class="s2" src="assets/img/kanjivaram-model.jpg" alt="" loading="lazy"></div>
+        <div class="story-copy">
+          <p class="sec-kicker light">Our story</p>
+          <h2>Where tradition meets you</h2>
+          <p>At Yukktha, every piece is chosen with care — sourced directly from skilled weavers who pour generations of craft into each thread. We believe a saree is more than fabric; it is memory, culture and confidence draped around you.</p>
+          <p>Whether you’re preparing for a wedding, a festival or a quiet special day, our timeless royal weaves are here to make you feel effortlessly beautiful.</p>
+          <div class="stats"><div><strong data-count id="statDesigns">100+</strong><span>Designs</span></div><div><strong data-count id="statWeaves">7</strong><span>Weaves</span></div><div><strong>2</strong><span>Stores</span></div></div>
+          <a class="btn btn-light" href="#stores">Visit our stores</a>
         </div>
+      </div>
+    </section>
+
+    <!-- Video shopping -->
+    <section class="vshop">
+      <div class="container vshop-in">
+        <div><p class="sec-kicker">Shop from home</p><h2>Video shopping with Yukktha</h2><p>Can’t visit the store? Book a WhatsApp video call — we’ll drape, show the zari up close and help you choose, wherever you are.</p></div>
+        <div class="vshop-steps"><span><b>1</b>Pick a time</span><span><b>2</b>We call you on WhatsApp</span><span><b>3</b>Choose & we deliver</span></div>
+        <a class="btn btn-solid" id="vshopBtn" target="_blank" rel="noopener" href="#">Book a video call</a>
       </div>
     </section>
 
@@ -103,39 +152,19 @@
       </div>
     </section>
 
-    <!-- About -->
-    <section class="section" id="about">
-      <div class="container about">
-        <div class="about-img"><img src="assets/img/saree-3.jpg" alt="Cream and gold brocade silk sarees" loading="lazy" /></div>
-        <div class="about-copy">
-          <p class="kicker">Our story</p>
-          <h2>Where tradition meets you</h2>
-          <p>At Yukktha, every piece is chosen with care — sourced directly from skilled weavers who pour generations of craft into each thread. We believe a saree is more than fabric; it is memory, culture and confidence draped around you.</p>
-          <p>Whether you’re preparing for a wedding, a festival or a quiet special day, our timeless royal weaves are here to make you feel effortlessly beautiful.</p>
-          <blockquote>“A saree draped with love is a story worth telling.”</blockquote>
-          <a class="btn btn-solid" href="#stores">Visit our stores</a>
-        </div>
-      </div>
-    </section>
-
     <!-- Stores -->
-    <section class="section blush" id="stores">
+    <section class="section" id="stores">
       <div class="container">
-        <div class="sec-head">
-          <h2>Our stores</h2>
-          <p>Step in to experience the collection in person at either of our Hyderabad stores.</p>
-        </div>
-        <div class="stores" id="storeList"></div>
+        <div class="stores-head"><div><p class="sec-kicker left">2 stores · Hyderabad</p><h2>Visit us in store</h2></div><div class="chips-row" id="storeChips"></div></div>
+        <div class="stores-grid" id="storeList"></div>
       </div>
     </section>
 
     <!-- Instagram -->
-    <section class="section insta">
+    <section class="section insta blush">
       <div class="container">
-        <div class="sec-head" style="margin-bottom:0">
-          <h2>Follow our looms</h2>
-          <p><a class="sec-link" href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener">@yukkthasareestuddio</a></p>
-        </div>
+        <div class="sec-head" style="margin-bottom:0"><p class="sec-kicker">On the loom & in the store</p><h2>Follow our looms</h2>
+          <p><a class="sec-link" href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener">@yukkthasareestuddio</a></p></div>
         <div class="insta-grid">
           <a href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener" aria-label="Instagram post"><img src="assets/img/kanjivaram-peacock.jpg" alt="" loading="lazy" /></a>
           <a href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener" aria-label="Instagram post"><img src="assets/img/saree-2.jpg" alt="" loading="lazy" /></a>
@@ -145,6 +174,14 @@
           <a href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener" aria-label="Instagram post"><img src="assets/img/saree-1.jpg" alt="" loading="lazy" /></a>
           <a href="https://www.instagram.com/yukkthasareestuddio/" target="_blank" rel="noopener" aria-label="Instagram post"><img src="assets/img/saree-3.jpg" alt="" loading="lazy" /></a>
         </div>
+      </div>
+    </section>
+
+    <!-- New arrivals on WhatsApp -->
+    <section class="newsletter">
+      <div class="container nl-in">
+        <div><h2>Be the first to see new weaves</h2><p>New arrivals, festive edits and store events — straight to your WhatsApp.</p></div>
+        <form id="nlForm" class="nl-form"><input type="tel" id="nlPhone" placeholder="Your WhatsApp number" aria-label="WhatsApp number" required><button class="btn btn-solid">Notify me</button></form>
       </div>
     </section>
   </main>

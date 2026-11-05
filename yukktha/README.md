@@ -13,7 +13,7 @@ No build step and no framework — open with any static server.
 
 | Page | What it does |
 | --- | --- |
-| `index.html` | Hero, shop by weave, new arrivals (tabbed rail), Kanchi Pattu feature, shop by occasion, why Yukktha, story, stores, Instagram |
+| `index.html` | Full-screen hero film under a transparent header with rotating slide titles, trust strip, trending tabs, Discover mosaic (live design counts), Kanjivaram carousel with progress, shop by occasion, heirloom-weaves hover showcase, story with live stats, video-shopping booking, stores with Google Maps, Instagram, WhatsApp new-arrival alerts |
 | `collection.html?c=<slug>` | Collection listing: filters (availability, price range, base colour, weave, occasion, material), sort, density, search (`&q=`), filters kept in the URL |
 | `product.html?id=<id>` | Gallery with hover zoom, price / discount, stock, add to bag, order on WhatsApp, details, related sarees |
 
@@ -45,6 +45,15 @@ Logos, favicon and photos come from the BrightLoop Yukktha project
 - `assets/logo-horizontal-light.svg`, `assets/logo-stacked-light.svg`, `assets/favicon.svg` — original light (blush) versions; the header and footer inline the same peacock mark in plum
 - `assets/img/saree-1..4.jpg` — store photos used by the BrightLoop site
 - `assets/img/kanjivaram-peacock.jpg`, `banarasi-red-butta.jpg`, `kanjivaram-model.jpg` — photos uploaded in the BrightLoop admin
+
+## Hero film
+
+`assets/video/hero.*` (desktop, 1920×820) and `hero-mobile.*` (720×1280) are
+looping films made from the Yukktha saree photos with slow zooms and
+crossfades; WebM (VP9) is used where the browser supports it, MP4 (H.264)
+otherwise, with JPEG posters. To use a real shoot or Instagram reel instead,
+replace those files with the same names (keep them muted-friendly, 10–20 s,
+under ~4 MB).
 
 ## Run locally
 
