@@ -1,0 +1,25 @@
+# Yukktha storefront — static site, no build step.
+# In Netlify: Base directory = yukktha, Publish directory = yukktha (or "." from here).
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# Friendly URLs: /collections/kanjivaram-silk -> collection page
+[[redirects]]
+  from = "/collections/:slug"
+  to = "/collection.html?c=:slug"
+  status = 301
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404

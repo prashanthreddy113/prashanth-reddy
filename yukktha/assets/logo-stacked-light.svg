@@ -1,0 +1,52 @@
+<svg width="300" height="210" viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Yukktha - Timeless Royal Weaves">
+  <g fill="#E4C2C8" stroke="#E4C2C8">
+    <!-- ===== Peacock emblem ===== -->
+    <g transform="translate(96,20)" stroke-linecap="round" stroke-linejoin="round">
+      <!-- flowing tail plumes -->
+      <g fill="none" stroke-width="2.4">
+        <path d="M70,78 C46,86 24,80 16,62"/>
+        <path d="M72,70 C48,70 26,60 22,42"/>
+        <path d="M75,63 C54,56 38,44 40,28"/>
+        <path d="M79,57 C64,46 56,32 62,16"/>
+        <path d="M84,52 C78,40 80,26 90,18"/>
+      </g>
+      <!-- feather eye-tips -->
+      <g stroke="none">
+        <ellipse cx="16" cy="62" rx="3.4" ry="2.4" transform="rotate(-20 16 62)"/>
+        <ellipse cx="22" cy="42" rx="3.4" ry="2.4" transform="rotate(-35 22 42)"/>
+        <ellipse cx="40" cy="28" rx="3.4" ry="2.4" transform="rotate(-55 40 28)"/>
+        <ellipse cx="62" cy="16" rx="3.4" ry="2.4" transform="rotate(-70 62 16)"/>
+        <ellipse cx="90" cy="18" rx="3.4" ry="2.4" transform="rotate(-88 90 18)"/>
+      </g>
+      <!-- decorative spiral where plumes gather -->
+      <path d="M16,62 C6,60 3,72 13,75 C21,77 22,66 15,66" fill="none" stroke-width="2.2"/>
+      <!-- body -->
+      <path d="M92,50 C80,47 71,57 74,71 C77,84 91,89 100,80 C107,73 107,59 100,52 C97,50 94,50 92,50 Z" stroke="none"/>
+      <!-- neck -->
+      <path d="M97,52 C99,45 100,40 101,36" fill="none" stroke-width="3.2"/>
+      <!-- head -->
+      <circle cx="102" cy="34" r="5" stroke="none"/>
+      <!-- beak -->
+      <path d="M106,32 L116,35 L106,38 Z" stroke="none"/>
+      <!-- crown crest -->
+      <g stroke-width="1.8" fill="none">
+        <path d="M98,30 L94,22"/>
+        <path d="M102,29 L102,20"/>
+        <path d="M106,30 L111,22"/>
+      </g>
+      <g stroke="none">
+        <circle cx="93.5" cy="21" r="2"/>
+        <circle cx="102" cy="18.5" r="2"/>
+        <circle cx="111.5" cy="21" r="2"/>
+      </g>
+    </g>
+
+    <!-- ===== Wordmark ===== -->
+    <text x="150" y="160" text-anchor="middle" stroke="none"
+          font-family="'Cormorant Garamond', Georgia, serif" font-size="52"
+          font-weight="500" letter-spacing="5">YUKKTHA</text>
+    <text x="152" y="190" text-anchor="middle" stroke="none"
+          font-family="'Poppins', Arial, sans-serif" font-size="15"
+          font-weight="300" letter-spacing="3" fill="#D9A7B2">Timeless Royal Weaves</text>
+  </g>
+</svg>
