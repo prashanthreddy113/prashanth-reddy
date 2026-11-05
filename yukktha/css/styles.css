@@ -662,3 +662,5 @@ body.home .site-header.scrolled .badge, body.home .site-header:hover .badge { ba
   .nl-form { min-width: 100%; }
   .nl-form .btn { padding: 12px 18px; }
 }
+/* if the browser blocks the film, the poster still moves gently */
+.film.still .film-video { animation: drift 14s ease-in-out infinite alternate; }

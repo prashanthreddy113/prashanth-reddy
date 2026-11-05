@@ -20,8 +20,10 @@
   <main id="main">
     <!-- Hero film -->
     <section class="film" aria-label="Yukktha collections">
-      <video class="film-video" id="film" muted loop playsinline autoplay preload="auto" poster="assets/video/hero-poster.jpg"
-             data-desktop="assets/video/hero.mp4" data-mobile="assets/video/hero-mobile.mp4" data-mobile-poster="assets/video/hero-mobile-poster.jpg"></video>
+      <video class="film-video" id="film" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" poster="assets/video/hero-poster.jpg" aria-hidden="true">
+        <source src="assets/video/hero.mp4" type="video/mp4" data-mobile="assets/video/hero-mobile.mp4">
+        <source src="assets/video/hero.webm" type="video/webm" data-mobile="assets/video/hero-mobile.webm">
+      </video>
       <div class="film-shade"></div>
       <div class="film-copy">
         <div class="film-slides" id="filmSlides">

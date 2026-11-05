@@ -5,17 +5,34 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- hero film ----------
+  // MP4 (H.264) first: every browser incl. iPhone Safari plays it; WebM is the fallback.
+  // Phones get the portrait cut. Autoplay is retried on the first tap/scroll for
+  // browsers that block it (e.g. iPhone Low Power Mode).
   const film = $('film');
   const mobile = window.matchMedia('(max-width: 720px)').matches;
-  if (mobile) film.poster = film.dataset.mobilePoster;
-  // VP9 WebM where supported (Chrome, Firefox, Edge, Android), H.264 MP4 otherwise (Safari / iOS).
-  const webm = film.canPlayType('video/webm; codecs="vp9"') !== '';
-  const src = (mobile ? film.dataset.mobile : film.dataset.desktop).replace(/\.mp4$/, webm ? '.webm' : '.mp4');
-  if (!reduceMotion) { film.src = src; film.play().catch(() => {}); }
+  if (mobile) {
+    film.poster = 'assets/video/hero-mobile-poster.jpg';
+    [].forEach.call(film.querySelectorAll('source'), (s) => { s.src = s.dataset.mobile; });
+    film.load();
+  }
+  film.muted = true; film.defaultMuted = true; film.playsInline = true;
   const pauseBtn = $('filmPause');
   const setPaused = (p) => { pauseBtn.classList.toggle('paused', p); pauseBtn.setAttribute('aria-label', p ? 'Play video' : 'Pause video'); };
-  pauseBtn.addEventListener('click', () => { if (film.paused) { film.play().catch(() => {}); setPaused(false); } else { film.pause(); setPaused(true); } });
-  setPaused(reduceMotion);
+  let userPaused = false;
+  const tryPlay = () => {
+    if (userPaused) return;
+    const pr = film.play();
+    if (pr && pr.then) pr.then(() => { setPaused(false); film.parentElement.classList.remove('still'); }).catch(() => { setPaused(true); film.parentElement.classList.add('still'); });
+  };
+  tryPlay();
+  film.addEventListener('playing', () => { setPaused(false); film.parentElement.classList.remove('still'); });
+  film.addEventListener('error', () => film.parentElement.classList.add('still'), true);
+  const kick = () => { if (film.paused) tryPlay(); };
+  ['touchstart', 'pointerdown', 'scroll', 'keydown'].forEach((ev) => window.addEventListener(ev, kick, { once: true, passive: true }));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+  pauseBtn.addEventListener('click', () => {
+    if (film.paused) { userPaused = false; tryPlay(); } else { userPaused = true; film.pause(); setPaused(true); }
+  });
 
   const slides = [].slice.call(document.querySelectorAll('.film-slide')); let si = 0; let timer;
   $('filmDots').innerHTML = slides.map((_, i) => '<button role="tab" aria-label="Slide ' + (i + 1) + '" class="' + (i ? '' : 'on') + '"><i></i></button>').join('');
