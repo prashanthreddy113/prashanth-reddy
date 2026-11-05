@@ -11,7 +11,7 @@
   const film = $('film');
   const mobile = window.matchMedia('(max-width: 720px)').matches;
   if (mobile) {
-    film.poster = 'assets/video/hero-mobile-poster.jpg';
+    film.poster = 'assets/video/hero-mobile-poster.jpg?v=3';
     [].forEach.call(film.querySelectorAll('source'), (s) => { s.src = s.dataset.mobile; });
     film.load();
   }
