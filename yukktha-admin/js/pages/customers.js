@@ -39,7 +39,7 @@ export default {
     };
     const draw = () => {
       const r = filtered();
-      $('#tb').innerHTML = r.length ? r.map((c) => { const s = S[normalizeMobile(c.mobile)] || {}; return '<tr data-id="' + esc(c.id) + '"><td><div class="cell-main">' + esc(c.name || '—') + ' ' + (c.tags || []).map((t) => '<span class="pill plum">' + esc(t) + '</span>').join(' ') + '</div><div class="cell-sub">' + esc(c.details || '') + '</div></td>' +
+      $('#tb').innerHTML = r.length ? r.map((c) => { const s = S[normalizeMobile(c.mobile)] || {}; return '<tr data-id="' + esc(c.id) + '"><td><div class="cell-main">' + esc(c.name || '—') + ' ' + (c.hasAccount ? '<span class="pill info" title="Has a login on the website">Account</span> ' : '') + (c.tags || []).map((t) => '<span class="pill plum">' + esc(t) + '</span>').join(' ') + '</div><div class="cell-sub">' + esc(c.details || '') + '</div></td>' +
         '<td class="nowrap">' + esc(c.mobile || '') + '</td><td class="r">' + (s.n || 0) + '</td><td class="r">' + inr(s.spend || 0) + '</td><td>' + (s.last ? fmtDate(s.last) : '—') + '</td>' +
         '<td class="acts">' + (c.mobile ? '<a class="icon-btn" target="_blank" rel="noopener" title="WhatsApp" href="https://wa.me/' + esc(String(c.mobile).replace(/\D/g, '')) + '">💬</a>' : '') + '<button class="icon-btn" data-open title="Details">👁</button><button class="icon-btn" data-edit title="Edit">✎</button><button class="icon-btn" data-del title="Delete">🗑</button></td></tr>'; }).join('')
         : '<tr><td colspan="6">' + empty('No customers yet. They are added automatically at billing, or add them here.') + '</td></tr>';

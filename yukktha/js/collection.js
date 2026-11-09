@@ -53,6 +53,7 @@
       'price-asc': (x, y) => (x.price || Infinity) - (y.price || Infinity),
       'price-desc': (x, y) => y.price - x.price,
       discount: (x, y) => y.discount - x.discount,
+      rated: (x, y) => { const R = Y.ratings || {}; const r = (p) => R[p.id] ? R[p.id].sum / R[p.id].n : 0; return (r(y) - r(x)) || ((R[y.id] || {}).n || 0) - ((R[x.id] || {}).n || 0); },
       az: (x, y) => x.title.localeCompare(y.title),
       za: (x, y) => y.title.localeCompare(x.title)
     }[state.sort] || (() => 0);

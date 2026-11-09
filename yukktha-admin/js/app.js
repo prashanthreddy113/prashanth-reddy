@@ -8,6 +8,7 @@ import customers from './pages/customers.js';
 import sarees from './pages/sarees.js';
 import inventory from './pages/inventory.js';
 import discounts from './pages/discounts.js';
+import reviews from './pages/reviews.js';
 import employees from './pages/employees.js';
 import access from './pages/access.js';
 import payments from './pages/payments.js';
@@ -15,7 +16,7 @@ import expenses from './pages/expenses.js';
 import reports from './pages/reports.js';
 import settings from './pages/settings.js';
 
-const PAGES = [dashboard, billing, orders, customers, sarees, inventory, discounts, employees, expenses, payments, reports, access, settings];
+const PAGES = [dashboard, billing, orders, customers, sarees, inventory, discounts, reviews, employees, expenses, payments, reports, access, settings];
 const GROUPS = ['Overview', 'Sell', 'Catalogue', 'Team', 'Money', 'Store'];
 
 const ICONS = {
@@ -25,6 +26,7 @@ const ICONS = {
   users: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c.8-3.6 3.6-6 7-6s6.2 2.4 7 6M16 3.5a4 4 0 0 1 0 7.5M18 15c2 .8 3.4 2.9 4 6',
   saree: 'M5 3h9l5 5v13H5zM14 3v5h5M8 13c2-2 6 2 8 0M8 17c2-2 6 2 8 0',
   stock: 'M3 7h18v13H3zM3 7l3-4h12l3 4M9 11h6',
+  star: 'M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.8z',
   tag: 'M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9zM7.5 7.5h.01',
   staff: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4.2-6 8-6s7 2 8 6',
   key: 'M14 10a4 4 0 1 0-3.5 4L9 15.5V18H6.5v2.5H4V18l6.5-6.5M15 8h.01',

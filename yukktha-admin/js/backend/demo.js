@@ -1,7 +1,7 @@
 // Demo backend: the same API as the live one, kept in this browser's localStorage.
 // Seeded with the real Yukktha catalogue and store settings plus sample orders,
 // customers, staff and expenses so every screen can be tried without logging in.
-const KEY = 'yka_demo_v1';
+const KEY = 'yka_demo_v2';
 const NOW = { __now: true };
 
 const rid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
@@ -65,7 +65,7 @@ async function buildSeed() {
 
   db.colls.coupons = [
     { id: rid(), code: 'YUKK10', discountType: 'percent', discountValue: 10, expiresAt: iso(now + 20 * day), used: false, createdAt: iso(now - 5 * day) },
-    { id: rid(), code: 'FEST500', discountType: 'flat', discountValue: 500, expiresAt: iso(now + 40 * day), used: false, createdAt: iso(now - 2 * day) },
+    { id: rid(), code: 'FEST500', discountType: 'amount', discountValue: 500, expiresAt: iso(now + 40 * day), used: false, createdAt: iso(now - 2 * day) },
     { id: rid(), code: 'BRIDE15', discountType: 'percent', discountValue: 15, expiresAt: iso(now - 3 * day), used: true, createdAt: iso(now - 30 * day) }
   ];
 
@@ -86,6 +86,13 @@ async function buildSeed() {
     { id: rid(), supplierId: db.colls.suppliers[0].id, supplierName: db.colls.suppliers[0].name, billNo: 'SLS-221', date: iso(now - 20 * day).slice(0, 10), pieces: 12, amount: 185000, paid: 100000, note: 'Wedding season stock' },
     { id: rid(), supplierId: db.colls.suppliers[2].id, supplierName: db.colls.suppliers[2].name, billNo: 'GH-87', date: iso(now - 8 * day).slice(0, 10), pieces: 20, amount: 62000, paid: 40000, note: '' }
   ];
+  // sample reviews (demo only — never shown on the website)
+  const rv = [[5, 'Even more beautiful in person', 'The zari is rich and the colour is exactly as shown. Wore it for my cousin’s wedding and got so many compliments.', 'approved'],
+    [4, 'Lovely drape', 'Soft silk, easy to drape for a full day. Blouse piece was a perfect match.', 'approved'],
+    [5, 'Perfect for Varalakshmi vratham', 'Beautiful border and pallu. Packing was neat and it reached in 3 days.', 'pending'],
+    [3, 'Good, colour slightly darker', 'Quality is good but the shade is a little darker than the photo.', 'pending']];
+  db.colls.reviews = rv.map((r, i) => { const s = priced[i * 3]; const c = db.colls.customers[i];
+    return { id: rid(), productId: s.id, productName: s.name, rating: r[0], title: r[1], text: r[2], name: c.name.split(' ')[0] + ' ' + (c.name.split(' ')[1] || 'K')[0] + '.', uid: 'demo-' + i, status: r[3], verified: r[3] === 'approved', createdAt: iso(now - (i + 1) * 2 * day) }; });
   db.colls.payroll = []; db.colls.stockMoves = []; db.colls.users = []; db.colls.invites = [];
   return db;
 }

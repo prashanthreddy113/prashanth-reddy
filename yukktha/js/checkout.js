@@ -15,7 +15,7 @@
   };
   const ORDER = ['gpay', 'phonepe', 'card', 'netbanking', 'cod'];
 
-  let items = []; let project = {}; let methods = ['gpay', 'phonepe'];
+  let items = []; let project = {}; let methods = ['gpay', 'phonepe']; let loaded = false;
   const form = $('ckForm');
   const rows = () => Y.bag.items().map((r) => ({ p: items.find((x) => x.id === r.id), qty: r.qty })).filter((r) => r.p && r.p.price > 0);
 
@@ -25,6 +25,7 @@
 
   // ---------- summary ----------
   function drawSummary(server) {
+    if (!loaded) return; // wait for the catalogue, or an unknown bag looks empty
     const r = rows();
     if (!r.length && !server) {
       $('ck').innerHTML = '<div class="ck-empty"><h1>Your bag is empty</h1><p>Add a saree you love, then come back to check out.</p><a class="btn btn-solid" href="collection.html?c=all">Shop sarees</a></div>';
@@ -40,7 +41,12 @@
       if (server.gst && server.gst.enabled && server.gst.amount > 0) html += '<div class="muted"><span>Includes GST @ ' + server.gst.rate + '%</span><span>' + Y.inr(server.gst.amount) + '</span></div>';
       html += '<div><span>Delivery</span><span>Included</span></div><div class="grand"><span>Total</span><span>' + Y.inr(server.amount / 100) + '</span></div>';
     } else {
-      if (fod) html += '<div class="hint"><span>' + (fod.type === 'percent' ? fod.value + '%' : Y.inr(fod.value)) + ' off your first order</span><span>at payment</span></div>';
+      const A = Y.account; const signed = A && A.signedIn();
+      if (fod && fod.value) {
+        const amt = fod.type === 'percent' ? fod.value + '%' : Y.inr(fod.value);
+        if (signed && !(Number(A.state.profile.orderCount) > 0)) html += '<div class="hint"><span>' + amt + ' off your first order</span><span>at payment</span></div>';
+        else if (!signed) html += '<div class="hint"><span><a href="account.html?next=checkout.html">Sign in</a> for ' + amt + ' off your first order</span></div>';
+      }
       html += '<div class="grand"><span>Total</span><span>' + Y.inr(sub) + '</span></div><p class="ck-fine">Any coupon or first-order discount is taken off when you place the order.</p>';
     }
     $('ckTotals').innerHTML = html;
@@ -111,7 +117,7 @@
       const data = await post('create-order', {
         slug: CFG.firebase.projectSlug, items: r.map((x) => ({ itemId: x.p.id, qty: x.qty })),
         customerName: v.name, customerPhone: v.phone, customerEmail: v.email, customerNote: v.note,
-        customerAddress: address, customerPincode: v.pincode, paymentMethod: pay, customerUid: null,
+        customerAddress: address, customerPincode: v.pincode, paymentMethod: pay, customerUid: (Y.account && Y.account.signedIn()) ? Y.account.state.user.uid : null,
         couponCode: $('ckCoupon').value.trim().toUpperCase() || null
       });
       drawSummary(data);
@@ -149,6 +155,7 @@
   // ---------- confirmation ----------
   function done(o, paymentId) {
     const total = o.data.amount / 100;
+    if (Y.account && Y.account.signedIn()) Y.account.updateProfile({ addrLine: o.v.address, city: o.v.city, state: o.v.state, landmark: o.v.landmark, pincode: o.v.pincode }).catch(() => {});
     Y.bag.clear();
     $('stepDone').classList.add('on');
     const wa = Y.waLink('Hello Yukktha, I just placed order ' + o.data.orderId + (o.data.invoiceNumber ? ' (invoice ' + o.data.invoiceNumber + ')' : '') + ' for ' + Y.inr(total) + '.');
@@ -168,10 +175,29 @@
 
   // ---------- boot ----------
   Promise.all([Y.loadCatalogue(), Y.loadProject()]).then(([list, proj]) => {
-    items = list; project = proj || {};
+    items = list; project = proj || {}; loaded = true;
     const cfg = project.paymentMethods;
     if (cfg) { const on = ORDER.filter((k) => cfg[k] === true); if (on.length) methods = on; }
     drawMethods(); drawSummary(null);
-  }).catch(() => { drawMethods(); drawSummary(null); });
+  }).catch(() => { loaded = true; drawMethods(); drawSummary(null); });
   Y.onChange(() => { if (form.isConnected) drawSummary(null); });
+
+  // ---------- signed-in customers ----------
+  if (Y.account) Y.account.on((st) => {
+    const box = $('ckAcct'); if (!box) return;
+    if (st.user && st.profile) {
+      const pr = st.profile;
+      const fill = (k, v) => { if (form[k] && !form[k].value && v) form[k].value = v; };
+      fill('name', pr.name); fill('phone', pr.mobile); fill('email', pr.email || st.user.email);
+      // Structured address saved after a previous checkout here; otherwise the one-line address from the profile.
+      if (!form.address.value) {
+        if (pr.addrLine) { form.address.value = pr.addrLine; fill('city', pr.city); if (pr.state) form.state.value = pr.state; fill('landmark', pr.landmark); fill('pincode', pr.pincode); }
+        else if (pr.address) { form.address.value = pr.address; fill('pincode', pr.pincode); }
+      }
+      box.innerHTML = 'Signed in as <b>' + esc(pr.name || st.user.email) + '</b> — this order will appear in <a href="account.html">My account</a>.';
+    } else {
+      box.innerHTML = 'Have an account? <a href="account.html?next=checkout.html">Sign in</a> for faster checkout and to track this order. Or continue as a guest.';
+    }
+    if (form.isConnected) drawSummary(null);
+  });
 })();

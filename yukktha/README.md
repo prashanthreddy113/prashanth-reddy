@@ -23,8 +23,25 @@ Collection slugs: `all`, `new-arrivals`, `under-10000`, one per weave
 `occasion-reception`, `occasion-festive`, `occasion-puja`,
 `occasion-housewarming`, `occasion-special-occasion`, `occasion-daily-wear`).
 
-Bag and wishlist live in the visitor's browser; checkout sends the order to
-WhatsApp (918341448340).
+Bag and wishlist live in the visitor's browser. `checkout.html` takes the order
+online (UPI, cards, net banking, cash on delivery) through the BrightLoop
+order and payment functions (forwarded via `/api/*` in `netlify.toml`); WhatsApp
+ordering stays available.
+
+## Customer accounts & reviews
+
+`account.html`: sign in, create an account, reset password; then My orders,
+profile and delivery address, and My reviews. Accounts are the same Firebase
+email/password logins and `projects/yukktha/customers/{uid}` profiles the
+BrightLoop store page uses, so existing customers can sign in here. Orders
+placed while signed in carry `customerUid` (first-order discount, order
+history), and checkout fills in saved details.
+
+Product pages show the average rating, star breakdown and published reviews;
+signed-in customers can write one. Reviews are saved as *pending* in
+`projects/yukktha/reviews` and appear after approval in Admin → Reviews.
+Cards show stars, and collections can be sorted by *Top rated*. Reviews need the
+Firestore rule in `yukktha-admin/README.md`.
 
 ## Catalogue
 

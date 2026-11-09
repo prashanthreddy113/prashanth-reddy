@@ -250,3 +250,16 @@ table.t { width: 100%; border-collapse: collapse; }
 .receipt .sum .grand { font-family: var(--serif); font-size: 24px; font-weight: 500; color: var(--accent); border-top: 0; }
 .receipt #done { height: 48px; font-size: 14px; letter-spacing: .5px; }
 @media (max-width: 860px) { .pos-search { grid-template-columns: 1fr; } }
+
+/* reviews */
+.rv-admin { display: grid; gap: 14px; margin-top: 14px; }
+.rv-card { display: grid; grid-template-columns: 300px 1fr auto; gap: 20px; align-items: start; margin: 0 !important; }
+.rv-prod { display: flex; gap: 12px; align-items: flex-start; }
+.rv-prod .pill { margin-left: auto; }
+.rv-body h4 { font-size: 15px; margin: 8px 0 0; }
+.rv-body p { margin: 6px 0 0; color: #3c3539; }
+.rv-stars { color: #c08a2c; letter-spacing: 1px; font-size: 15px; }
+.rv-stars i { color: #e3d8dc; font-style: normal; }
+.rv-reply { margin-top: 10px; padding: 10px 12px; background: var(--blush); border-left: 2px solid var(--accent); font-size: 13px; }
+.rv-acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+@media (max-width: 1100px) { .rv-card { grid-template-columns: 1fr; } .rv-acts { justify-content: flex-start; } }

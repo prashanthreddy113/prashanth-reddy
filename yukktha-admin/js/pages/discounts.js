@@ -33,7 +33,7 @@ async function coupons(pane, ctx) {
     };
   };
   const add = async () => {
-    const v = await modal({ title: 'New coupon', submit: 'Create', body: '<div class="form-grid">' + field('Code', input('code', genCode(), 'required style="text-transform:uppercase"')) + field('Type', select('discountType', [['percent', 'Percent off'], ['flat', 'Flat ₹ off']])) + field('Value', input('discountValue', 10, 'type="number" min="1" required')) + field('Valid for (days)', input('days', 30, 'type="number" min="1"'), 'Leave empty for no expiry.') + field('How many codes', input('count', 1, 'type="number" min="1" max="50"'), 'More than 1 adds a random suffix to each.') + field('Note', input('note', '', 'placeholder="e.g. Diwali WhatsApp blast"')) + '</div>' });
+    const v = await modal({ title: 'New coupon', submit: 'Create', body: '<div class="form-grid">' + field('Code', input('code', genCode(), 'required style="text-transform:uppercase"')) + field('Type', select('discountType', [['percent', 'Percent off'], ['amount', 'Flat ₹ off']])) + field('Value', input('discountValue', 10, 'type="number" min="1" required')) + field('Valid for (days)', input('days', 30, 'type="number" min="1"'), 'Leave empty for no expiry.') + field('How many codes', input('count', 1, 'type="number" min="1" max="50"'), 'More than 1 adds a random suffix to each.') + field('Note', input('note', '', 'placeholder="e.g. Diwali WhatsApp blast"')) + '</div>' });
     if (!v) return;
     const code = String(v.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (!code || !v.discountValue) { toast('Code and value are required', 'err'); return; }
@@ -76,7 +76,7 @@ async function first(pane, ctx) {
   const p = ctx.project; const f = p.firstOrderDiscount || {};
   pane.innerHTML = '<div class="card" style="max-width:560px"><h3>First-order discount</h3><p class="muted">Applied automatically at the website checkout on a customer’s first order.</p><form id="f" class="stack">' +
     checkbox('enabled', f.enabled, 'Give new customers a first-order discount') +
-    '<div class="grid2">' + field('Type', select('type', [['percent', 'Percent off'], ['flat', 'Flat ₹ off']], f.type || 'percent')) + field('Value', input('value', f.value || 10, 'type="number" min="1"')) + '</div>' +
+    '<div class="grid2">' + field('Type', select('type', [['percent', 'Percent off'], ['amount', 'Flat ₹ off']], f.type || 'percent')) + field('Value', input('value', f.value || 10, 'type="number" min="1"')) + '</div>' +
     '<button class="btn primary" ' + (ctx.session.isOwner ? '' : 'disabled title="Owner only"') + '>Save</button></form></div>';
   $('#f').addEventListener('submit', async (e) => {
     e.preventDefault(); const t = e.target;

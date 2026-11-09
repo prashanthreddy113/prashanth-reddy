@@ -81,7 +81,7 @@
       '<nav class="main-nav" aria-label="Primary"><ul>' + nav + '</ul></nav>' +
       '<div class="header-icons">' +
       '<button class="icon-btn" data-open="search" aria-label="Search">' + ICON.search + '</button>' +
-      '<a class="icon-btn hide-sm" href="tel:' + CFG.phoneIntl + '" aria-label="Call ' + CFG.phone + '">' + ICON.phone + '</a>' +
+      '<a class="icon-btn acct-btn" id="acctBtn" href="account.html" aria-label="My account">' + ICON.user + '<span class="acct-dot" hidden></span></a>' +
       '<button class="icon-btn" data-open="wish" aria-label="Wishlist">' + ICON.heart + '<span class="badge" id="wishCount" hidden></span></button>' +
       '<button class="icon-btn" data-open="bag" aria-label="Bag">' + ICON.bag + '<span class="badge" id="bagCount" hidden></span></button>' +
       '</div></div></header>';
@@ -97,6 +97,7 @@
       '<div class="scrim" id="scrim"></div>' +
       '<aside class="drawer drawer-left" id="drawer-menu" aria-label="Menu"><div class="drawer-head"><span>Menu</span><button class="icon-btn" data-close aria-label="Close">' + ICON.close + '</button></div>' +
       '<div class="drawer-body m-nav">' + mobileNav +
+      '<a class="m-link" href="account.html" id="mAcct">My account</a>' +
       '<div class="m-contact"><a href="tel:' + CFG.phoneIntl + '">' + ICON.phone + ' ' + CFG.phone + '</a><a href="https://wa.me/' + CFG.whatsapp + '" target="_blank" rel="noopener">' + ICON.wa + ' WhatsApp</a><a href="https://www.instagram.com/' + CFG.instagram + '/" target="_blank" rel="noopener">' + ICON.insta + ' @' + CFG.instagram + '</a></div></div></aside>' +
       '<aside class="drawer" id="drawer-bag" aria-label="Bag"><div class="drawer-head"><span>Your Bag</span><button class="icon-btn" data-close aria-label="Close">' + ICON.close + '</button></div><div class="drawer-body" id="bagBody"></div><div class="drawer-foot" id="bagFoot"></div></aside>' +
       '<aside class="drawer" id="drawer-wish" aria-label="Wishlist"><div class="drawer-head"><span>Wishlist</span><button class="icon-btn" data-close aria-label="Close">' + ICON.close + '</button></div><div class="drawer-body" id="wishBody"></div></aside>' +
@@ -260,6 +261,27 @@
       } else if (t.hasAttribute('data-remove')) { Y.bag.setQty(t.getAttribute('data-remove'), 0); renderBag(); }
     });
 
+    // account state in the header
+    if (Y.account) Y.account.on((st) => {
+      const b = document.getElementById('acctBtn'); const signed = !!(st.user && st.profile);
+      b.querySelector('.acct-dot').hidden = !signed;
+      b.setAttribute('aria-label', signed ? 'My account (' + Y.account.firstName() + ')' : 'Sign in');
+      b.title = signed ? 'Hi ' + Y.account.firstName() : 'Sign in / create account';
+      const m = document.getElementById('mAcct'); if (m) m.textContent = signed ? 'My account · ' + Y.account.firstName() : 'Sign in / create account';
+    });
+    // star ratings on every product card, wherever cards are drawn
+    if (Y.account) Y.account.loadReviews().then((all) => {
+      if (!all.length) return;
+      const agg = {}; all.forEach((r) => { const a = agg[r.productId] = agg[r.productId] || { n: 0, sum: 0 }; a.n++; a.sum += Number(r.rating) || 0; });
+      Y.ratings = agg;
+      const deco = (root) => (root.querySelectorAll ? root.querySelectorAll('.card[data-id]:not([data-rated])') : []).forEach((c) => {
+        c.setAttribute('data-rated', ''); const a = agg[c.getAttribute('data-id')]; if (!a) return;
+        const info = c.querySelector('.card-info'); if (!info) return;
+        info.insertAdjacentHTML('beforeend', '<span class="card-rating">' + Y.account.stars(a.sum / a.n) + '<em>(' + a.n + ')</em></span>');
+      });
+      deco(document);
+      new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1) deco(n.matches && n.matches('.card') ? n.parentNode : n); }))).observe(document.body, { childList: true, subtree: true });
+    });
     Y.onChange(renderCounts);
     renderCounts();
     Y.loadCatalogue().then((list) => { items = list; renderCounts(); });

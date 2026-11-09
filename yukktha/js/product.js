@@ -23,6 +23,7 @@
       '<div class="pdp-info">' +
       '<p class="cat">' + esc(p.categoryTitle) + '</p>' +
       '<h1>' + esc(p.title) + '</h1>' +
+      '<a class="pdp-rating" href="#reviewsWrap" id="pdpRating"></a>' +
       '<p class="pdp-price">' + (p.price ? '<span class="now">' + Y.inr(p.price) + '</span>' + (p.discount ? '<s>' + Y.inr(p.mrp) + '</s><span class="off">' + p.discount + '% off</span>' : '') : '<span class="now">Price on request</span>') + '</p>' +
       '<p class="tax">' + (p.price ? 'Delivered across India. We confirm availability and delivery on WhatsApp.' : 'Call or WhatsApp us for today’s price.') + '</p>' +
       stockLine(p) +
@@ -91,7 +92,58 @@
       return;
     }
     render(p, items);
+    if (Y.account) reviews(p);
   }).catch(() => {
     $('pdp').innerHTML = '<div class="pdp-missing"><h1>Something went wrong</h1><p>Please call us on <a href="tel:' + Y.CFG.phoneIntl + '">' + Y.CFG.phone + '</a>.</p></div>';
   });
+
+  // ---------- ratings & reviews ----------
+  async function reviews(p) {
+    const A = Y.account; const wrap = $('reviewsWrap');
+    const { list, count, avg } = await A.ratingFor(p.id);
+    $('pdpRating').innerHTML = count ? A.stars(avg) + '<span>' + avg.toFixed(1) + ' · ' + count + ' review' + (count > 1 ? 's' : '') + '</span>' : '<span class="no-rev">Be the first to review this saree</span>';
+    const dist = [5, 4, 3, 2, 1].map((n) => ({ n, c: list.filter((r) => Math.round(r.rating) === n).length }));
+    let shown = 4;
+    const draw = () => {
+      wrap.innerHTML = '<div class="rv-head"><h2>Ratings & reviews</h2><button class="btn btn-solid" id="rvWrite">Write a review</button></div>' +
+        '<div class="rv-grid"><div class="rv-summary">' + (count
+          ? '<div class="rv-avg"><strong>' + avg.toFixed(1) + '</strong>' + A.stars(avg, 'lg') + '<span>Based on ' + count + ' review' + (count > 1 ? 's' : '') + '</span></div>' +
+            '<div class="rv-dist">' + dist.map((d) => '<div><span>' + d.n + ' ★</span><i><b style="width:' + (count ? d.c / count * 100 : 0) + '%"></b></i><em>' + d.c + '</em></div>').join('') + '</div>'
+          : '<div class="rv-none"><p>No reviews yet.</p><p class="muted-p">Bought this saree? Share how it looked and felt — it helps other customers choose.</p></div>') + '</div>' +
+        '<div class="rv-list">' + (list.length ? list.slice(0, shown).map((r) => '<article class="rv"><div class="rv-top">' + A.stars(r.rating) + (r.verified ? '<span class="rv-verified">✓ Verified buyer</span>' : '') + '</div>' + (r.title ? '<h3>' + esc(r.title) + '</h3>' : '') + '<p>' + esc(r.text) + '</p><footer>' + esc(r.name || 'Customer') + ' · ' + new Date(r.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) + '</footer>' + (r.storeReply ? '<div class="rv-reply"><b>Yukktha replied</b>' + esc(r.storeReply) + '</div>' : '') + '</article>').join('') +
+          (list.length > shown ? '<button class="btn btn-outline" id="rvMore">Show more reviews</button>' : '') : '') + '</div></div>';
+      $('rvWrite').addEventListener('click', write);
+      const more = $('rvMore'); if (more) more.addEventListener('click', () => { shown += 6; draw(); });
+    };
+    async function write() {
+      await A.ready();
+      if (!A.signedIn()) { location.href = 'account.html?next=' + encodeURIComponent('product.html?id=' + p.id); return; }
+      const dlg = document.createElement('div'); dlg.className = 'rv-modal';
+      dlg.innerHTML = '<form class="rv-form" novalidate><button type="button" class="icon-btn rv-x" aria-label="Close">' + I.close + '</button><h3>Review this saree</h3><p class="rv-prod">' + esc(p.title) + '</p>' +
+        '<div class="rv-pick" role="radiogroup" aria-label="Your rating">' + [1, 2, 3, 4, 5].map((n) => '<label><input type="radio" name="rating" value="' + n + '"><span aria-hidden="true">★</span><em class="sr">' + n + ' star</em></label>').join('') + '<b id="rvLbl">Tap to rate</b></div>' +
+        '<label class="ck-field"><span>Headline <em>(optional)</em></span><input name="title" maxlength="120" placeholder="e.g. Stunning zari, perfect for my sister’s wedding"></label>' +
+        '<label class="ck-field"><span>Your review</span><textarea name="text" rows="5" maxlength="2000" placeholder="How was the colour, drape, zari and quality? Where did you wear it?"></textarea></label>' +
+        '<p class="acct-msg" id="rvMsg" hidden></p><button class="btn btn-solid btn-block">Submit review</button><p class="tiny-note">Reviews appear after a quick check by the Yukktha team. Posting as ' + esc(A.firstName()) + '.</p></form>';
+      document.body.appendChild(dlg); document.body.classList.add('locked');
+      const close = () => { dlg.remove(); document.body.classList.remove('locked'); };
+      dlg.querySelector('.rv-x').addEventListener('click', close);
+      dlg.addEventListener('mousedown', (e) => { if (e.target === dlg) close(); });
+      const words = ['', 'Poor', 'Fair', 'Good', 'Very good', 'Loved it'];
+      const pick = dlg.querySelector('.rv-pick');
+      pick.addEventListener('change', (e) => { const v = Number(e.target.value); pick.querySelectorAll('label').forEach((l, i) => l.classList.toggle('on', i < v)); $('rvLbl').textContent = words[v]; });
+      dlg.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault(); const f = e.target; const m = $('rvMsg'); const btn = f.querySelector('.btn');
+        const r = f.querySelector('input[name=rating]:checked');
+        btn.disabled = true;
+        try {
+          await A.submitReview({ product: p, rating: r ? r.value : 0, title: f.title.value, text: f.text.value });
+          f.innerHTML = '<div class="rv-thanks"><div class="ck-tick"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div><h3>Thank you!</h3><p>Your review has been sent. It will appear here once the Yukktha team approves it.</p><button type="button" class="btn btn-outline" id="rvDone">Close</button></div>';
+          $('rvDone').addEventListener('click', close);
+        } catch (ex) { m.textContent = ex.message; m.className = 'acct-msg err'; m.hidden = false; btn.disabled = false; }
+      });
+      setTimeout(() => pick.querySelector('input').focus(), 50);
+    }
+    draw();
+  }
 })();
+

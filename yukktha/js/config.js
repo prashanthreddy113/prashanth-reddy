@@ -29,7 +29,11 @@ window.YUKKTHA_CONFIG = {
   ],
   firebase: {
     apiKey: 'AIzaSyCWGe8E6CoE9D2lIzt2DaajSGK05oTtebg',
+    authDomain: 'yukk-1cf77.firebaseapp.com',
     projectId: 'yukk-1cf77',
+    storageBucket: 'yukk-1cf77.firebasestorage.app',
+    messagingSenderId: '902075156235',
+    appId: '1:902075156235:web:3e7401868a2ad30da7c40e',
     projectSlug: 'yukktha'
   },
   // Set to false to always use data/sarees.json (no network call to Firestore).
@@ -37,5 +41,6 @@ window.YUKKTHA_CONFIG = {
   // Online checkout: Netlify forwards /api/* to the BrightLoop order and payment
   // functions (see netlify.toml), which hold the Razorpay keys and write the
   // order into Firestore, where the admin manages it.
-  checkoutApi: 'api/'
+  checkoutApi: 'api/',
+  firebaseSdk: 'https://www.gstatic.com/firebasejs/10.12.2/'
 };
