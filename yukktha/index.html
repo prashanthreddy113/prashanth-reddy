@@ -12,9 +12,10 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=DM+Sans:wght@400;500&family=Noto+Serif:wght@400;500&family=Open+Sans:wght@400;500;600&family=Poppins:wght@300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=DM+Sans:wght@400;500&family=Noto+Serif:wght@400;500&family=Open+Sans:wght@400;500;600&family=Poppins:wght@300&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="assets/video/hero-poster.jpg?v=3" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/rich.css" />
 </head>
 <body class="home">
   <main id="main">
@@ -47,6 +48,9 @@
         <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span><strong>Pan-India delivery</strong>Safe & quick to your door</span></div>
       </div>
     </section>
+
+    <!-- Weave names band -->
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Kanjivaram Silk</span><span>Banarasi Brocade</span><span>Kuppadam Pattu</span><span>Soft Silk</span><span>Handloom Cotton</span><span>Bridal Edit</span><span>Pure Zari</span><span>Kanjivaram Silk</span><span>Banarasi Brocade</span><span>Kuppadam Pattu</span><span>Soft Silk</span><span>Handloom Cotton</span><span>Bridal Edit</span><span>Pure Zari</span></div></div>
 
     <!-- Trending -->
     <section class="section blush">
@@ -121,7 +125,7 @@
     <!-- Story -->
     <section class="story" id="about">
       <div class="container story-in">
-        <div class="story-art"><img class="s1" src="assets/img/saree-1.jpg" alt="Silk sarees stacked in the Yukktha store" loading="lazy"><img class="s2" src="assets/img/kanjivaram-model.jpg" alt="" loading="lazy"></div>
+        <div class="story-art"><img class="s1" data-parallax="0.05" src="assets/img/saree-1.jpg" alt="Silk sarees stacked in the Yukktha store" loading="lazy"><img class="s2" data-parallax="0.12" src="assets/img/kanjivaram-model.jpg" alt="" loading="lazy"></div>
         <div class="story-copy">
           <p class="sec-kicker light">Our story</p>
           <h2>Where tradition meets you</h2>
@@ -192,6 +196,7 @@
   <script src="js/store.js"></script>
   <script src="js/layout.js"></script>
   <script src="js/account.js"></script>
+  <script src="js/rich.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>
