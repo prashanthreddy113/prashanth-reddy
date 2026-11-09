@@ -19,7 +19,7 @@
   // ---------- design preview switcher (only for people who opened a ?theme= link) ----------
   try {
     if (localStorage.getItem('yk_theme_preview') === '1') {
-      const cur = localStorage.getItem('yk_theme') || 'royal';
+      const cur = localStorage.getItem('yk_theme') || 'ivory';
       const sw = document.createElement('div'); sw.className = 'theme-switch'; sw.setAttribute('aria-label', 'Design preview');
       sw.innerHTML = '<b>Design</b>' + [['royal', 'Royal'], ['noir', 'Noir'], ['ivory', 'Ivory']].map(([k, l]) => '<a href="?theme=' + k + '" data-k="' + k + '" class="' + (k === cur ? 'on' : '') + '">' + l + '</a>').join('');
       sw.addEventListener('click', (e) => {

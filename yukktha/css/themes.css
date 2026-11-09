@@ -99,3 +99,17 @@ html[data-theme="ivory"] .card-media, html[data-theme="ivory"] .g-item { backgro
 .theme-switch a { color: #e8dccb; font-size: 12px; padding: 7px 12px; border-radius: 20px; }
 .theme-switch a.on { background: #f3dfae; color: #1c0b14; }
 @media (max-width: 720px) { .theme-switch { left: 8px; bottom: 74px; } .theme-switch b { display: none; } }
+
+/* Ivory home: solid ivory header with dark menu (always visible); the film starts below it */
+html[data-theme="ivory"] body.home .site-header { background: #fbf7f0; border-bottom-color: var(--line); }
+html[data-theme="ivory"] body.home .site-header .logo { color: var(--accent); }
+html[data-theme="ivory"] body.home .site-header .logo-svg .logo-sub { fill: var(--gold); }
+html[data-theme="ivory"] body.home .site-header .nav-link,
+html[data-theme="ivory"] body.home .site-header .icon-btn { color: var(--ink); }
+html[data-theme="ivory"] body.home .site-header .nav-link::after { background: var(--accent); }
+html[data-theme="ivory"] body.home .site-header .badge { background: var(--accent); color: #fff; }
+html[data-theme="ivory"] body.home .site-header:not(.scrolled):hover,
+html[data-theme="ivory"] body.home .site-header:not(.scrolled):focus-within { top: 33px; }
+html[data-theme="ivory"] body.home .film { margin-top: var(--header-h); height: calc(min(94vh, 900px) - var(--header-h)); }
+html[data-theme="ivory"] body.home .film-shade { background: linear-gradient(180deg, rgba(25,6,18,0) 0%, rgba(25,6,18,0) 45%, rgba(25,6,18,.7) 100%); }
+@media (max-width: 720px) { html[data-theme="ivory"] body.home .film { height: calc(88vh - var(--header-h)); } }
