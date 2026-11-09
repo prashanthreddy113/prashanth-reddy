@@ -18,13 +18,14 @@
 
   // ---------- design preview switcher (only for people who opened a ?theme= link) ----------
   try {
-    if (localStorage.getItem('yk_theme_preview') === '1') {
-      const cur = localStorage.getItem('yk_theme') || 'ivory';
+    // Only in a tab opened from a ?theme= preview link; the site itself is always Ivory.
+    if (sessionStorage.getItem('yk_theme')) {
+      const cur = sessionStorage.getItem('yk_theme') || 'ivory';
       const sw = document.createElement('div'); sw.className = 'theme-switch'; sw.setAttribute('aria-label', 'Design preview');
       sw.innerHTML = '<b>Design</b>' + [['royal', 'Royal'], ['noir', 'Noir'], ['ivory', 'Ivory']].map(([k, l]) => '<a href="?theme=' + k + '" data-k="' + k + '" class="' + (k === cur ? 'on' : '') + '">' + l + '</a>').join('');
       sw.addEventListener('click', (e) => {
         const a = e.target.closest('[data-k]'); if (!a) return; e.preventDefault();
-        localStorage.setItem('yk_theme', a.dataset.k);
+        sessionStorage.setItem('yk_theme', a.dataset.k);
         if (a.dataset.k === 'royal') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', a.dataset.k);
         sw.querySelectorAll('a').forEach((x) => x.classList.toggle('on', x === a));
       });
