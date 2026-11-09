@@ -1,0 +1,101 @@
+/* =====================================================================
+   Alternative design directions for client review.
+   Activated by ?theme=noir | ?theme=ivory | ?theme=royal (remembered on the device).
+   ===================================================================== */
+
+/* ------------------------- NOIR COUTURE ------------------------------ */
+html[data-theme="noir"] {
+  --accent: #d9b56f; --accent-dark: #c49a4f; --blush: #17121a; --blush-2: #2a2026; --line: #2e252b;
+  --ink: #f1e9df; --muted: #a59a9f; --bg: #0d0a0c; --gold: #d9b56f;
+  --plum-deep: #070506; --plum-ink: #0d0a0c;
+  --weave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M22 6c3 4 3 8 0 12-3-4-3-8 0-12z' fill='none' stroke='%23d9b56f' stroke-opacity='.08'/%3E%3C/svg%3E");
+}
+html[data-theme="noir"] body { background: var(--bg); color: var(--ink); }
+html[data-theme="noir"] h1, html[data-theme="noir"] h2, html[data-theme="noir"] h3 { color: var(--ink); }
+html[data-theme="noir"] .sec-head h2, html[data-theme="noir"] .feat-head h2, html[data-theme="noir"] .stores-head h2, html[data-theme="noir"] .rv-head h2,
+html[data-theme="noir"] .banner h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: clamp(30px, 3.4vw, 46px); letter-spacing: 6px; color: var(--gold-1); }
+html[data-theme="noir"] .site-header, html[data-theme="noir"] .mega, html[data-theme="noir"] .drawer, html[data-theme="noir"] .search-panel,
+html[data-theme="noir"] .toolbar, html[data-theme="noir"] .trust, html[data-theme="noir"] .filters, html[data-theme="noir"] .filters-head,
+html[data-theme="noir"] .filters-apply, html[data-theme="noir"] .rv-form, html[data-theme="noir"] .acct-card, html[data-theme="noir"] .acct-auth-card,
+html[data-theme="noir"] .store-body, html[data-theme="noir"] .drawer-head { background: #0d0a0c; color: var(--ink); }
+html[data-theme="noir"] .site-header { border-bottom-color: #2a2026; }
+html[data-theme="noir"] .site-header.scrolled { box-shadow: 0 10px 30px -18px #000; }
+html[data-theme="noir"] .logo, html[data-theme="noir"] .site-header .logo { color: var(--gold-1) !important; }
+html[data-theme="noir"] .nav-link, html[data-theme="noir"] .icon-btn, html[data-theme="noir"] body.home .site-header .nav-link,
+html[data-theme="noir"] body.home .site-header.scrolled .nav-link, html[data-theme="noir"] body.home .site-header:hover .nav-link,
+html[data-theme="noir"] body.home .site-header.scrolled .icon-btn, html[data-theme="noir"] body.home .site-header:hover .icon-btn { color: #efe5d6 !important; }
+html[data-theme="noir"] body.home .site-header.scrolled, html[data-theme="noir"] body.home .site-header:hover, html[data-theme="noir"] body.home .site-header:focus-within { background: rgba(13,10,12,.96); border-bottom-color: #2a2026; }
+html[data-theme="noir"] .nav-link::after { background: var(--gold-2) !important; }
+html[data-theme="noir"] .mega-col a, html[data-theme="noir"] .m-group div a { color: #c9bdb5; }
+html[data-theme="noir"] .m-group div, html[data-theme="noir"] .ck-summary, html[data-theme="noir"] .rv-summary { background-color: #17121a; }
+html[data-theme="noir"] .section.blush, html[data-theme="noir"] .vshop, html[data-theme="noir"] .newsletter, html[data-theme="noir"] .store-card { background-color: #120e11; }
+html[data-theme="noir"] .vshop { background-image: var(--weave); }
+html[data-theme="noir"] .card-title, html[data-theme="noir"] .ck-line a, html[data-theme="noir"] .line-title { color: #efe5d6; }
+html[data-theme="noir"] .card-price .now, html[data-theme="noir"] .pdp-price .now, html[data-theme="noir"] .line-price { color: var(--gold-1); }
+html[data-theme="noir"] .card-media, html[data-theme="noir"] .g-item, html[data-theme="noir"] .tile { background: #17121a; }
+html[data-theme="noir"] .wish-btn, html[data-theme="noir"] .quick-add, html[data-theme="noir"] .g-zoom, html[data-theme="noir"] .rail-btn, html[data-theme="noir"] .rail-btn-s { background: rgba(13,10,12,.85); color: var(--gold-1); border-color: #3a2d34; }
+html[data-theme="noir"] .btn-solid { background: linear-gradient(100deg, #b48a46, #f3dfae 50%, #c9a15c); color: #170b12; box-shadow: none; }
+html[data-theme="noir"] .btn-solid::after { border-color: rgba(23,11,18,.25); }
+html[data-theme="noir"] .btn-outline { background: transparent; color: var(--gold-1); border-color: #4a3a40; }
+html[data-theme="noir"] .btn-buy { background: #efe5d6; color: #0d0a0c; border-color: #efe5d6; }
+html[data-theme="noir"] .btn-light { background: transparent; color: #fff; border-color: rgba(243,223,174,.75); }
+html[data-theme="noir"] .btn-light:hover { background: var(--gold-1); color: #170b12; }
+html[data-theme="noir"] input, html[data-theme="noir"] textarea, html[data-theme="noir"] select { background: #17121a !important; color: var(--ink) !important; border-color: #3a2d34 !important; }
+html[data-theme="noir"] .pm-card { background: #17121a; border-color: #3a2d34; }
+html[data-theme="noir"] .pm input:checked + .pm-card { background: #241a1f; box-shadow: inset 0 0 0 1px var(--gold-2); border-color: var(--gold-2); }
+html[data-theme="noir"] .ck-secure { background: #10170f; border-color: #253824; color: #9fd0a4; }
+html[data-theme="noir"] .trust-row span, html[data-theme="noir"] .usp p, html[data-theme="noir"] .coll-intro, html[data-theme="noir"] .store-body address, html[data-theme="noir"] .rv p, html[data-theme="noir"] .acc .acc-body, html[data-theme="noir"] .vshop p, html[data-theme="noir"] .weave-note { color: #b9aea8; }
+html[data-theme="noir"] .trust-row strong, html[data-theme="noir"] .vshop h2, html[data-theme="noir"] .occasions span, html[data-theme="noir"] .usp h3 { color: #efe5d6; }
+html[data-theme="noir"] .occasions a:hover span { color: var(--gold-1); }
+html[data-theme="noir"] .check, html[data-theme="noir"] .fgroup summary { color: #d8cdc5; }
+html[data-theme="noir"] .chip, html[data-theme="noir"] .acct-perk { background: #241a1f; color: var(--gold-1); }
+html[data-theme="noir"] .heirloom { background: #070506; }
+html[data-theme="noir"] .story { background: radial-gradient(140% 120% at 100% 0%, #2a1520 0%, #120a0f 60%, #070506 100%); }
+html[data-theme="noir"] .story-art .s2 { border-color: #120a0f; }
+html[data-theme="noir"] .marquee { background: #070506; }
+html[data-theme="noir"] .announce { background: #070506; }
+html[data-theme="noir"] .site-footer { background: #070506; }
+html[data-theme="noir"] .banner::after { background: linear-gradient(0deg, rgba(7,5,6,.7), rgba(7,5,6,.35)); }
+html[data-theme="noir"] .density button { color: #6c5f65; } html[data-theme="noir"] .density button.on { color: var(--gold-1); }
+html[data-theme="noir"] .toast { background: var(--gold-1); color: #170b12; }
+
+/* ------------------------- IVORY HERITAGE ---------------------------- */
+html[data-theme="ivory"] {
+  --accent: #7a1c2b; --accent-dark: #5e1420; --blush: #f4ece0; --blush-2: #e9dcc8; --line: #e3d7c5;
+  --ink: #2a1a1f; --muted: #7c6d66; --bg: #fbf7f0; --gold: #a8843f; --gold-3: #a8843f;
+  --plum-deep: #3d0f19; --plum-ink: #5e1420;
+}
+html[data-theme="ivory"] body { background: var(--bg); }
+html[data-theme="ivory"] .site-header, html[data-theme="ivory"] .mega, html[data-theme="ivory"] .toolbar, html[data-theme="ivory"] .trust,
+html[data-theme="ivory"] .drawer, html[data-theme="ivory"] .search-panel, html[data-theme="ivory"] .filters { background: #fbf7f0; }
+html[data-theme="ivory"] body.home .site-header.scrolled, html[data-theme="ivory"] body.home .site-header:hover, html[data-theme="ivory"] body.home .site-header:focus-within { background: #fbf7f0; }
+html[data-theme="ivory"] .sec-head h2, html[data-theme="ivory"] .feat-head h2, html[data-theme="ivory"] .stores-head h2, html[data-theme="ivory"] .rv-head h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-style: italic; text-transform: none; letter-spacing: .5px; font-size: clamp(34px, 3.8vw, 52px); color: var(--accent); }
+html[data-theme="ivory"] .banner h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; text-transform: none; letter-spacing: 1px; font-size: clamp(32px, 3.6vw, 50px); }
+html[data-theme="ivory"] .sec-kicker { font-family: var(--sans); font-style: normal; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+html[data-theme="ivory"] .film-slide h1, html[data-theme="ivory"] .film-slide .h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500; font-size: clamp(48px, 7vw, 104px); }
+html[data-theme="ivory"] .card-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; }
+html[data-theme="ivory"] .card-price .now { color: var(--accent); }
+html[data-theme="ivory"] .section { padding: 96px 0; }
+html[data-theme="ivory"] .section.blush, html[data-theme="ivory"] .vshop, html[data-theme="ivory"] .newsletter, html[data-theme="ivory"] .ck-summary, html[data-theme="ivory"] .rv-summary { background-color: #f4ece0; background-image: none; }
+html[data-theme="ivory"] .btn-solid { background: var(--accent); box-shadow: none; }
+html[data-theme="ivory"] .btn-solid::after { border-color: rgba(243,223,174,.45); }
+html[data-theme="ivory"] .story { background: #3d0f19; }
+html[data-theme="ivory"] .story::before { opacity: .25; }
+html[data-theme="ivory"] .heirloom { background: #241014; }
+html[data-theme="ivory"] .announce { background: #f4ece0; color: var(--accent); border-bottom: 1px solid #e3d7c5; }
+html[data-theme="ivory"] .announce-track p { color: var(--accent); }
+html[data-theme="ivory"] .announce-btn { color: var(--accent); }
+html[data-theme="ivory"] .marquee { background: #fbf7f0; color: var(--accent); border-color: #e3d7c5; }
+html[data-theme="ivory"] .marquee span::after { color: var(--gold); }
+html[data-theme="ivory"] .site-footer { background: #3d0f19; }
+html[data-theme="ivory"] .tile b { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500; font-size: clamp(26px, 2.8vw, 42px); }
+html[data-theme="ivory"] .occasions span { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 20px; letter-spacing: .5px; text-transform: none; }
+html[data-theme="ivory"] .card-media, html[data-theme="ivory"] .g-item { background: #efe5d6; }
+
+/* ------------------------- preview switcher -------------------------- */
+.theme-switch { position: fixed; left: 16px; bottom: 16px; z-index: 95; display: flex; gap: 4px; padding: 5px; background: rgba(20,10,16,.88); border: 1px solid rgba(217,181,111,.45); border-radius: 30px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.6); }
+.theme-switch b { color: #f3dfae; font-size: 10.5px; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600; padding: 7px 8px 7px 10px; }
+.theme-switch a { color: #e8dccb; font-size: 12px; padding: 7px 12px; border-radius: 20px; }
+.theme-switch a.on { background: #f3dfae; color: #1c0b14; }
+@media (max-width: 720px) { .theme-switch { left: 8px; bottom: 74px; } .theme-switch b { display: none; } }

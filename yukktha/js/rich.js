@@ -16,6 +16,23 @@
     }
   }
 
+  // ---------- design preview switcher (only for people who opened a ?theme= link) ----------
+  try {
+    if (localStorage.getItem('yk_theme_preview') === '1') {
+      const cur = localStorage.getItem('yk_theme') || 'royal';
+      const sw = document.createElement('div'); sw.className = 'theme-switch'; sw.setAttribute('aria-label', 'Design preview');
+      sw.innerHTML = '<b>Design</b>' + [['royal', 'Royal'], ['noir', 'Noir'], ['ivory', 'Ivory']].map(([k, l]) => '<a href="?theme=' + k + '" data-k="' + k + '" class="' + (k === cur ? 'on' : '') + '">' + l + '</a>').join('');
+      sw.addEventListener('click', (e) => {
+        const a = e.target.closest('[data-k]'); if (!a) return; e.preventDefault();
+        localStorage.setItem('yk_theme', a.dataset.k);
+        if (a.dataset.k === 'royal') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', a.dataset.k);
+        sw.querySelectorAll('a').forEach((x) => x.classList.toggle('on', x === a));
+      });
+      const add = () => document.body.appendChild(sw);
+      if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+    }
+  } catch (e) { /* storage blocked */ }
+
   // ---------- hero: split slide titles into words ----------
   document.querySelectorAll('.film-slide h1, .film-slide .h1').forEach((h) => {
     const words = h.textContent.trim().split(/\s+/);
