@@ -1,5 +1,13 @@
 // Product detail page: gallery with hover zoom, price, stock, bag / WhatsApp ordering, details, related sarees.
 (function () {
+  const WEAVES = {
+    'Kanjivaram Silk': 'Kanjivaram (Kanchipuram) silks are woven in Tamil Nadu from mulberry silk, known for their weight, lustre and zari borders. The body and border are often woven separately and joined by hand — the korvai technique — which is why the border colour can contrast so boldly with the body.',
+    'Banarasi': 'Banarasi sarees come from Varanasi, where weavers create brocade patterns — butta, jaal and floral vines — by lifting extra threads into the weave. They are prized for intricate zari work and a regal, slightly structured drape.',
+    'Kuppadam Pattu': 'Kuppadam is a Telugu weaving style in which the border is interlocked with the body of the saree using a comb-like technique, giving a seamless, durable join and a border that stays crisp pleat after pleat.',
+    'Soft Silk': 'Soft silks are lighter and more fluid than traditional heavy silks, so they drape easily and are comfortable for long functions, while still carrying a gentle sheen and zari detailing.',
+    'Soft Cotton': 'Handloom cottons are breathable and light — ideal for warm days, office wear and everyday elegance. They soften further with every wash.',
+    'Designer / Party': 'Designer and party sarees bring contemporary colours, embellishments and finishes to traditional drapes, for receptions, sangeets and evening celebrations.'
+  };
   const Y = window.Yukktha; const esc = Y.esc; const I = Y.ui.ICON;
   const $ = (id) => document.getElementById(id);
   const id = new URLSearchParams(location.search).get('id');
@@ -17,9 +25,9 @@
     const wished = Y.wishlist.has(p.id);
     const canBuy = p.inStock && p.price > 0;
     $('pdp').innerHTML = '<div class="pdp">' +
-      '<div class="gallery">' +
-      '<div class="thumbs" role="tablist">' + (p.images.length > 1 ? p.images.map((src, i) => '<button class="' + (i ? '' : 'on') + '" data-img="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + esc(src) + '" alt=""></button>').join('') : '') + '</div>' +
-      '<div class="stage" id="stage"><img id="stageImg" src="' + esc(p.images[0]) + '" alt="' + esc(p.title) + '"></div></div>' +
+      // Desktop: every photo large, two to a row. Phones: swipe through them.
+      '<div class="gallery2' + (p.images.length > 1 ? ' multi' : '') + '" id="gal">' + p.images.map((src, i) => '<button class="g-item" data-zoom="' + i + '" aria-label="View photo ' + (i + 1) + ' full screen"><img src="' + esc(src) + '" alt="' + esc(p.title) + (i ? ' — photo ' + (i + 1) : '') + '"' + (i > 1 ? ' loading="lazy"' : '') + '><span class="g-zoom">' + I.search + '</span></button>').join('') + '</div>' +
+      (p.images.length > 1 ? '<div class="g-dots" id="gDots">' + p.images.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('') + '</div>' : '') +
       '<div class="pdp-info">' +
       '<p class="cat">' + esc(p.categoryTitle) + '</p>' +
       '<h1>' + esc(p.title) + '</h1>' +
@@ -34,6 +42,7 @@
       '</div>' +
       '<div class="assure"><div><strong>Handwoven</strong>Authentic weave</div><div><strong>Pan-India</strong>Delivery</div><div><strong>Video Call</strong>See it live</div></div>' +
       '<details class="acc" open><summary>Description' + I.chevD + '</summary><div class="acc-body">' + esc(p.description || 'A handpicked weave from the Yukktha collection.') + '</div></details>' +
+      (WEAVES[p.category] ? '<details class="acc"><summary>About ' + esc(p.categoryTitle) + I.chevD + '</summary><div class="acc-body weave-note">' + WEAVES[p.category] + '</div></details>' : '') +
       '<details class="acc"><summary>Product details' + I.chevD + '</summary><div class="acc-body"><dl class="spec">' +
       '<dt>Weave</dt><dd>' + esc(p.categoryTitle) + '</dd>' +
       '<dt>Material</dt><dd>' + esc(p.material) + '</dd>' +
@@ -46,19 +55,17 @@
       '</div></div>';
 
     // gallery
-    const stage = $('stage'); const stageImg = $('stageImg');
-    document.querySelectorAll('[data-img]').forEach((b) => b.addEventListener('click', () => {
-      stageImg.src = p.images[Number(b.dataset.img)];
-      document.querySelectorAll('[data-img]').forEach((x) => x.classList.toggle('on', x === b));
-    }));
+    const gal = $('gal');
+    gal.addEventListener('click', (e) => { const b = e.target.closest('[data-zoom]'); if (b) lightbox(p, Number(b.dataset.zoom)); });
     if (window.matchMedia('(hover: hover)').matches) {
-      stage.addEventListener('mousemove', (e) => {
-        const r = stage.getBoundingClientRect();
-        stageImg.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + '% ' + ((e.clientY - r.top) / r.height * 100) + '%';
+      gal.querySelectorAll('.g-item').forEach((it) => {
+        const img = it.querySelector('img');
+        it.addEventListener('mousemove', (e) => { const r = it.getBoundingClientRect(); img.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + '% ' + ((e.clientY - r.top) / r.height * 100) + '%'; });
+        it.addEventListener('mouseenter', () => it.classList.add('zoom')); it.addEventListener('mouseleave', () => it.classList.remove('zoom'));
       });
-      stage.addEventListener('mouseenter', () => stage.classList.add('zoom'));
-      stage.addEventListener('mouseleave', () => stage.classList.remove('zoom'));
     }
+    const dots = $('gDots');
+    if (dots) gal.addEventListener('scroll', () => { const i = Math.round(gal.scrollLeft / gal.clientWidth); [].forEach.call(dots.children, (d, k) => d.classList.toggle('on', k === i)); }, { passive: true });
     const buy = $('buyNow');
     if (buy) buy.addEventListener('click', () => {
       const inBag = (Y.bag.items().find((r) => r.id === p.id) || {}).qty || 0;
@@ -145,6 +152,24 @@
     }
     draw();
     if (location.hash === '#write-review') { wrap.scrollIntoView({ behavior: 'smooth' }); setTimeout(write, 600); }
+  }
+
+  // ---------- full-screen photo viewer ----------
+  function lightbox(p, start) {
+    let i = start; const n = p.images.length;
+    const box = document.createElement('div'); box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Photos of ' + p.title);
+    box.innerHTML = '<button class="lb-x" aria-label="Close">' + I.close + '</button>' + (n > 1 ? '<button class="lb-prev" aria-label="Previous photo">' + I.chevL + '</button><button class="lb-next" aria-label="Next photo">' + I.chevR + '</button>' : '') +
+      '<figure><img alt=""><figcaption></figcaption></figure>';
+    const img = box.querySelector('img'); const cap = box.querySelector('figcaption');
+    const show = () => { img.classList.remove('in'); img.src = p.images[i]; img.alt = p.title; cap.textContent = p.title + (n > 1 ? '  ·  ' + (i + 1) + ' / ' + n : ''); requestAnimationFrame(() => img.classList.add('in')); };
+    const close = () => { box.classList.remove('on'); document.body.classList.remove('locked'); document.removeEventListener('keydown', key); setTimeout(() => box.remove(), 300); };
+    const go = (d) => { i = (i + d + n) % n; show(); };
+    const key = (e) => { if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); };
+    box.addEventListener('click', (e) => { if (e.target.closest('.lb-x') || e.target === box) close(); else if (e.target.closest('.lb-next')) go(1); else if (e.target.closest('.lb-prev')) go(-1); });
+    let sx = null; box.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); sx = null; });
+    document.body.appendChild(box); document.body.classList.add('locked'); document.addEventListener('keydown', key);
+    show(); requestAnimationFrame(() => box.classList.add('on')); box.querySelector('.lb-x').focus();
   }
 })();
 

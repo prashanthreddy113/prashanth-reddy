@@ -92,7 +92,7 @@
     const showTab = (i) => {
       el.querySelectorAll('button').forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-selected', k === i); });
       const rail = $(railId);
-      rail.innerHTML = items.filter(options[i].filter).slice(0, 12).map((p) => Y.ui.card(p)).join('') || '<p class="no-results">Coming soon.</p>';
+      rail.innerHTML = items.filter(options[i].filter).sort((a, b) => b.ownPhoto - a.ownPhoto).slice(0, 12).map((p) => Y.ui.card(p)).join('') || '<p class="no-results">Coming soon.</p>';
       rail.scrollLeft = 0;
     };
     el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) showTab(Number(b.dataset.i)); });
@@ -119,7 +119,7 @@
       { label: 'Soft Silk', filter: (p) => p.categorySlug === 'soft-silk' },
       { label: 'Cotton', filter: (p) => p.material === 'Cotton' }
     ], items);
-    kan.innerHTML = items.filter((p) => p.categorySlug === 'kanjivaram-silk').sort((a, b) => b.images.length - a.images.length).slice(0, 15).map((p) => Y.ui.card(p)).join('');
+    kan.innerHTML = items.filter((p) => p.categorySlug === 'kanjivaram-silk').sort((a, b) => (b.ownPhoto - a.ownPhoto) || (b.images.length - a.images.length)).slice(0, 15).map((p) => Y.ui.card(p)).join('');
     kan.dispatchEvent(new Event('scroll'));
     const weaves = new Set(items.map((p) => p.category)).size;
     countUp($('statDesigns'), items.length); countUp($('statWeaves'), weaves);

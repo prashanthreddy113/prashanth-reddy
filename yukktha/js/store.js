@@ -81,7 +81,9 @@
       material: /cotton/i.test(category) ? 'Cotton' : 'Silk',
       createdAt: raw.createdAt ? Date.parse(raw.createdAt) || 0 : 0,
       stock,
-      inStock: stock > 0
+      inStock: stock > 0,
+      // false when the saree only has the shared starter photos (assets/img/saree-N.jpg)
+      ownPhoto: !images.every((u) => /assets\/img\/saree-\d\.jpg$/.test(u))
     };
   }
 

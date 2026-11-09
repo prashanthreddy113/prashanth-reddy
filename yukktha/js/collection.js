@@ -58,7 +58,7 @@
       za: (x, y) => y.title.localeCompare(x.title)
     }[state.sort] || (() => 0);
     // Featured: in stock first, sarees with their own photo gallery first, then newest.
-    if (state.sort === 'featured') return a.sort((x, y) => (y.inStock - x.inStock) || (y.images.length - x.images.length) || (y.createdAt - x.createdAt));
+    if (state.sort === 'featured') return a.sort((x, y) => (y.inStock - x.inStock) || (y.ownPhoto - x.ownPhoto) || (y.images.length - x.images.length) || (y.createdAt - x.createdAt));
     return a.sort(cmp);
   }
 
