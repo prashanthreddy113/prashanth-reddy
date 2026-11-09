@@ -33,5 +33,9 @@ window.YUKKTHA_CONFIG = {
     projectSlug: 'yukktha'
   },
   // Set to false to always use data/sarees.json (no network call to Firestore).
-  liveCatalogue: true
+  liveCatalogue: true,
+  // Online checkout: Netlify forwards /api/* to the BrightLoop order and payment
+  // functions (see netlify.toml), which hold the Razorpay keys and write the
+  // order into Firestore, where the admin manages it.
+  checkoutApi: 'api/'
 };

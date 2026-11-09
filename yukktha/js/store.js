@@ -136,6 +136,23 @@
     return catalogue;
   }
 
+  // ---------- store settings (payment methods, discounts, GST) ----------
+  let project = null;
+  async function loadProject() {
+    if (project) return project;
+    project = (async () => {
+      const f = CFG.firebase;
+      try {
+        const res = await fetch('https://firestore.googleapis.com/v1/projects/' + f.projectId + '/databases/(default)/documents/projects/' + f.projectSlug + '?key=' + encodeURIComponent(f.apiKey));
+        if (!res.ok) throw new Error('project ' + res.status);
+        const body = await res.json(); const o = {};
+        Object.keys(body.fields || {}).forEach((k) => { o[k] = fsValue(body.fields[k]); });
+        return o;
+      } catch (e) { console.warn('Store settings unavailable:', e.message); return {}; }
+    })();
+    return project;
+  }
+
   // ---------- collections ----------
   function collections(items) {
     const cats = [];
@@ -203,7 +220,7 @@
 
   window.Yukktha = {
     CFG, slugify, inr, esc, SWATCH,
-    loadCatalogue, collections, bag, wishlist,
+    loadCatalogue, loadProject, collections, bag, wishlist,
     onChange(fn) { listeners.push(fn); },
     waLink, productLink, enquiryText, bagOrderText
   };

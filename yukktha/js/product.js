@@ -27,7 +27,7 @@
       '<p class="tax">' + (p.price ? 'Delivered across India. We confirm availability and delivery on WhatsApp.' : 'Call or WhatsApp us for today’s price.') + '</p>' +
       stockLine(p) +
       '<div class="pdp-actions">' +
-      (canBuy ? '<button class="btn btn-solid" id="addBag">Add to bag</button>' : '<a class="btn btn-solid" href="tel:' + Y.CFG.phoneIntl + '">Call to enquire</a>') +
+      (canBuy ? '<button class="btn btn-solid" id="addBag">Add to bag</button><button class="btn btn-buy" id="buyNow">Buy now</button>' : '<a class="btn btn-solid" href="tel:' + Y.CFG.phoneIntl + '">Call to enquire</a>') +
       '<button class="wish-lg' + (wished ? ' on' : '') + '" data-wish="' + esc(p.id) + '" aria-pressed="' + wished + '" aria-label="Save to wishlist">' + I.heart + '</button>' +
       '<a class="btn btn-wa" target="_blank" rel="noopener" href="' + Y.waLink(Y.enquiryText(p)) + '">' + I.wa + ' Order on WhatsApp</a>' +
       '</div>' +
@@ -58,6 +58,12 @@
       stage.addEventListener('mouseenter', () => stage.classList.add('zoom'));
       stage.addEventListener('mouseleave', () => stage.classList.remove('zoom'));
     }
+    const buy = $('buyNow');
+    if (buy) buy.addEventListener('click', () => {
+      const inBag = (Y.bag.items().find((r) => r.id === p.id) || {}).qty || 0;
+      if (!inBag) Y.bag.add(p.id, 1);
+      location.href = 'checkout.html';
+    });
     const add = $('addBag');
     if (add) add.addEventListener('click', () => {
       const inBag = (Y.bag.items().find((r) => r.id === p.id) || {}).qty || 0;

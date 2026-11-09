@@ -13,6 +13,16 @@
   [headers.values]
     Cache-Control = "public, max-age=300"
 
+# Online checkout: forward /api/* to the BrightLoop order & payment functions
+# (create-order, verify-payment). They hold the Razorpay keys and the Firebase
+# service account and write orders into Firestore. Proxying keeps the browser
+# on this site, so no cross-site (CORS) rules are needed.
+[[redirects]]
+  from = "/api/*"
+  to = "https://brightloopgroup.netlify.app/.netlify/functions/:splat"
+  status = 200
+  force = true
+
 # Friendly URLs: /collections/kanjivaram-silk -> collection page
 [[redirects]]
   from = "/collections/:slug"

@@ -198,9 +198,10 @@
       '</div><button class="icon-btn line-x" data-remove="' + esc(r.p.id) + '" aria-label="Remove">' + ICON.close + '</button></div>').join('');
     const total = rows.reduce((s, r) => s + r.p.price * r.qty, 0);
     foot.innerHTML = '<div class="subtotal"><span>Subtotal</span><strong>' + Y.inr(total) + '</strong></div>' +
-      '<p class="fine">Pan-India delivery. We confirm availability, delivery and payment with you on WhatsApp.</p>' +
-      '<a class="btn btn-solid btn-block" target="_blank" rel="noopener" href="' + Y.waLink(Y.bagOrderText(rows)) + '">' + ICON.wa + ' Order on WhatsApp</a>' +
-      '<a class="btn btn-outline btn-block" href="tel:' + CFG.phoneIntl + '">Call ' + CFG.phone + '</a>';
+      '<p class="fine">Pan-India delivery. Pay online securely, or cash on delivery where available.</p>' +
+      '<a class="btn btn-solid btn-block" href="checkout.html">Checkout · ' + Y.inr(total) + '</a>' +
+      '<p class="pay-badges" aria-label="Payment options">UPI · Google Pay · PhonePe · Cards · Net banking · Cash on delivery</p>' +
+      '<a class="btn btn-outline btn-block" target="_blank" rel="noopener" href="' + Y.waLink(Y.bagOrderText(rows)) + '">' + ICON.wa + ' Order on WhatsApp instead</a>';
   }
   function renderWish() {
     const body = document.getElementById('wishBody');

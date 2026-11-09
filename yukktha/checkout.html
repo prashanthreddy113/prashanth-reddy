@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | Yukktha — Timeless Royal Weaves</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#6b1b4e" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=DM+Sans:wght@400;500&family=Noto+Serif:wght@400;500&family=Open+Sans:wght@400;500;600&family=Poppins:wght@300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="checkout-page">
+  <main id="main" class="container">
+    <nav class="pdp-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><span>Bag</span><span>/</span><span>Checkout</span></nav>
+    <ol class="ck-steps" aria-label="Checkout steps"><li class="on">Bag</li><li class="on">Details & payment</li><li id="stepDone">Confirmed</li></ol>
+
+    <div id="ck">
+      <div class="ck-grid">
+        <form class="ck-form" id="ckForm" novalidate>
+          <section class="ck-sec">
+            <h2><span>1</span>Contact</h2>
+            <div class="ck-fields">
+              <label class="ck-field"><span>Full name</span><input name="name" autocomplete="name" required></label>
+              <label class="ck-field"><span>Mobile number</span><input name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="10-digit mobile" required></label>
+              <label class="ck-field full"><span>Email <em>(for your invoice — optional)</em></span><input name="email" type="email" autocomplete="email"></label>
+            </div>
+          </section>
+
+          <section class="ck-sec">
+            <h2><span>2</span>Delivery address</h2>
+            <div class="ck-fields">
+              <label class="ck-field full"><span>House / flat, street, area</span><textarea name="address" rows="2" autocomplete="street-address" required></textarea></label>
+              <label class="ck-field"><span>City</span><input name="city" autocomplete="address-level2" required></label>
+              <label class="ck-field"><span>State</span><input name="state" autocomplete="address-level1" value="Telangana" required></label>
+              <label class="ck-field"><span>Pincode</span><input name="pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" required></label>
+              <label class="ck-field"><span>Landmark <em>(optional)</em></span><input name="landmark"></label>
+              <label class="ck-field full"><span>Note for us <em>(optional)</em></span><input name="note" placeholder="Fall & pico, blouse stitching, gift wrap, delivery time…"></label>
+            </div>
+            <label class="ck-check"><input type="checkbox" name="remember" checked> Remember my details on this device</label>
+          </section>
+
+          <section class="ck-sec">
+            <h2><span>3</span>Payment</h2>
+            <div class="pm-grid" id="pmGrid" role="radiogroup" aria-label="Payment method"></div>
+            <p class="pm-note" id="pmNote"></p>
+            <div class="ck-secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Payments are processed securely by Razorpay. Yukktha never sees your card or UPI PIN.</div>
+          </section>
+
+          <p class="ck-err" id="ckErr" hidden></p>
+          <button class="btn btn-solid btn-block ck-pay" id="ckPay" type="submit">Pay securely</button>
+          <p class="ck-alt">Prefer to talk? <a id="ckWa" target="_blank" rel="noopener" href="#">Order on WhatsApp</a> or call <a href="tel:+918341448340">8341448340</a>.</p>
+        </form>
+
+        <aside class="ck-summary" id="ckSummary" aria-label="Order summary">
+          <h2>Order summary</h2>
+          <div id="ckLines" class="ck-lines"></div>
+          <label class="ck-coupon"><input id="ckCoupon" placeholder="Coupon code" autocomplete="off"><span>Applied when you place the order</span></label>
+          <div class="ck-totals" id="ckTotals"></div>
+          <ul class="ck-assure"><li>Handwoven, authentic weaves</li><li>Pan-India delivery</li><li>Prices include GST</li></ul>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
