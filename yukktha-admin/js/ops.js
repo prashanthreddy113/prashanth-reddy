@@ -17,7 +17,7 @@ export async function adjustStock(api, sareeId, delta, reason, ref) {
   return { before, after, tracked };
 }
 
-// Same rule as the BrightLoop admin: cancelling or returning puts stock back once;
+// Cancelling or returning puts stock back once;
 // un-cancelling takes it off again. `stockRestored` keeps it idempotent.
 export async function changeOrderStatus(api, order, newStatus) {
   const unwound = CONFIG.unwoundStatuses;

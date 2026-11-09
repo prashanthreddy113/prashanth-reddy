@@ -1,4 +1,4 @@
-// Checkout: contact + address + payment method -> BrightLoop create-order (via /api),
+// Checkout: contact + address + payment method -> create-order (via /api),
 // then Razorpay (or cash on delivery), then verify-payment. The order lands in the
 // same Firestore orders the Yukktha admin manages.
 (function () {

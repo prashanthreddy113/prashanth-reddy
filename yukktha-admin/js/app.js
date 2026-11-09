@@ -52,7 +52,7 @@ async function backend(mode) {
 // ---------- login ----------
 function loginView(msg) {
   root.innerHTML = '<div class="login"><div class="login-card">' + LOGO +
-    '<h1>Store admin</h1><p class="muted">Sign in with your Yukktha admin account — the same one you use on the BrightLoop admin.</p>' +
+    '<h1>Store admin</h1><p class="muted">Sign in with your Yukktha admin account.</p>' +
     '<form id="loginForm" class="stack"><label class="field"><span>Email</span><input name="email" type="email" autocomplete="username" required></label>' +
     '<label class="field"><span>Password</span><input name="password" type="password" autocomplete="current-password" required minlength="6"></label>' +
     '<p class="form-err" id="loginErr"' + (msg ? '' : ' hidden') + '>' + esc(msg || '') + '</p>' +

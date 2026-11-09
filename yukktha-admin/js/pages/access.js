@@ -17,7 +17,7 @@ export default {
     const role = (u) => u.role === 'super_admin' ? 'Super Admin' : (u.isMaster ? 'Owner' : 'Staff Admin');
     const draw = () => {
       view.innerHTML = '<div class="alert info"><strong>Who can log in to this admin</strong><p>Owners can do everything. Staff admins can bill, manage sarees, orders, customers, coupons and attendance — but not payments, salaries, expenses, reports or settings, and they can’t cancel orders.</p></div>' +
-        (err ? '<div class="alert warn"><strong>Can’t list team members</strong><p>' + esc(err.message) + ' The BrightLoop admin (Team tab) can always manage access.</p></div>' : '') +
+        (err ? '<div class="alert warn"><strong>Can’t list team members</strong><p>' + esc(err.message) + ' Ask the store owner (super admin) to check the Firestore rules for the users collection.</p></div>' : '') +
         '<div class="bar"><span class="grow"></span><button class="btn primary" id="inv">+ Invite someone</button></div>' +
         '<div class="grid2"><div class="card"><h3>Active logins</h3>' + (users.length ? '<div class="list">' + users.map((u) => '<div class="list-row" data-id="' + esc(u.id) + '"><div class="grow"><div class="cell-main">' + esc(u.email) + (u.id === session.uid ? ' (you)' : '') + '</div><div class="cell-sub">' + role(u) + '</div></div>' +
           (u.role !== 'super_admin' && u.id !== session.uid ? '<label class="check tiny"><input type="checkbox" data-master' + (u.isMaster ? ' checked' : '') + '> Owner</label><button class="icon-btn" data-rm title="Remove access">🗑</button>' : '') + '</div>').join('') + '</div>' : empty('No other logins yet.')) + '</div>' +

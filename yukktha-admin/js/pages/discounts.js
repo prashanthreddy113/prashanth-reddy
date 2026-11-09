@@ -90,7 +90,7 @@ async function banners(pane, ctx) {
   let rows = await api.list('banners');
   const draw = () => {
     rows.sort((a, b) => ts(b.createdAt) - ts(a.createdAt));
-    pane.innerHTML = '<div class="bar"><p class="muted grow" style="margin:0">Active banners scroll along the top of the BrightLoop store page — use them for new stock, sales and exhibitions.</p><button class="btn primary" id="add">+ New banner</button></div>' +
+    pane.innerHTML = '<div class="bar"><p class="muted grow" style="margin:0">Active banners appear on the website — use them for new stock, sales and exhibitions.</p><button class="btn primary" id="add">+ New banner</button></div>' +
       '<div class="table-wrap"><table class="t"><thead><tr><th>Title</th><th>Message</th><th>Button</th><th>Status</th><th></th></tr></thead><tbody>' +
       (rows.length ? rows.map((b) => '<tr data-id="' + esc(b.id) + '"><td class="cell-main">' + esc(b.title) + '</td><td>' + esc(b.message || '') + '</td><td class="cell-sub">' + esc(b.ctaLabel || '') + (b.ctaLink ? ' → ' + esc(b.ctaLink) : '') + '</td><td><button class="btn sm" data-toggle>' + (b.active ? '<span class="pill ok">Live</span> Turn off' : '<span class="pill">Off</span> Turn on') + '</button></td><td class="acts"><button class="icon-btn" data-edit>✎</button><button class="icon-btn" data-del>🗑</button></td></tr>').join('') : '<tr><td colspan="5">' + empty('No banners yet.') + '</td></tr>') + '</tbody></table></div>';
     $('#add').onclick = () => edit(null);

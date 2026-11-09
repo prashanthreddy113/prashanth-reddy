@@ -1,7 +1,7 @@
 // Yukktha storefront settings.
 //
 // Catalogue: the site reads the live saree list from the same Firestore
-// project the BrightLoop admin writes to (projects/yukktha/sarees), so a saree
+// project the Yukktha admin writes to (projects/yukktha/sarees), so a saree
 // added in the admin shows up here without a redeploy. If Firestore can't be
 // reached, it falls back to the snapshot in data/sarees.json.
 //
@@ -38,7 +38,7 @@ window.YUKKTHA_CONFIG = {
   },
   // Set to false to always use data/sarees.json (no network call to Firestore).
   liveCatalogue: true,
-  // Online checkout: Netlify forwards /api/* to the BrightLoop order and payment
+  // Online checkout: Netlify forwards /api/* to the order and payment
   // functions (see netlify.toml), which hold the Razorpay keys and write the
   // order into Firestore, where the admin manages it.
   checkoutApi: 'api/',

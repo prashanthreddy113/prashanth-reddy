@@ -1,6 +1,5 @@
 // Admin-managed banners: home "spotlight" slideshow, site-wide top ribbon, offer pop-up.
-// Reads projects/<slug>/banners where active == true (same collection the BrightLoop
-// admin and the Yukktha admin write). Also renders previews sent from the admin.
+// Reads projects/<slug>/banners where active == true (managed in the Yukktha admin). Also renders previews sent from the admin.
 (function () {
   const Y = window.Yukktha; const CFG = Y.CFG; const F = CFG.firebase; const esc = Y.esc;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -1,7 +1,7 @@
 // Customer accounts and reviews.
 //
 // Accounts use the same Firebase Auth + projects/<slug>/customers/<uid> profile
-// as the BrightLoop store page, so existing customer logins work here too, and
+// as the earlier Yukktha store page, so existing customer logins work here too, and
 // orders placed while signed in carry customerUid (which unlocks the first-order
 // discount and the "My orders" list).
 //
@@ -71,7 +71,7 @@
       await D.setDoc(D.doc(db, 'projects', slug, 'customers', user.uid), profile, { merge: true });
       state.user = user; state.profile = profile; emit();
     }),
-    // Signed in with an account from another BrightLoop store: add a Yukktha profile to it.
+    // Signed in with a login that has no Yukktha profile yet: add one to it.
     joinStore: wrap(async ({ name, phone }) => {
       const { D, auth, db } = await boot(); const user = auth.currentUser; if (!user) throw new Error('Please sign in first.');
       if (!/^[6-9]\d{9}$/.test(tenDigits(phone))) throw new Error('Please enter a valid 10-digit mobile number.');

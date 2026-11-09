@@ -1,6 +1,5 @@
 // Yukktha admin settings.
-// The admin works on the same Firebase project as the storefront and the
-// BrightLoop admin (projects/<projectSlug>/...), so every change shows up on
+// The admin works on the same Firebase project as the storefront (projects/<projectSlug>/...), so every change shows up on
 // the website straight away.
 export const CONFIG = {
   projectSlug: 'yukktha',
@@ -14,7 +13,7 @@ export const CONFIG = {
     appId: '1:902075156235:web:3e7401868a2ad30da7c40e'
   },
   firebaseSdk: 'https://www.gstatic.com/firebasejs/10.12.2/',
-  // Order statuses, matching the BrightLoop admin and storefront checkout.
+  // Order statuses, matching the storefront checkout.
   orderStatuses: ['pending_payment', 'paid', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled', 'returned'],
   unwoundStatuses: ['cancelled', 'returned'],
   lowStockAt: 2

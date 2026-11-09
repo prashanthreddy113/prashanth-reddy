@@ -1,4 +1,4 @@
-// Live backend: Firebase Auth + Firestore, same documents the BrightLoop admin uses.
+// Live backend: Firebase Auth + Firestore, the Yukktha store's documents.
 import { CONFIG } from '../config.js';
 
 const SDK = CONFIG.firebaseSdk;
@@ -61,7 +61,7 @@ export async function createFirebaseBackend() {
       session = await loadSession(cred.user); return session;
     },
     async signUp(email, password) {
-      // Mirrors the BrightLoop invite flow: an owner creates invites/<email>; the
+      // Invite flow: an owner creates invites/<email>; the
       // invited person chooses a password here and claims it.
       const lower = email.toLowerCase();
       const cred = await A.createUserWithEmailAndPassword(auth, email, password);
