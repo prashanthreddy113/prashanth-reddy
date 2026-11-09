@@ -24,9 +24,27 @@ Collection slugs: `all`, `new-arrivals`, `under-10000`, one per weave
 `occasion-housewarming`, `occasion-special-occasion`, `occasion-daily-wear`).
 
 Bag and wishlist live in the visitor's browser. `checkout.html` takes the order
-online (UPI, cards, net banking, cash on delivery) through the BrightLoop
-order and payment functions (forwarded via `/api/*` in `netlify.toml`); WhatsApp
-ordering stays available.
+online (UPI, cards, net banking, cash on delivery); WhatsApp ordering stays
+available.
+
+## Checkout service (netlify/functions)
+
+Yukktha's own serverless checkout, served at `/api/*`:
+
+| Function | Does |
+| --- | --- |
+| `create-order` | Re-prices the bag from Firestore, checks stock, validates the coupon, applies the first-order discount (only for a verified signed-in customer — the Firebase ID token is checked), GST (included), COD limit and enabled payment methods; writes the order; creates the Razorpay order |
+| `verify-payment` | Checks Razorpay's signature, marks the order paid once (stock down, coupon used, customer updated) |
+| `razorpay-webhook` | Same, triggered by Razorpay `payment.captured` if the customer closes the browser |
+| `checkout-status` | Which mode is running (shown in Admin → Payments) |
+
+Environment variables (Netlify → yukktha-sarees → Environment variables, scope Functions):
+`FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` (from a Firebase service-account key),
+`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, optional `RAZORPAY_WEBHOOK_SECRET`.
+
+- No Firebase key yet → requests are forwarded to the previous checkout service.
+- Firebase key, no Razorpay keys → test mode (no money charged; orders marked TEST in the admin).
+- Both → live payments.
 
 ## Banners
 

@@ -13,14 +13,24 @@
   [headers.values]
     Cache-Control = "public, max-age=300"
 
-# Online checkout: forward /api/* to the order & payment functions
-# (create-order, verify-payment). They hold the Razorpay keys and the Firebase
-# service account and write orders into Firestore. Proxying keeps the browser
-# on this site, so no cross-site (CORS) rules are needed.
+# Yukktha's own checkout service (netlify/functions): create-order, verify-payment,
+# razorpay-webhook, checkout-status. Until the Firebase keys are added as environment
+# variables, the functions pass orders to the previous service, so checkout never breaks.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[redirects]]
   from = "/api/*"
-  to = "https://brightloopgroup.netlify.app/.netlify/functions/:splat"
+  to = "/.netlify/functions/:splat"
   status = 200
+  force = true
+
+# the function source lives inside the published folder — never serve it as files
+[[redirects]]
+  from = "/netlify/*"
+  to = "/index.html"
+  status = 404
   force = true
 
 # Friendly URLs: /collections/kanjivaram-silk -> collection page

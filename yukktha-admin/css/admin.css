@@ -298,3 +298,5 @@ table.t { width: 100%; border-collapse: collapse; }
 .theme-pick input:checked + i { box-shadow: 0 0 0 2px var(--accent); transform: scale(1.06); }
 .theme-pick small { font-size: 11px; color: var(--muted); }
 @media (max-width: 1100px) { .bnr-editor { grid-template-columns: 1fr; } .bnr-preview { position: static; } .pv-wrap { height: 520px; } .bnr { grid-template-columns: 110px 1fr; } .bnr-acts { grid-column: 1 / -1; justify-content: flex-end; } }
+.steps { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 8px; color: #3c3539; font-size: 13.5px; }
+.steps code { font-size: 12px; background: var(--blush); padding: 1px 5px; border-radius: 4px; }

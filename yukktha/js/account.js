@@ -79,6 +79,8 @@
       await D.setDoc(D.doc(db, 'projects', slug, 'customers', user.uid), profile, { merge: true });
       state.profile = profile; emit();
     }),
+    // Firebase ID token so the checkout service can verify who is ordering
+    idToken: async () => { try { const { auth } = await boot(); return auth.currentUser ? await auth.currentUser.getIdToken() : null; } catch (e) { return null; } },
     signOut: wrap(async () => { const { A, auth } = await boot(); await A.signOut(auth); }),
     resetPassword: wrap(async (email) => { const { A, auth } = await boot(); await A.sendPasswordResetEmail(auth, email.trim()); }),
     updateProfile: wrap(async (patch) => {

@@ -92,7 +92,9 @@
   // ---------- API ----------
   async function post(fn, body) {
     let res;
-    try { res = await fetch(API + fn, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
+    const headers = { 'Content-Type': 'application/json' };
+    if (Y.account && Y.account.signedIn()) { const t = await Y.account.idToken(); if (t) headers.Authorization = 'Bearer ' + t; }
+    try { res = await fetch(API + fn, { method: 'POST', headers, body: JSON.stringify(body) }); }
     catch (e) { throw new Error('No connection. Check your internet and try again.'); }
     let data = {}; try { data = await res.json(); } catch (e) { /* non-JSON */ }
     if (!res.ok) throw new Error(data.error || 'Something went wrong (' + res.status + '). Please try again or order on WhatsApp.');
@@ -131,7 +133,7 @@
       };
       if (data.dummy) {
         // The shop hasn't connected live Razorpay keys yet: the backend runs a test gateway.
-        btn.textContent = 'Processing ' + PAY[pay].label + ' (test mode)…';
+        btn.textContent = 'Test mode — no money is charged…';
         await new Promise((ok) => setTimeout(ok, 1200));
         await verify('pay_test_' + pay + '_' + Date.now(), 'dummy');
         return;
