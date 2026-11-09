@@ -28,6 +28,16 @@ online (UPI, cards, net banking, cash on delivery) through the BrightLoop
 order and payment functions (forwarded via `/api/*` in `netlify.toml`); WhatsApp
 ordering stays available.
 
+## Banners
+
+`js/banners.js` + `css/banners.css` show the live banners from
+`projects/yukktha/banners` (managed in Admin → Banners): a spotlight
+slideshow after the trust strip on the home page (animated silk light,
+sparkles, letter-by-letter gold headline, 3D-tilting framed photo, flip
+countdown, coupon ticket with confetti), a dismissible shimmering ribbon above
+the announcement bar, and a once-per-visit pop-up with falling petals.
+`banner-preview.html` renders previews sent from the admin editor.
+
 ## Customer accounts & reviews
 
 `account.html`: sign in, create an account, reset password; then My orders,

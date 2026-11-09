@@ -5,8 +5,9 @@ const genCode = () => 'YK' + Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRST
 export default {
   id: 'discounts', title: 'Discounts & offers', group: 'Catalogue', icon: 'tag',
   async render(view, ctx) {
-    const tab = ['coupons', 'sale', 'first', 'banners'].includes(ctx.param) ? ctx.param : 'coupons';
-    const tabs = [['coupons', 'Coupons'], ['sale', 'Sale by weave'], ['first', 'First-order discount'], ['banners', 'Offer banners']];
+    if (ctx.param === 'banners') { ctx.go('#/banners'); return; }
+    const tab = ['coupons', 'sale', 'first'].includes(ctx.param) ? ctx.param : 'coupons';
+    const tabs = [['coupons', 'Coupons'], ['sale', 'Sale by weave'], ['first', 'First-order discount']];
     view.innerHTML = '<div class="tabs">' + tabs.map(([k, l]) => '<button data-t="' + k + '" class="' + (k === tab ? 'on' : '') + '">' + l + '</button>').join('') + '</div><div id="pane"></div>';
     $$('[data-t]', view).forEach((b) => b.addEventListener('click', () => ctx.go('#/discounts/' + b.dataset.t)));
     try { await ({ coupons, sale, first, banners })[tab]($('#pane'), ctx); } catch (e) { $('#pane').innerHTML = '<div class="alert warn"><strong>Not available</strong><p>' + esc(e.message) + '</p></div>'; }

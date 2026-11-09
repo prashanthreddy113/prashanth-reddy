@@ -16,6 +16,7 @@ saree, price, discount or offer saved here is live on the website at once.
 | Sarees | Add / edit with up to 5 photos (auto-resized), MRP, discount, cost price, SKU, colour, stock mode; bulk discount / weave / out-of-stock / delete; CSV export |
 | Stock & suppliers | Stock levels and value, add / remove with reasons, full stock history, suppliers (weavers) and purchase bills with balance due and payments |
 | Reviews | Approve, hide or reply to customer reviews; shows whether the reviewer bought the saree; average rating |
+| Banners | Animated website banners: home-page **spotlight** slideshow, **top ribbon** on every page, offer **pop-up**; colour themes, photo, button link, coupon, start/end schedule with live countdown, priority, show/hide switch, duplicate; live desktop/phone preview of the real website |
 | Discounts & offers | Single-use coupons (bulk generate, WhatsApp message), sale % by weave, first-order discount, offer banners |
 | Employees | Staff directory, daily attendance (present / half / absent / leave), monthly salary with absence deduction, sales commission and advances, mark salary paid |
 | Expenses | Monthly expenses by category, copy fixed costs from last month, CSV export |
