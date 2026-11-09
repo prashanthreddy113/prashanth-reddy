@@ -110,14 +110,14 @@
           ? '<div class="rv-avg"><strong>' + avg.toFixed(1) + '</strong>' + A.stars(avg, 'lg') + '<span>Based on ' + count + ' review' + (count > 1 ? 's' : '') + '</span></div>' +
             '<div class="rv-dist">' + dist.map((d) => '<div><span>' + d.n + ' ★</span><i><b style="width:' + (count ? d.c / count * 100 : 0) + '%"></b></i><em>' + d.c + '</em></div>').join('') + '</div>'
           : '<div class="rv-none"><p>No reviews yet.</p><p class="muted-p">Bought this saree? Share how it looked and felt — it helps other customers choose.</p></div>') + '</div>' +
-        '<div class="rv-list">' + (list.length ? list.slice(0, shown).map((r) => '<article class="rv"><div class="rv-top">' + A.stars(r.rating) + (r.verified ? '<span class="rv-verified">✓ Verified buyer</span>' : '') + '</div>' + (r.title ? '<h3>' + esc(r.title) + '</h3>' : '') + '<p>' + esc(r.text) + '</p><footer>' + esc(r.name || 'Customer') + ' · ' + new Date(r.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) + '</footer>' + (r.storeReply ? '<div class="rv-reply"><b>Yukktha replied</b>' + esc(r.storeReply) + '</div>' : '') + '</article>').join('') +
+        '<div class="rv-list">' + (list.length ? list.slice(0, shown).map((r) => '<article class="rv"><div class="rv-top">' + A.stars(r.rating) + (r.verified ? '<span class="rv-verified">✓ Verified buyer</span>' : '') + '</div>' + (r.title ? '<h3>' + esc(r.title) + '</h3>' : '') + '<p>' + esc(r.text) + '</p><footer>' + esc(r.name || 'Customer') + (r.source ? ' · ' + esc(({ store: 'Shared in store', whatsapp: 'Shared on WhatsApp', phone: 'Shared on a call', email: 'Shared by email', instagram: 'Shared on Instagram' })[r.source] || 'Shared with the shop') : '') + ' · ' + new Date(r.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) + '</footer>' + (r.storeReply ? '<div class="rv-reply"><b>Yukktha replied</b>' + esc(r.storeReply) + '</div>' : '') + '</article>').join('') +
           (list.length > shown ? '<button class="btn btn-outline" id="rvMore">Show more reviews</button>' : '') : '') + '</div></div>';
       $('rvWrite').addEventListener('click', write);
       const more = $('rvMore'); if (more) more.addEventListener('click', () => { shown += 6; draw(); });
     };
     async function write() {
       await A.ready();
-      if (!A.signedIn()) { location.href = 'account.html?next=' + encodeURIComponent('product.html?id=' + p.id); return; }
+      if (!A.signedIn()) { location.href = 'account.html?next=' + encodeURIComponent('product.html?id=' + p.id + '#write-review'); return; }
       const dlg = document.createElement('div'); dlg.className = 'rv-modal';
       dlg.innerHTML = '<form class="rv-form" novalidate><button type="button" class="icon-btn rv-x" aria-label="Close">' + I.close + '</button><h3>Review this saree</h3><p class="rv-prod">' + esc(p.title) + '</p>' +
         '<div class="rv-pick" role="radiogroup" aria-label="Your rating">' + [1, 2, 3, 4, 5].map((n) => '<label><input type="radio" name="rating" value="' + n + '"><span aria-hidden="true">★</span><em class="sr">' + n + ' star</em></label>').join('') + '<b id="rvLbl">Tap to rate</b></div>' +
@@ -144,6 +144,7 @@
       setTimeout(() => pick.querySelector('input').focus(), 50);
     }
     draw();
+    if (location.hash === '#write-review') { wrap.scrollIntoView({ behavior: 'smooth' }); setTimeout(write, 600); }
   }
 })();
 

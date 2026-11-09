@@ -29,7 +29,7 @@
       $('fUp').addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target; busy(f, true, 'Creating account…'); msg(m, ''); try { await A.signUp({ name: f.name.value, phone: f.phone.value, email: f.email.value, password: f.password.value }); afterLogin(); } catch (ex) { msg(m, ex.message, 'err'); busy(f, false, 'Create account'); } });
     }
   }
-  function afterLogin() { if (next && /^[a-z0-9-]+\.html(\?[^#]*)?$/i.test(next)) location.href = next; else render(); }
+  function afterLogin() { if (next && /^[a-z0-9-]+\.html(\?[^#]*)?(#[a-z-]+)?$/i.test(next)) location.href = next; else render(); }
 
   function joinView() {
     root.innerHTML = '<section class="acct-join"><h1>Complete your Yukktha profile</h1><p>You’re signed in as <b>' + esc(A.state.user.email) + '</b> from another store. Add your details to shop at Yukktha with the same login.</p>' +

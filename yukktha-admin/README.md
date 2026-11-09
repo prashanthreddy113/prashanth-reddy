@@ -78,6 +78,8 @@ match /projects/{slug}/reviews/{id} {
               && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
               && request.resource.data.text is string && request.resource.data.text.size() <= 2000;
   allow update, delete: if yAdmin(slug);
+  // staff entering a real customer's feedback (shown with its source)
+  allow create: if yAdmin(slug) && request.resource.data.source is string;
 }
 ```
 

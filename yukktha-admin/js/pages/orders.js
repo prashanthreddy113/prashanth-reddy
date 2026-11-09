@@ -28,6 +28,12 @@ export default {
         (!q || [o.customerName, o.customerPhone, o.customerEmail, o.invoiceNo, o.id, (o.items || []).map((i) => i.name).join(' ')].join(' ').toLowerCase().includes(q)))
         .sort((a, b) => ts(b.createdAt) - ts(a.createdAt));
     }
+    function askLink(o) {
+      const phone = String(o.customerPhone).replace(/\D/g, '').replace(/^(\d{10})$/, '91$1');
+      const it = (o.items || []).find((i) => i.itemId);
+      const link = CONFIG.storefrontUrl + 'product.html?id=' + encodeURIComponent(it.itemId) + '#write-review';
+      return 'https://wa.me/' + phone + '?text=' + encodeURIComponent('Namaste ' + (o.customerName || '').split(' ')[0] + ', thank you for choosing Yukktha! We hope you love your ' + it.name + '. Could you take a minute to rate it? ' + link);
+    }
     function draw() {
       const r = filtered(); const pages = Math.max(1, Math.ceil(r.length / PAGE)); st.page = Math.min(st.page, pages - 1);
       const counted = r.filter((o) => !CONFIG.unwoundStatuses.includes(o.status) && o.status !== 'pending_payment');
@@ -38,7 +44,7 @@ export default {
         '<td><div class="cell-main">' + esc(o.customerName || '—') + '</div><div class="cell-sub">' + esc(o.customerPhone || o.customerEmail || '') + '</div></td>' +
         '<td>' + (o.items || []).map((i) => esc(i.name) + (num(i.qty, 1) > 1 ? ' × ' + num(i.qty) : '')).join('<br>') + '</td>' +
         '<td class="r"><strong>' + inr(orderTotal(o)) + '</strong></td><td>' + esc(PAY_LABEL[o.paymentMethod] || o.paymentMethod || '—') + '</td>' +
-        '<td><select class="status-sel" data-st>' + statusOptions(o) + '</select></td><td class="acts"><button class="btn sm" data-view>View</button></td></tr>').join('')
+        '<td><select class="status-sel" data-st>' + statusOptions(o) + '</select></td><td class="acts">' + (o.status === 'completed' && o.customerPhone && (o.items || []).some((i) => i.itemId) ? '<a class="btn sm" target="_blank" rel="noopener" title="Send the customer a WhatsApp link to review what they bought" href="' + esc(askLink(o)) + '">Ask for review</a> ' : '') + '<button class="btn sm" data-view>View</button></td></tr>').join('')
         : '<tr><td colspan="8">' + empty('No orders match.') + '</td></tr>';
       $('#pg').innerHTML = '<span>Page ' + (st.page + 1) + ' of ' + pages + '</span><span><button class="btn sm" id="prev"' + (st.page ? '' : ' disabled') + '>Previous</button> <button class="btn sm" id="next"' + (st.page < pages - 1 ? '' : ' disabled') + '>Next</button></span>';
       $('#prev').onclick = () => { st.page--; draw(); }; $('#next').onclick = () => { st.page++; draw(); };
