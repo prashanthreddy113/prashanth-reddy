@@ -1,5 +1,7 @@
 # BrightLoop Reading Room – Admin
 
+> **Also in this repo:** [`praja-seva/`](praja-seva/README.md) is a separate citizen-grievance and municipal-services app for a Telangana municipality. It serves both the public and the municipal departments, runs on plain Node.js and has no dependencies.
+
 A complete admin console for the BrightLoop reading room. Admins register students, assign seat numbers, track fees, and see at a glance whose subscription is due.
 
 | Layer | Tech |

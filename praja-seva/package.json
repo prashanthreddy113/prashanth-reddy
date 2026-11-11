@@ -1,0 +1,14 @@
+{
+  "name": "praja-seva",
+  "version": "1.0.0",
+  "description": "Citizen grievance and municipal services app for a Telangana urban local body: one app for the public and the municipal departments.",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "server/index.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "demo": "DEMO=1 node server/index.js",
+    "test": "node --test test/*.test.js"
+  }
+}
