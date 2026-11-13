@@ -4,6 +4,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const { Store, seed } = require('./store');
+const { seedStructure, seedDemo } = require('./seed-demo');
 const { createApi, HttpError } = require('./api');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
@@ -29,6 +30,9 @@ function createServer({ dataDir, demo = false, sendSms, quiet = false } = {}) {
     console.log(`\nFirst run: staff accounts created. Change these passwords after first login.\n${lines}\n`);
     if (!demo) fs.writeFileSync(path.join(store.dir, 'initial-credentials.txt'), lines + '\n', { mode: 0o600 });
   }
+  seedStructure(store);
+  if (demo && !process.env.NO_DEMO_DATA) seedDemo(store);
+  store.flush();
   const api = createApi(store, { demo, sendSms });
 
   const server = http.createServer(async (req, res) => {
@@ -37,6 +41,10 @@ function createServer({ dataDir, demo = false, sendSms, quiet = false } = {}) {
       if (url.pathname.startsWith('/api/')) {
         const body = ['POST', 'PATCH', 'PUT'].includes(req.method) ? await readJson(req) : null;
         const result = await api.handle(req, res, url, body);
+        if (result && result.__raw !== undefined) {
+          res.writeHead(200, { 'Content-Type': result.type, 'Content-Disposition': `attachment; filename="${result.filename}"`, 'Cache-Control': 'no-store', ...SECURITY_HEADERS });
+          return res.end(result.__raw);
+        }
         return send(res, 200, JSON.stringify(result ?? { ok: true }), 'application/json');
       }
       return serveStatic(url.pathname, res);
@@ -77,8 +85,14 @@ function send(res, status, body, type) {
 }
 
 function serveStatic(pathname, res) {
-  let rel = decodeURIComponent(pathname);
-  if (rel === '/' || !path.extname(rel)) rel = '/index.html'; // single-page app
+  let rel;
+  try { rel = decodeURIComponent(pathname); } catch { return send(res, 400, 'Bad request', 'text/plain'); }
+  // Three sites on one server: the public portal (/), the citizen app (/app/)
+  // and the municipal office console (/office/), which shares the app's code.
+  if (rel === '/app' || rel === '/office') { res.writeHead(301, { Location: rel + '/', ...SECURITY_HEADERS }); return res.end(); }
+  if (rel.startsWith('/office/')) rel = '/app/' + rel.slice('/office/'.length);
+  if (rel.startsWith('/app/') && !path.extname(rel)) rel = '/app/index.html';
+  else if (rel === '/' || !path.extname(rel)) rel = '/index.html';
   const file = path.normalize(path.join(PUBLIC_DIR, rel));
   if (!file.startsWith(PUBLIC_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain');
   fs.readFile(file, (err, buf) => {

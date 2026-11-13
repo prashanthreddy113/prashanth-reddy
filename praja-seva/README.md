@@ -1,32 +1,32 @@
-# Praja Seva — one app for citizens and the municipality
+# Praja Seva: municipal websites for citizens and the municipality
 
-Praja Seva connects the people of a Telangana municipality (or corporation) with its departments and its elected head (Chairperson or Mayor). Citizens report problems and track them. Officers work a queue with deadlines. The Chairperson and Commissioner see the whole town on one dashboard.
+Praja Seva gives a Telangana municipality (or corporation) three connected websites served from one Node.js server. It needs no packages to install, works in English and Telugu, and works on phones and desktops.
 
-It runs on plain Node.js (20 or later) and needs no packages to install. It works in English and Telugu, on phones and desktops, and can be installed as an app from the browser (PWA).
+| Website | Address | For | What it does |
+| --- | --- | --- | --- |
+| **Municipal portal** | `/` | Everyone, no login | Home page with live numbers, the Citizen Charter with deadlines, tracking by number, development works, the live service report (KPI scorecard and ward heat map), council meetings and resolutions, ward pages with councillors and committees, the budget with its green-budget share, the vision and 100-day plan, notices and tenders, and contacts |
+| **Citizen services** | `/app/` | Citizens (mobile + OTP) | Report a problem with a photo and GPS, apply for 10 online services, track complaints and applications, rate or reopen work, pay property tax, request a meeting with the Chairperson |
+| **Municipal office** | `/office/` | Chairperson/Mayor, Commissioner, officers, ward officers | The department console, described below |
 
-## What it does
+**Municipal office modules**
 
-**Citizens (mobile number + OTP login)**
-- Report a problem in 17 categories: garbage, drains, water supply, streetlights, roads, stray dogs, encroachment, certificates and more. Each report can carry a photo, a GPS location and a ward.
-- Get a complaint number (`PS-2026-000123`), a deadline, the assigned officer and a status timeline.
-- Rate the work when it is resolved, or reopen it within 7 days if it was not fixed.
-- Look up property tax by assessment number and pay it (demo payment; see Production below).
-- Ask for a meeting with the Chairperson (Praja Vani).
-- Read municipal notices for everyone or for their own ward.
-- See the public service report: totals, open, resolved, the share resolved on time, and the average rating.
+| Area | Modules |
+| --- | --- |
+| Overview | Dashboard; printable **review report** (one page for CM, Minister or Collector reviews); KPI scorecard against the blueprint's targets |
+| Citizen services | Complaint queue with assignment, deadlines and escalation; walk-in complaint registration (Praja Vani, helpline, ward committee); service-application queue (verify, approve, issue, reject); Praja Vani appointments |
+| Field work | Field inspections, which can be turned into tracked complaints in one click; development works with scheme, sanctioned amount, spending, progress and update history |
+| Governance | Council meetings (schedule, agenda, minutes, resolutions, publish to the portal); ward committees (members by youth, women, senior and eminent citizens, meeting log, coverage map); wards and councillors; 100-day / 1-year / 5-year action plan |
+| Finance | Budget heads with allocation, spending and green-budget share; property-tax collection by ward |
+| Administration | Notices, tenders and events; staff accounts; audit log; CSV export of complaints, works and applications; own password |
 
-**Municipal staff (username + password)**
+Roles are enforced on the server:
+- The Chairperson and Commissioner see and manage everything.
+- Department officers see their own department's complaints and applications. They can update a work's progress, but not its money.
+- Ward officers manage only their own ward's complaints, committees and inspections.
 
-| Role | Sees | Can do |
-| --- | --- | --- |
-| Chairperson / Mayor | Everything | Dashboard, all complaints, action-plan tracker, Praja Vani meeting requests, notices, staff accounts, audit log, tax collection |
-| Commissioner | Everything | Same as the Chairperson |
-| Department officer | Complaints for their department | Assign within the department, start work, resolve, reject (with a remark) |
-| Ward officer | Complaints in their ward | Assign, start work, resolve, reject |
+**Escalation:** each complaint type has a target time in hours, set in `server/config.js`. A complaint past its deadline counts as escalated to the Commissioner. Once it is late by a further full target period, it counts as escalated to the Chairperson. Escalated complaints sort to the top of the queue.
 
-- **Deadlines and escalation:** each category has a target time in hours, set in `server/config.js`. A complaint past its deadline counts as escalated to the Commissioner. Once it is late by a further full target period, it counts as escalated to the Chairperson. Escalated complaints sort to the top of the queue.
-- **Action-plan tracker:** comes pre-loaded with the blueprint's 100-day, 1-year and 5-year items.
-- **Audit log:** records every login, assignment, status change, payment and edit.
+**Audit log:** records every login, assignment, status change, payment and edit.
 
 ## Run it
 
@@ -35,7 +35,7 @@ cd praja-seva
 npm run demo        # demo mode: OTP shown on screen, demo payments, staff password demo1234
 ```
 
-Open http://localhost:8080. Demo staff usernames are `chairperson`, `commissioner`, `sanitation`, `engineering`, `electrical`, `townplanning`, `revenue`, `greenery`, `admin` and `ward1`. Demo assessment numbers run from `1000000001` to `1000000006`.
+Open http://localhost:8080 for the portal, http://localhost:8080/app/ for citizen services and http://localhost:8080/office/ for the municipal office. Demo mode also loads sample activity so every page has data to review: 64 complaints, 8 works, 3 council meetings, ward committees, inspections, budget figures, KPI entries and 60 tax assessments. Set `NO_DEMO_DATA=1` to skip it. Demo staff usernames are `chairperson`, `commissioner`, `sanitation`, `engineering`, `electrical`, `townplanning`, `revenue`, `greenery`, `admin` and `ward1`. Demo assessment numbers run from `1000000001` to `1000000006`.
 
 ```bash
 npm test            # API tests (Node's built-in test runner)
@@ -54,8 +54,10 @@ npm start           # production mode: random staff passwords, printed once and 
 | `PORT` | `8080` | 8080 |
 | `DATA_DIR` | `/data` | `./data` |
 | `DEMO` | `1` for demo mode | off |
+| `HEAD_NAME`, `COMMISSIONER_NAME` | Names shown on the portal | "to be updated" |
+| `HELPLINE`, `CONTACT_EMAIL`, `OFFICE_ADDRESS`, `OFFICE_HOURS`, `PRAJA_VANI` | Portal contact details | placeholders |
 
-Categories, departments and deadline hours live in `server/config.js`.
+Categories, departments, deadline hours, online services, work types, schemes and KPI targets live in `server/config.js`.
 
 ### Docker
 
@@ -80,10 +82,13 @@ Demo mode is for trying the app. Before real citizens use it:
 
 ```
 praja-seva/
-  server/config.js   categories, departments, deadline hours, town settings
-  server/store.js    JSON store with atomic writes, password hashing, first-run seed
-  server/api.js      REST API, roles, validation, escalation, statistics
-  server/index.js    HTTP server, static files, security headers
-  public/            single-page app (index.html, app.js, i18n.js, styles.css, sw.js)
-  test/api.test.js   API tests
+  server/config.js     categories, services, departments, deadlines, KPIs, town settings
+  server/store.js      JSON store with atomic writes and migration, password hashing, first-run seed
+  server/seed-demo.js  wards and budget heads; sample activity in demo mode
+  server/api.js        auth, complaints, tax, appointments, notices, staff, roles
+  server/modules.js    portal data, applications, works, council, committees, inspections, budget, KPIs, report, CSV
+  server/index.js      HTTP server, three sites, security headers
+  public/              portal (index.html, site.js, site.css), shared (common.js, i18n.js, styles.css, sw.js)
+  public/app/          citizen services and municipal office (one app; /office/ shows the staff console)
+  test/                API tests for every module
 ```

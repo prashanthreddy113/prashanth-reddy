@@ -1,6 +1,6 @@
 // Caches the app shell so it opens on a weak connection. API calls always go to the network.
-const CACHE = 'praja-seva-v1';
-const SHELL = ['/', '/index.html', '/app.js', '/i18n.js', '/styles.css', '/icon.svg', '/manifest.webmanifest'];
+const CACHE = 'praja-seva-v2';
+const SHELL = ['/', '/index.html', '/site.js', '/site.css', '/app/', '/app/index.html', '/app/app.js', '/common.js', '/i18n.js', '/styles.css', '/icon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())));
 self.addEventListener('activate', (e) => e.waitUntil(

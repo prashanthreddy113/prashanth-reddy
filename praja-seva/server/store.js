@@ -10,7 +10,7 @@ const crypto = require('node:crypto');
 const cfg = require('./config');
 
 const EMPTY = () => ({
-  meta: { createdAt: new Date().toISOString(), seq: { grievance: 0, receipt: 0 } },
+  meta: { createdAt: new Date().toISOString(), seq: { grievance: 0, receipt: 0, application: 0, resolution: 0 } },
   users: [],
   grievances: [],
   announcements: [],
@@ -18,6 +18,15 @@ const EMPTY = () => ({
   appointments: [],
   actions: [],
   audit: [],
+  applications: [],
+  works: [],
+  meetings: [],
+  committeeMembers: [],
+  committeeMeetings: [],
+  inspections: [],
+  wards: [],
+  budget: [],
+  kpiEntries: [],
 });
 
 class Store {
@@ -27,6 +36,10 @@ class Store {
     this.photoDir = path.join(dir, 'photos');
     fs.mkdirSync(this.photoDir, { recursive: true });
     this.data = fs.existsSync(this.file) ? JSON.parse(fs.readFileSync(this.file, 'utf8')) : EMPTY();
+    // Migrate data files created by older versions: add any missing collections.
+    const blank = EMPTY();
+    for (const k of Object.keys(blank)) if (this.data[k] === undefined) this.data[k] = blank[k];
+    for (const k of Object.keys(blank.meta.seq)) if (this.data.meta.seq[k] === undefined) this.data.meta.seq[k] = 0;
     this.saveTimer = null;
   }
 

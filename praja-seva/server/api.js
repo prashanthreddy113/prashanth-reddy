@@ -140,6 +140,8 @@ function createApi(store, { demo = false, sendSms = defaultSms } = {}) {
     municipality: cfg.MUNICIPALITY_NAME, municipalityTe: cfg.MUNICIPALITY_NAME_TE,
     constituency: cfg.CONSTITUENCY, headTitle: cfg.HEAD_TITLE, wards: cfg.WARDS,
     departments: cfg.DEPARTMENTS, categories: cfg.CATEGORIES, statuses: cfg.STATUSES, demo,
+    services: cfg.SERVICES, appStatuses: cfg.APP_STATUSES, workTypes: cfg.WORK_TYPES, workStatuses: cfg.WORK_STATUSES,
+    schemes: cfg.SCHEMES, committeeTypes: cfg.COMMITTEE_TYPES, kpis: cfg.KPIS, contact: cfg.CONTACT,
   }));
 
   route('GET', '/api/announcements', null, () =>
@@ -394,6 +396,7 @@ function createApi(store, { demo = false, sendSms = defaultSms } = {}) {
       titleTe: str(body.titleTe, 'Telugu title', { max: 120, required: false }),
       body: str(body.body, 'Message', { min: 3, max: 2000 }),
       ward: body.ward ? wardOf(body.ward) : null,
+      type: oneOf(body.type || 'notice', ['notice', 'tender', 'event'], 'type'),
     };
     d().announcements.push(a);
     store.audit(user, 'announcement.create', a.title);
@@ -544,6 +547,8 @@ function createApi(store, { demo = false, sendSms = defaultSms } = {}) {
   });
 
   route('GET', '/api/staff/audit', LEAD, () => d().audit.slice(0, 300));
+
+  require('./modules')({ route, store, HttpError, bad, str, wardOf, oneOf, mobileOf, newId, enrich, stats, canSee, publicUser, STAFF, LEAD, demo });
 
   // ---------- dispatcher ----------
   async function handle(req, res, url, body) {
