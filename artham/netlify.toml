@@ -1,0 +1,8 @@
+# Netlify configuration for Artham (Next.js). Set this folder ("artham") as the
+# base directory when linking the repository in Netlify.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
