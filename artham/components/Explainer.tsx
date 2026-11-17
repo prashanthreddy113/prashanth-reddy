@@ -8,7 +8,13 @@ import ResultView from "./ResultView.tsx";
 import BuyModal from "./BuyModal.tsx";
 
 type Item = { id: string; file: File; preview: string | null };
-type WalletInfo = { credits: number; freeCredits: number; payments: "razorpay" | "test" | "unavailable"; demo: boolean };
+type WalletInfo = {
+  credits: number;
+  freeCredits: number;
+  payments: "razorpay" | "test" | "unavailable";
+  demo: boolean;
+  ready: boolean;
+};
 type Status = "idle" | "working" | "done";
 
 const STEPS = ["Uploading your document", "Reading every line", "Checking money and dates", "Looking for risks", "Writing it in simple words"];
@@ -202,6 +208,11 @@ export default function Explainer() {
           Demo mode: no AI key is set, so you will see a sample explanation.
         </div>
       )}
+      {wallet && !wallet.ready && (
+        <div className="alert alert-info">
+          We are launching very soon! Document explanations will open in a few days – please check back.
+        </div>
+      )}
       {notice && <div className="alert alert-ok">{notice}</div>}
 
       {status === "working" && (
@@ -343,7 +354,7 @@ export default function Explainer() {
           )}
 
           <div className="submit-row">
-            <button type="button" className="btn btn-accent btn-block" onClick={submit} disabled={preparing || !items.length}>
+            <button type="button" className="btn btn-accent btn-block" onClick={submit} disabled={preparing || !items.length || (wallet ? !wallet.ready : false)}>
               {wallet && wallet.credits < 1 ? "Buy credits to explain" : "Explain my document"}
             </button>
           </div>

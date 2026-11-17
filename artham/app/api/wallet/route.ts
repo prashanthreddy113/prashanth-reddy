@@ -14,6 +14,7 @@ export async function GET() {
       freeCredits: wallet.freeCredits,
       payments: razorpayConfigured() ? "razorpay" : testPaymentsAllowed() ? "test" : "unavailable",
       demo: !aiConfigured() && demoMode(),
+      ready: aiConfigured() || demoMode(),
     },
     { headers: { "Cache-Control": "no-store" } },
   );
