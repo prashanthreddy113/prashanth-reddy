@@ -1,0 +1,10 @@
+{
+  "name": "yukktha-storefront",
+  "private": true,
+  "type": "module",
+  "description": "Yukktha website. Static pages; serverless functions in netlify/functions (checkout, AI stylist, AI listing writer).",
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.6.0",
+    "zod": "4.6.7"
+  }
+}

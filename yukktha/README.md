@@ -56,6 +56,22 @@ countdown, coupon ticket with confetti), a dismissible shimmering ribbon above
 the announcement bar, and a once-per-visit pop-up with falling petals.
 `banner-preview.html` renders previews sent from the admin editor.
 
+## AI (Claude)
+
+| Feature | Where | How it works |
+| --- | --- | --- |
+| **Stylist chat** | "✦ Ask our stylist" on every page | `netlify/functions/stylist.mts` at `/ai/stylist`. Claude (`claude-opus-5-5`, low effort for quick replies) searches the live catalogue with two tools and may recommend only sarees they return; recommendations become product cards with live prices and "Add to bag". Short, warm replies in English, Telugu or Hindi; unknown facts are sent to WhatsApp. |
+| **Listing writer** | Admin → Sarees → Add/Edit → "✨ Write with AI" | `netlify/functions/ai-listing.mts` at `/ai/listing`. Reads 1–3 photos and drafts name, weave, colour, description (with "Ideal for …" for the occasion filter), highlights and what staff should confirm. Admins only: the Firebase login token is verified and `users/{uid}` must be an admin of this store. Staff review every draft before publishing. |
+
+Setup: Netlify → **yukktha-sarees** → Environment variables → add `ANTHROPIC_API_KEY`
+(scope Functions) → redeploy. Until then the chat button stays hidden and the
+admin button explains that AI isn't switched on. Remove the variable to turn AI off.
+
+Both requests opt into Anthropic's server-side refusal fallback
+(`server-side-fallback-2026-07-01`, `fallbacks: "default"`). Rough cost at
+Claude Opus 5.5 prices ($4 / $20 per million input / output tokens): about ₹1.5
+per listing draft and ₹4–12 per chat conversation.
+
 ## Customer accounts & reviews
 
 `account.html`: sign in, create an account, reset password; then My orders,

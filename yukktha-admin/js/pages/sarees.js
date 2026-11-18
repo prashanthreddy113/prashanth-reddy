@@ -9,6 +9,7 @@ export async function sareeForm(ctx, s) {
   let images = (s.images && s.images.length ? s.images : (s.imageUrl ? [s.imageUrl] : [])).slice();
   const body = '<div class="form-grid">' +
     '<p class="section-h">Photos</p><div class="full"><div class="img-pick" id="imgPick"></div><small class="muted">Up to ' + MAX_IMAGES + ' photos. The first one is the cover. Photos are resized to save space.</small></div>' +
+    '<div class="full ai-box"><div class="ai-row"><button type="button" class="btn ai-btn" id="aiWrite">✨ Write with AI</button><input id="aiNotes" placeholder="Optional facts for the AI, e.g. pure Kanchi silk, blouse piece included" maxlength="300"></div><div id="aiOut" class="ai-out" hidden></div></div>' +
     '<p class="section-h">Details</p>' +
     field('Saree name', input('name', s.name, 'required placeholder="e.g. Peacock Blue Kanjivaram Silk"'), '') +
     field('Weave / category', select('category', cats.concat(s.category && !cats.includes(s.category) ? [s.category] : []), s.category || cats[0])) +
@@ -28,6 +29,28 @@ export async function sareeForm(ctx, s) {
   return modal({
     title: s.id ? 'Edit saree' : 'Add saree', wide: true, submit: s.id ? 'Save changes' : 'Publish saree', body,
     onOpen(form, onSubmit) {
+      // ---- AI listing writer: photo(s) → draft name, weave, colour, description ----
+      $('#aiWrite', form).addEventListener('click', async () => {
+        const btn = $('#aiWrite', form); const out = $('#aiOut', form);
+        const photos = images.filter((u) => String(u).startsWith('data:')).slice(0, 3);
+        const show = (html, kind) => { out.hidden = false; out.className = 'ai-out ' + (kind || ''); out.innerHTML = html; };
+        if (!ctx.api.idToken) { show('AI works when you sign in with your store account (not in demo mode).', 'warn'); return; }
+        if (!photos.length) { show('Add a new photo first — the AI reads the saree from your photos.', 'warn'); return; }
+        btn.disabled = true; btn.innerHTML = '<span class="ai-spin"></span> Reading the photo…';
+        try {
+          const res = await fetch(ctx.CONFIG.storefrontUrl + 'ai/listing', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (await ctx.api.idToken()) },
+            body: JSON.stringify({ images: photos, categories: cats, notes: $('#aiNotes', form).value.trim() }) });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.error || 'The AI is not available right now.');
+          const d = data.draft;
+          const fill = (el, v) => { if (v && (!el.value.trim() || el.dataset.ai === '1' || confirm('Replace “' + el.value.trim().slice(0, 40) + '” with the AI suggestion?'))) { el.value = v; el.dataset.ai = '1'; el.classList.add('ai-filled'); } };
+          fill(form.name, d.name); fill(form.colour, d.colour); fill(form.description, d.description);
+          if ([...form.category.options].some((o) => o.value === d.category)) form.category.value = d.category;
+          show('<b>Draft ready — please review before publishing.</b><ul>' + (d.highlights || []).map((h) => '<li>' + esc(h) + '</li>').join('') + '</ul><p class="muted">' + esc([d.border_and_pallu, (d.motifs || []).join(', '), (d.occasions || []).join(', ')].filter(Boolean).join(' · ')) + '</p><p class="ai-check">Check: ' + esc(d.check_with_staff || '') + '</p>', 'ok');
+        } catch (e) { show(esc(e.message), 'err'); }
+        finally { btn.disabled = false; btn.innerHTML = '✨ Write with AI'; }
+      });
+
       const pick = $('#imgPick', form);
       const draw = () => {
         pick.innerHTML = images.map((u, i) => '<figure class="' + (i ? '' : 'cover') + '"><img src="' + esc(imageUrl(u)) + '" alt=""><button type="button" data-rm="' + i + '" aria-label="Remove">✕</button></figure>').join('') +

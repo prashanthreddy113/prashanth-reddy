@@ -73,6 +73,8 @@ export async function createFirebaseBackend() {
       session = await loadSession(cred.user); return session;
     },
     resetPassword: (email) => A.sendPasswordResetEmail(auth, email),
+    // login token so Yukktha's server functions (AI listing writer) can verify the admin
+    idToken: async () => (auth.currentUser ? auth.currentUser.getIdToken() : null),
     async signOut() { session = null; await A.signOut(auth); },
     restore() {
       return new Promise((resolve) => {

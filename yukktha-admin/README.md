@@ -13,7 +13,7 @@ saree, price, discount or offer saved here is live on the website at once.
 | In-store billing | Point-of-sale: tap or scan (SKU) sarees, weave chips, customer lookup by mobile, salesperson, coupons, extra discount, cash / UPI / card, GST, hold & resume bills, printable invoice, WhatsApp receipt. Reduces stock and adds the customer |
 | Orders | Online and in-store orders, filters, status changes (cancel / return put stock back once), refunds, invoice, WhatsApp the customer, CSV export |
 | Customers | List with orders and lifetime spend, tags (VIP, Bridal…), birthdays & anniversaries with one-tap WhatsApp wishes, CSV import / export |
-| Sarees | Add / edit with up to 5 photos (auto-resized), MRP, discount, cost price, SKU, colour, stock mode; bulk discount / weave / out-of-stock / delete; CSV export |
+| Sarees | **✨ Write with AI** drafts the name, weave, colour and description from the photos (needs `ANTHROPIC_API_KEY` on the website's Netlify site); add / edit with up to 5 photos (auto-resized), MRP, discount, cost price, SKU, colour, stock mode; bulk discount / weave / out-of-stock / delete; CSV export |
 | Stock & suppliers | Stock levels and value, add / remove with reasons, full stock history, suppliers (weavers) and purchase bills with balance due and payments |
 | Reviews | Approve, hide or reply to customer reviews; shows whether the reviewer bought the saree; average rating |
 | Banners | Animated website banners: home-page **spotlight** slideshow, **top ribbon** on every page, offer **pop-up**; colour themes, photo, button link, coupon, start/end schedule with live countdown, priority, show/hide switch, duplicate; live desktop/phone preview of the real website |
